@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0a6f86">
+<title>Математика квест</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Nunito:wght@500;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Сызбаның идеясы: әр тапсырма — дүкен чегі сияқты қағаз карточка; көк аспан мен күн сарысы — жазбаның түсі */
+  --sky:#0a6f86;
+  --sky-deep:#064556;
+  --sun:#ffc21a;
+  --paper:#ffffff;
+  --bg:#e6f3f6;
+  --ink:#14282e;
+  --muted:#5b7279;
+  --line:#c9dde2;
+  --good:#1a8f4c;
+  --good-bg:#e3f6ea;
+  --bad:#c8392f;
+  --bad-bg:#fdecea;
+  --f-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --f-body:"Nunito","Segoe UI",Roboto,system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:18px;line-height:1.45;-webkit-tap-highlight-color:transparent}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.app{max-width:560px;margin:0 auto;min-height:100%;padding:0 16px 40px}
+.hidden{display:none!important}
+
+/* top bar */
+.bar{display:flex;align-items:center;gap:10px;padding:14px 0 10px;position:sticky;top:0;background:var(--bg);z-index:5}
+.bar h1{font-family:var(--f-display);font-weight:800;font-size:19px;margin:0;flex:1;letter-spacing:-.01em;color:var(--sky-deep);text-wrap:balance}
+.iconbtn{width:46px;height:46px;border-radius:14px;border:2px solid var(--line);background:var(--paper);display:grid;place-items:center;font-size:20px;font-weight:900;flex:none}
+.pill{background:var(--sky-deep);color:#fff;border-radius:999px;padding:6px 12px;font-weight:800;font-size:15px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pill b{color:var(--sun)}
+
+/* hero */
+.hero{background:var(--sky);color:#fff;border-radius:24px;padding:26px 22px 22px;margin-top:8px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-40px;top:-40px;width:170px;height:170px;border-radius:50%;background:var(--sun);opacity:.95}
+.hero .big{font-family:var(--f-display);font-weight:800;font-size:34px;line-height:1.05;margin:0 0 10px;position:relative;z-index:1;letter-spacing:-.02em}
+.hero p{margin:0;position:relative;z-index:1;max-width:30ch;font-weight:700;opacity:.95}
+.hero .tenge{position:absolute;right:22px;top:14px;z-index:2;font-family:var(--f-display);font-size:58px;font-weight:800;color:var(--sky-deep)}
+
+.card{background:var(--paper);border-radius:20px;padding:20px;border:2px solid var(--line)}
+.stack{display:flex;flex-direction:column;gap:14px}
+label.lbl{font-weight:800;font-size:16px;display:block;margin-bottom:6px}
+.field{width:100%;height:56px;border-radius:14px;border:2px solid var(--line);padding:0 16px;font-size:19px;font-weight:700;background:#fff}
+.field:focus{border-color:var(--sky);outline:none}
+.grades{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.grades button{height:52px;border-radius:14px;border:2px solid var(--line);background:#fff;font-weight:900;font-size:19px}
+.grades button[aria-pressed="true"]{background:var(--sky);border-color:var(--sky);color:#fff}
+.btn{min-height:58px;border-radius:16px;border:0;padding:12px 20px;font-weight:900;font-size:19px;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;transition:transform .08s}
+.btn:active{transform:scale(.98)}
+.btn-main{background:var(--sun);color:var(--ink);box-shadow:0 4px 0 #d79d00}
+.btn-blue{background:var(--sky);color:#fff;box-shadow:0 4px 0 var(--sky-deep)}
+.btn-ghost{background:var(--paper);border:2px solid var(--line);color:var(--sky-deep)}
+.btn:disabled{opacity:.5;cursor:default}
+.err{color:var(--bad);font-weight:800;font-size:16px;min-height:1.2em;margin:0}
+.note{color:var(--muted);font-size:16px;margin:0}
+
+/* map */
+.hello{display:flex;align-items:center;gap:12px;margin:6px 0 16px}
+.avatar{width:52px;height:52px;border-radius:16px;background:var(--sun);display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:22px;flex:none}
+.hello h2{margin:0;font-size:21px;font-weight:900;line-height:1.2}
+.hello p{margin:0;color:var(--muted);font-size:15px;font-weight:700}
+.worlds{display:flex;flex-direction:column;gap:16px}
+.world{background:var(--paper);border-radius:22px;border:2px solid var(--line);overflow:hidden}
+.world-top{display:flex;gap:14px;align-items:center;padding:16px 16px 12px}
+.wicon{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;font-size:30px;flex:none}
+.world h3{margin:0;font-family:var(--f-display);font-weight:600;font-size:18px;line-height:1.2}
+.world .sub{margin:2px 0 0;color:var(--muted);font-size:15px;font-weight:700}
+.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 16px 16px}
+.lvl{border-radius:16px;border:2px solid var(--line);background:#f7fbfc;min-height:86px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px 4px;font-weight:900}
+.lvl .n{font-size:24px;font-family:var(--f-display);font-weight:800}
+.lvl .t{font-size:13px;color:var(--muted);font-weight:800}
+.lvl .st{font-size:16px;letter-spacing:1px;color:#c8d6da}
+.lvl .st .on{color:var(--sun)}
+.lvl.open{background:#fff;border-color:var(--sky);box-shadow:0 3px 0 var(--sky)}
+.lvl.done{border-color:var(--good);box-shadow:0 3px 0 var(--good)}
+.lvl.locked{opacity:.55;cursor:not-allowed}
+.navrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+
+/* receipt */
+.progress{height:12px;background:#d2e6eb;border-radius:999px;overflow:hidden;margin:2px 0 14px}
+.progress i{display:block;height:100%;background:var(--sky);border-radius:999px;transition:width .3s}
+.receipt{background:var(--paper);border-radius:6px;padding:22px 20px 24px;position:relative;box-shadow:0 6px 18px rgba(10,70,86,.10);
+  -webkit-mask:radial-gradient(circle 8px at 50% 0,transparent 98%,#000) 0 0/22px 51% repeat-x,radial-gradient(circle 8px at 50% 100%,transparent 98%,#000) 0 100%/22px 51% repeat-x;
+          mask:radial-gradient(circle 8px at 50% 0,transparent 98%,#000) 0 0/22px 51% repeat-x,radial-gradient(circle 8px at 50% 100%,transparent 98%,#000) 0 100%/22px 51% repeat-x}
+.rhead{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:13px;color:var(--muted);font-weight:700;letter-spacing:.04em;padding-bottom:12px;border-bottom:2px dashed var(--line);margin-bottom:16px}
+.situ{font-size:15px;font-weight:800;color:var(--sky);margin:0 0 6px;text-transform:uppercase;letter-spacing:.03em}
+.q{font-size:21px;font-weight:800;line-height:1.35;margin:0 0 18px;text-wrap:pretty}
+.q .num{font-family:var(--f-mono);font-weight:700;background:#fff4cc;padding:0 4px;border-radius:5px;white-space:nowrap}
+.answer-row{display:flex;gap:10px;align-items:stretch}
+.inwrap{flex:1;position:relative;display:flex}
+.inwrap input{flex:1;min-width:0;height:64px;border-radius:16px;border:3px solid var(--line);padding:0 64px 0 16px;font-family:var(--f-mono);font-size:26px;font-weight:700;background:#fff}
+.inwrap input:focus{border-color:var(--sky);outline:none}
+.inwrap .unit{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-weight:900;color:var(--muted);font-size:18px;pointer-events:none}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{min-height:70px;border-radius:16px;border:3px solid var(--line);background:#fff;font-family:var(--f-mono);font-weight:700;font-size:20px;padding:8px;line-height:1.2}
+.opt.wide{font-family:var(--f-body);font-size:17px;font-weight:800}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--good);background:var(--good-bg);color:var(--good)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad);text-decoration:line-through}
+.tools{display:flex;gap:10px;margin-top:14px}
+.tools .btn{min-height:50px;font-size:17px}
+.hintbox{margin-top:14px;background:#fff7db;border:2px solid #ffe08a;border-radius:14px;padding:12px 14px;font-weight:700;font-size:17px}
+.hintbox b{color:#8a6400}
+.fb{margin-top:16px;border-radius:16px;padding:14px 16px;font-weight:800}
+.fb.good{background:var(--good-bg);color:var(--good)}
+.fb.bad{background:var(--bad-bg);color:var(--bad)}
+.fb.show{background:#eef6f8;color:var(--sky-deep)}
+.fb h4{margin:0 0 4px;font-size:19px}
+.fb p{margin:0;font-size:16px;color:var(--ink);font-weight:700}
+.steps{margin:14px 0 0;padding:12px 0 0;border-top:2px dashed var(--line);list-style:none;display:flex;flex-direction:column;gap:6px}
+.steps li{font-family:var(--f-mono);font-size:15px;font-weight:500;color:var(--ink);display:flex;gap:8px}
+.steps li::before{content:"›";color:var(--sky);font-weight:700}
+.steps .total{font-weight:700;border-top:1px solid var(--line);padding-top:6px;margin-top:2px}
+.stamp{position:absolute;right:14px;top:58px;font-family:var(--f-display);font-weight:800;font-size:22px;padding:6px 12px;border:4px solid currentColor;border-radius:10px;transform:rotate(-12deg);pointer-events:none;opacity:0}
+.stamp.g{color:var(--good)}
+.stamp.on{animation:stamp .35s cubic-bezier(.2,1.6,.4,1) forwards}
+@keyframes stamp{0%{opacity:0;transform:rotate(-12deg) scale(2.2)}100%{opacity:.9;transform:rotate(-12deg) scale(1)}}
+.shake{animation:shake .4s}
+@keyframes shake{20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.next{margin-top:16px}
+.gain{font-family:var(--f-mono);font-weight:700;color:var(--good)}
+
+/* result */
+.res{text-align:center;padding:26px 20px}
+.res .stars{font-size:52px;letter-spacing:6px;color:#d4e1e4;margin:4px 0}
+.res .stars .on{color:var(--sun);text-shadow:0 3px 0 #d79d00}
+.res h2{font-family:var(--f-display);font-weight:800;font-size:26px;margin:6px 0 4px;text-wrap:balance}
+.res p{margin:0 0 14px;color:var(--muted);font-weight:700}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 18px}
+.stat{background:#f2f8fa;border-radius:14px;padding:10px 4px}
+.stat b{display:block;font-family:var(--f-mono);font-size:24px;color:var(--sky-deep)}
+.stat span{font-size:13px;font-weight:800;color:var(--muted)}
+.newbadge{background:#fff7db;border:2px solid #ffe08a;border-radius:14px;padding:10px;font-weight:800;margin-bottom:14px}
+
+/* badges */
+.badges{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.badge{background:var(--paper);border:2px solid var(--line);border-radius:16px;padding:14px 10px;text-align:center}
+.badge .e{font-size:34px;filter:grayscale(1);opacity:.35}
+.badge h4{margin:4px 0 2px;font-size:16px;font-weight:900}
+.badge p{margin:0;font-size:13px;color:var(--muted);font-weight:700;line-height:1.3}
+.badge.got{border-color:var(--sun);background:#fffbea}
+.badge.got .e{filter:none;opacity:1}
+.section-t{font-family:var(--f-display);font-weight:600;font-size:17px;margin:22px 0 10px;color:var(--sky-deep)}
+.copybox{width:100%;min-height:150px;border-radius:14px;border:2px solid var(--line);padding:12px;font-family:var(--f-mono);font-size:14px;resize:vertical;background:#fff}
+.help h3{font-size:18px;margin:0 0 6px;font-weight:900}
+.help ol,.help ul{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px;font-weight:600;font-size:17px}
+.legend{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:16px}
+.legend span{font-family:var(--f-mono);font-weight:700;color:var(--good)}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 20px;border-radius:999px;font-weight:800;z-index:20;max-width:90vw;text-align:center}
+.fade{animation:fade .25s ease-out}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:30}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.stamp.on{opacity:.9}}
+@media (max-width:380px){.hero .big{font-size:28px}.q{font-size:19px}.opt{font-size:18px}}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<canvas class="confetti hidden" id="confetti"></canvas>
+
+<script>
+/* ============ ТАПСЫРМАЛАР ============ */
+const WORLDS = [
+ {id:"shop", name:"Дүкенде", sub:"Жеңілдік, пайыз, қайтарым", icon:"🛒", color:"#ffe9b0", badge:"Үнемшіл сатып алушы",
+  levels:[
+   [
+    {s:"Кітап дүкені", q:"Кітаптың бағасы [2000 ₸]. Оған [10%] жеңілдік жасалды. Жеңілдік неше теңге?", t:"c", o:["200 ₸","100 ₸","1800 ₸","20 ₸"], a:"200 ₸",
+     h:"10% дегеніміз — санның оннан бір бөлігі. 2000-ды 10-ға бөл.", st:["10% = 1/10","2000 : 10 = 200","Жеңілдік = 200 ₸"]},
+    {s:"Киім дүкені", q:"Футболка [5000 ₸] тұрады. Бүгін [20%] жеңілдік. Футболканың жаңа бағасы қанша?", t:"c", o:["4000 ₸","4800 ₸","1000 ₸","3000 ₸"], a:"4000 ₸",
+     h:"Алдымен жеңілдікті тап: 5000-ның 20%-ы. Содан кейін бағадан шегер.", st:["5000-ның 20%-ы = 5000 · 0,2 = 1000","5000 − 1000 = 4000","Жаңа баға = 4000 ₸"]},
+    {s:"Базарда", q:"1 кг алма [600 ₸]. Анаң [3 кг] алма алды. Қанша теңге төледі?", t:"n", a:1800, u:"₸",
+     h:"Бір килограмның бағасын килограмм санына көбейт.", st:["600 · 3 = 1800","Төлем = 1800 ₸"]},
+    {s:"Кассада", q:"Сен кассаға [1000 ₸] бердің. Сатып алғаның [750 ₸]. Саған қанша қайтарады?", t:"n", a:250, u:"₸",
+     h:"Берген ақшадан тауардың бағасын шегер.", st:["1000 − 750 = 250","Қайтарым = 250 ₸"]}
+   ],
+   [
+    {s:"Спорт дүкені", q:"Кроссовка [25 000 ₸]. Оған [30%] жеңілдік бар. Сен қанша төлейсің?", t:"n", a:17500, u:"₸",
+     h:"30% жеңілдік болса, бағаның 70%-ын төлейсің. 25000 · 0,7 есепте.", st:["100% − 30% = 70%","25000 · 0,7 = 17500","Төлем = 17 500 ₸"]},
+    {s:"Акция", q:"Акция: «[2] шырын алсаң, [3]-ші шырын тегін». Бір шырын [400 ₸]. [3] шырын үшін қанша төлейсің?", t:"c", o:["800 ₸","1200 ₸","400 ₸","1000 ₸"], a:"800 ₸",
+     h:"Үшінші шырын тегін — ақшаны тек екеуіне төлейсің.", st:["Ақылы шырын: 2","2 · 400 = 800","Төлем = 800 ₸"]},
+    {s:"Қай дүкен тиімді?", q:"А дүкенде [1 л] сүт [520 ₸]. Б дүкенде [0,5 л] сүт [270 ₸]. Қай дүкенде сүт арзанырақ?", t:"c", o:["А дүкен","Б дүкен","Бағасы бірдей","Анықтау мүмкін емес"], a:"А дүкен", wide:true,
+     h:"Екі дүкендегі 1 литрдің бағасын салыстыр. Б дүкенде 1 л = 2 бөтелке.", st:["А: 1 л = 520 ₸","Б: 1 л = 270 · 2 = 540 ₸","520 < 540 → А дүкен арзан"]},
+    {s:"Жеңілдік", q:"Сөмке бұрын [8000 ₸] болатын, енді [6000 ₸]. Неше пайыз жеңілдік жасалды?", t:"c", o:["25%","20%","33%","2000%"], a:"25%",
+     h:"Алдымен баға қаншаға түскенін тап. Сосын оны бұрынғы бағаға бөл.", st:["8000 − 6000 = 2000","2000 : 8000 = 0,25","0,25 = 25%"]}
+   ],
+   [
+    {s:"Екі рет жеңілдік", q:"Телефон [120 000 ₸]. Алдымен [10%], содан кейін жаңа бағадан тағы [10%] жеңілдік жасалды. Соңғы баға қанша?", t:"c", o:["97 200 ₸","96 000 ₸","98 000 ₸","100 000 ₸"], a:"97 200 ₸",
+     h:"Абай бол: бұл 20% жеңілдік емес! Екінші жеңілдік жаңа бағадан есептеледі.", st:["120000 · 0,9 = 108000","108000 · 0,9 = 97200","Соңғы баға = 97 200 ₸","Бұл 20% емес, 19% жеңілдік!"]},
+    {s:"Баға өзгерді", q:"Тауар [10 000 ₸] болатын. Бағасы [20%]-ға қымбаттады, кейін [20%]-ға арзандады. Енді қанша тұрады?", t:"n", a:9600, u:"₸",
+     h:"Бірінші өзгерістен кейінгі бағаны тап. Екінші пайыз сол жаңа бағадан алынады.", st:["10000 · 1,2 = 12000","12000 · 0,8 = 9600","Соңғы баға = 9600 ₸ (бастапқыдан арзан!)"]},
+    {s:"Кешбэк", q:"Банк картасы сатып алудың [5%]-ын қайтарады (кешбэк). Сен [14 000 ₸]-ге тауар алдың. Кешбэк қанша?", t:"n", a:700, u:"₸",
+     h:"14000-ның 5%-ын тап: 14000 · 0,05.", st:["5% = 0,05","14000 · 0,05 = 700","Кешбэк = 700 ₸"]},
+    {s:"Жеңілдік картасы", q:"Отбасың дүкенге айына [50 000 ₸] жұмсайды. Жеңілдік картасы [3%] үнемдетеді. [1 жылда] қанша үнемдейсіңдер?", t:"n", a:18000, u:"₸",
+     h:"Алдымен бір айда қанша үнемдейтінін тап, сосын 12 айға көбейт.", st:["50000 · 0,03 = 1500 (бір айда)","1500 · 12 = 18000","Жылдық үнем = 18 000 ₸"]}
+   ]
+  ]},
+ {id:"phone", name:"Телефон және интернет", sub:"Тариф, гигабайт, баланс", icon:"📱", color:"#cfeef6", badge:"Цифрлық шебер",
+  levels:[
+   [
+    {s:"Тариф", q:"Ұялы байланыс тарифі айына [2500 ₸]. [3 айға] қанша төлейсің?", t:"n", a:7500, u:"₸",
+     h:"Бір айдың бағасын 3-ке көбейт.", st:["2500 · 3 = 7500","Төлем = 7500 ₸"]},
+    {s:"Интернет пакеті", q:"[1 ГБ] интернет [300 ₸]. [5 ГБ] қанша тұрады?", t:"c", o:["1500 ₸","1200 ₸","305 ₸","3000 ₸"], a:"1500 ₸",
+     h:"1 ГБ бағасын 5-ке көбейт.", st:["300 · 5 = 1500","Бағасы = 1500 ₸"]},
+    {s:"Баланс", q:"Телефон балансыңда [1200 ₸] бар. Күн сайын [100 ₸] алынады. Ақша неше күнге жетеді?", t:"n", a:12, u:"күн",
+     h:"Барлық ақшаны бір күнгі төлемге бөл.", st:["1200 : 100 = 12","12 күнге жетеді"]},
+    {s:"Бейне көру", q:"Бейне [1 минутта] [10 МБ] интернет жұмсайды. [30 минут] бейне көрсең, қанша МБ кетеді?", t:"c", o:["300 МБ","30 МБ","3000 МБ","40 МБ"], a:"300 МБ",
+     h:"Бір минуттағы шығынды минут санына көбейт.", st:["10 · 30 = 300","300 МБ жұмсалады"]}
+   ],
+   [
+    {s:"Тариф таңдау", q:"А тарифі: айына [3000 ₸], [20 ГБ]. Б тарифі: айына [4000 ₸], [40 ГБ]. Қай тарифте [1 ГБ] арзан?", t:"c", o:["Б тарифі","А тарифі","Бірдей","Қымбатырақ тариф"], a:"Б тарифі", wide:true,
+     h:"Әр тарифтің бағасын гигабайт санына бөл.", st:["А: 3000 : 20 = 150 ₸ (1 ГБ)","Б: 4000 : 40 = 100 ₸ (1 ГБ)","100 < 150 → Б тарифі тиімді"]},
+    {s:"Мегабайт", q:"[1 ГБ = 1024 МБ]. [2 ГБ] неше мегабайт болады?", t:"n", a:2048, u:"МБ",
+     h:"1024-ті 2-ге көбейт.", st:["1024 · 2 = 2048","2 ГБ = 2048 МБ"]},
+    {s:"Баға өсті", q:"Тариф [3200 ₸] болатын. Ол [15%]-ға қымбаттады. Жаңа бағасы қанша?", t:"c", o:["3680 ₸","3215 ₸","3500 ₸","4800 ₸"], a:"3680 ₸",
+     h:"3200-дің 15%-ын тауып, бұрынғы бағаға қос.", st:["3200 · 0,15 = 480","3200 + 480 = 3680","Жаңа баға = 3680 ₸"]},
+    {s:"Артық гигабайт", q:"Тарифің [2500 ₸], оған [10 ГБ] кіреді. Әр артық ГБ — [250 ₸]. Сен айына [15 ГБ] қолдансаң, барлығы қанша төлейсің?", t:"n", a:3750, u:"₸",
+     h:"Артық неше ГБ қолданғаныңды тап. Оның құнын тариф бағасына қос.", st:["15 − 10 = 5 ГБ артық","5 · 250 = 1250","2500 + 1250 = 3750 ₸"]}
+   ],
+   [
+    {s:"Жылдық төлем", q:"Тариф айына [3000 ₸]. Бір жылға бірден төлесең, [25%] жеңілдік береді. Жылдық төлем қанша?", t:"n", a:27000, u:"₸",
+     h:"Алдымен 12 айдың бағасын тап. Сосын 25% жеңілдікті есепте (75%-ын төлейсің).", st:["3000 · 12 = 36000","36000 · 0,75 = 27000","Жылдық төлем = 27 000 ₸"]},
+    {s:"Жүктеп алу", q:"Ойын файлы [600 МБ]. Интернет жылдамдығы — секундына [5 МБ]. Файл неше секундта жүктеледі?", t:"c", o:["120 секунд","30 секунд","3000 секунд","60 секунд"], a:"120 секунд", wide:true,
+     h:"Файлдың көлемін жылдамдыққа бөл.", st:["600 : 5 = 120","120 секунд = 2 минут"]},
+    {s:"Батарея", q:"Телефон батареясы [4000 мА·сағ]. Ойын сағатына [800 мА·сағ] жұмсайды. Толық заряд неше сағат ойынға жетеді?", t:"n", a:5, u:"сағ",
+     h:"Батарея сыйымдылығын бір сағаттағы шығынға бөл.", st:["4000 : 800 = 5","5 сағатқа жетеді"]},
+    {s:"Қай тариф тиімді?", q:"А тарифі: айына [2000 ₸] + әр минут [5 ₸]. Б тарифі: айына [3500 ₸], минут шексіз. Сен айына [400 минут] сөйлессең, қайсысы арзан?", t:"c", o:["Б тарифі","А тарифі","Бірдей","Минутқа байланысты емес"], a:"Б тарифі", wide:true,
+     h:"А тарифі бойынша 400 минуттың бағасын есептеп, 2000-ға қос. Сосын 3500-мен салыстыр.", st:["А: 400 · 5 = 2000","А: 2000 + 2000 = 4000 ₸","Б: 3500 ₸","3500 < 4000 → Б тиімді"]}
+   ]
+  ]},
+ {id:"road", name:"Жол мен уақыт", sub:"Билет, жылдамдық, сағат", icon:"🚌", color:"#d9f2dd", badge:"Жол бастаушы",
+  levels:[
+   [
+    {s:"Автобус", q:"Автобус билеті [200 ₸]. Сен күніне [2 рет] мінесің. [5 күнде] жол қанша тұрады?", t:"n", a:2000, u:"₸",
+     h:"Алдымен бір күнгі жол ақысын тап, сосын 5-ке көбейт.", st:["200 · 2 = 400 (бір күнде)","400 · 5 = 2000","Жол ақысы = 2000 ₸"]},
+    {s:"Мектепке", q:"Сабақ [8:30]-да басталады. Үйден мектепке дейін [25 минут] жүресің. Үйден ең кеш қашан шығу керек?", t:"c", o:["8:05","8:15","7:55","8:55"], a:"8:05",
+     h:"Сабақ басталатын уақыттан 25 минутты шегер.", st:["8:30 − 25 мин","8:30 − 30 мин = 8:00","8:00 + 5 мин = 8:05"]},
+    {s:"Велосипед", q:"Велосипедпен сағатына [12 км] жүресің. [2 сағатта] қанша километр жүресің?", t:"n", a:24, u:"км",
+     h:"Жол = жылдамдық · уақыт.", st:["12 · 2 = 24","24 км"]},
+    {s:"Барып-қайту", q:"Үйден мектепке дейін [1,5 км]. Мектепке барып, үйге қайтсаң, барлығы қанша жүресің?", t:"c", o:["3 км","1,5 км","2,5 км","4 км"], a:"3 км",
+     h:"Барып-қайту дегеніміз — бір жолды екі рет жүру.", st:["1,5 · 2 = 3","3 км"]}
+   ],
+   [
+    {s:"Такси", q:"Такси: отырғызу [500 ₸] + әр километр [150 ₸]. [8 км] жол қанша тұрады?", t:"n", a:1700, u:"₸",
+     h:"Алдымен 8 км-дің бағасын тап, сосын отырғызу ақысын қос.", st:["150 · 8 = 1200","1200 + 500 = 1700","Такси = 1700 ₸"]},
+    {s:"Пойыз", q:"Пойыз [9:40]-та шығып, [13:15]-те жетті. Жолда қанша уақыт болды?", t:"c", o:["3 сағ 35 мин","4 сағ 25 мин","3 сағ 25 мин","4 сағ 35 мин"], a:"3 сағ 35 мин", wide:true,
+     h:"9:40-тан 10:00-ге дейін, сосын 10:00-ден 13:15-ке дейін есепте.", st:["9:40 → 10:00 = 20 мин","10:00 → 13:15 = 3 сағ 15 мин","20 мин + 3 сағ 15 мин = 3 сағ 35 мин"]},
+    {s:"Көлікпен", q:"Көлік сағатына [60 км] жүреді. [150 км] жолды неше сағатта жүреді?", t:"c", o:["2,5 сағ","2 сағ","3 сағ","90 сағ"], a:"2,5 сағ",
+     h:"Уақыт = жол : жылдамдық.", st:["150 : 60 = 2,5","2,5 сағ = 2 сағ 30 мин"]},
+    {s:"Карта", q:"Картада [1 см] — шын мәнінде [2 км]. Картадағы екі ауыл арасы [7 см]. Шын мәнінде қанша километр?", t:"n", a:14, u:"км",
+     h:"Әр сантиметр — 2 км. 7-ні 2-ге көбейт.", st:["7 · 2 = 14","14 км"]}
+   ],
+   [
+    {s:"Бензин", q:"Көлік [100 км]-ге [8 л] бензин жұмсайды. [1 л] бензин [250 ₸]. [300 км] жолға бензин қанша тұрады?", t:"n", a:6000, u:"₸",
+     h:"300 км — бұл 100 км-нің 3 есесі. Алдымен қанша литр керек екенін тап.", st:["300 : 100 = 3","8 · 3 = 24 л","24 · 250 = 6000 ₸"]},
+    {s:"Кездесу", q:"Екі дос арасы [30 км] екі ауылдан бір-біріне қарай шықты. Біреуі сағатына [4 км], екіншісі [6 км] жүреді. Неше сағаттан кейін кездеседі?", t:"n", a:3, u:"сағ",
+     h:"Бір-біріне қарай жүрсе, жылдамдықтар қосылады: 4 + 6.", st:["4 + 6 = 10 км/сағ (жақындау жылдамдығы)","30 : 10 = 3","3 сағаттан кейін кездеседі"]},
+    {s:"Жол бөлігі", q:"Сен жолдың [40%]-ын жүрдің. Тағы [18 км] қалды. Жолдың барлық ұзындығы қанша?", t:"n", a:30, u:"км",
+     h:"Қалған 18 км — бұл жолдың 60%-ы. 1%-ы қанша екенін тап.", st:["100% − 40% = 60%","60% = 18 км","18 : 60 · 100 = 30 км"]},
+    {s:"Ұшақ", q:"Ұшақ Алматыдан [7:50]-де ұшып, [2 сағ 20 мин] ұшады. Астанаға қашан қонады?", t:"c", o:["10:10","9:70","10:30","9:10"], a:"10:10",
+     h:"Алдымен 2 сағат қос, сосын 20 минут қос. 60 минут = 1 сағат екенін ұмытпа.", st:["7:50 + 2 сағ = 9:50","9:50 + 20 мин = 10:10"]}
+   ]
+  ]},
+ {id:"budget", name:"Отбасы бюджеті", sub:"Жинақ, коммуналдық, депозит", icon:"💰", color:"#ffd9d2", badge:"Жас қаржыгер",
+  levels:[
+   [
+    {s:"Қалта ақша", q:"Айына [5000 ₸] қалта ақша аласың. Аптасына [1000 ₸] жұмсайсың. [4 аптадан] кейін қанша қалады?", t:"n", a:1000, u:"₸",
+     h:"4 аптада қанша жұмсайтыныңды тап, сосын 5000-нан шегер.", st:["1000 · 4 = 4000","5000 − 4000 = 1000","1000 ₸ қалады"]},
+    {s:"Жинақ", q:"Велосипедке [30 000 ₸] керек. Сен айына [5000 ₸] жинайсың. Неше айда жинайсың?", t:"n", a:6, u:"ай",
+     h:"Керек соманы бір айдағы жинаққа бөл.", st:["30000 : 5000 = 6","6 айда жинайсың"]},
+    {s:"Асханада", q:"Түскі ас [1200 ₸], шырын [300 ₸]. Барлығы қанша?", t:"c", o:["1500 ₸","1400 ₸","900 ₸","1600 ₸"], a:"1500 ₸",
+     h:"Екі бағаны қос.", st:["1200 + 300 = 1500","Барлығы = 1500 ₸"]},
+    {s:"Пицца", q:"Пицца [8] тең бөлікке бөлінді. Сен [3] бөлігін жедің. Пиццаның қанша бөлігі қалды?", t:"c", o:["5/8","3/8","5/3","3/5"], a:"5/8",
+     h:"8 бөліктің 3-і жеп қойылды. Неше бөлік қалды?", st:["8 − 3 = 5 бөлік","Барлығы 8 бөлік","Қалғаны = 5/8"]}
+   ],
+   [
+    {s:"Пәтер ақысы", q:"Отбасының айлық табысы [400 000 ₸]. Оның [30%]-ы пәтер ақысына кетеді. Пәтерге қанша төлейді?", t:"n", a:120000, u:"₸",
+     h:"400000-ды 0,3-ке көбейт.", st:["30% = 0,3","400000 · 0,3 = 120000","Пәтерге = 120 000 ₸"]},
+    {s:"Бюджет бөлігі", q:"Табыс [300 000 ₸]. Оның [1/4] бөлігі тамаққа, [1/5] бөлігі коммуналдық төлемге кетеді. Екеуіне барлығы қанша кетеді?", t:"c", o:["135 000 ₸","120 000 ₸","150 000 ₸","60 000 ₸"], a:"135 000 ₸",
+     h:"300000-ды 4-ке бөл, сосын 5-ке бөл. Екі нәтижені қос.", st:["300000 : 4 = 75000 (тамақ)","300000 : 5 = 60000 (коммуналдық)","75000 + 60000 = 135000 ₸"]},
+    {s:"Жарық", q:"[1 кВт·сағ] электр қуаты [25 ₸]. Отбасың айына [200 кВт·сағ] жұмсайды. Жарыққа қанша төлейді?", t:"n", a:5000, u:"₸",
+     h:"Бағаны жұмсалған кВт·сағ санына көбейт.", st:["25 · 200 = 5000","Төлем = 5000 ₸"]},
+    {s:"Бірге жинау", q:"Сен әр апта [2000 ₸] жинайсың. Ата-анаң сенің әр [1000 ₸]-ге тағы [500 ₸] қосып береді. [10 аптадан] кейін қанша жиналады?", t:"c", o:["30 000 ₸","20 000 ₸","25 000 ₸","15 000 ₸"], a:"30 000 ₸",
+     h:"Алдымен өзің қанша жинайтыныңды тап. Ата-анаң оның жартысын қосады.", st:["2000 · 10 = 20000 (өзің)","20000 : 1000 · 500 = 10000 (ата-анаң)","20000 + 10000 = 30000 ₸"]}
+   ],
+   [
+    {s:"Депозит", q:"Банкке [100 000 ₸] салдың. Депозит жылына [12%] береді. [1 жылдан] кейін шотыңда қанша болады?", t:"n", a:112000, u:"₸",
+     h:"100000-дың 12%-ын тауып, бастапқы сомаға қос.", st:["100000 · 0,12 = 12000","100000 + 12000 = 112000","Шотта = 112 000 ₸"]},
+    {s:"Бөліп төлеу", q:"Тоңазытқыш [240 000 ₸]. Оны [12 айға] үстемесіз бөліп төлейсіңдер. Айына қанша төлейсіңдер?", t:"n", a:20000, u:"₸",
+     h:"Бағаны ай санына бөл.", st:["240000 : 12 = 20000","Айына = 20 000 ₸"]},
+    {s:"Несие", q:"[100 000 ₸] несие алдыңдар. Үстеме ақысы — [20%]. Барлық соманы [10 айда] тең бөліп төлейсіңдер. Айлық төлем қанша?", t:"c", o:["12 000 ₸","10 000 ₸","10 200 ₸","20 000 ₸"], a:"12 000 ₸",
+     h:"Алдымен банкке барлығы қанша қайтаратыныңды тап (100000 + 20%).", st:["100000 · 0,2 = 20000 (үстеме)","100000 + 20000 = 120000","120000 : 10 = 12000 ₸"]},
+    {s:"Үнемдеу", q:"Отбасы су мен жарыққа айына [15 000 ₸] төлейді. Үнемдеп, төлемді [20%]-ға азайтты. Жылына қанша ақша үнемдейді?", t:"n", a:36000, u:"₸",
+     h:"Бір айдағы үнемді тап (15000-ның 20%-ы), сосын 12-ге көбейт.", st:["15000 · 0,2 = 3000 (бір айда)","3000 · 12 = 36000","Жылдық үнем = 36 000 ₸"]}
+   ]
+  ]}
+];
+const LEVEL_NAMES = ["Жеңіл","Орташа","Қиын"];
+
+const BADGES = [
+ {id:"first", e:"🚀", n:"Алғашқы қадам", d:"Бірінші деңгейді аяқта"},
+ {id:"perfect", e:"⭐", n:"Мінсіз", d:"Деңгейден 3 жұлдыз ал"},
+ {id:"self", e:"💪", n:"Өз күшіммен", d:"Деңгейді кеңессіз аяқта"},
+ {id:"shop", e:"🛒", n:"Үнемшіл сатып алушы", d:"«Дүкенде» бөлімін аяқта"},
+ {id:"phone", e:"📱", n:"Цифрлық шебер", d:"«Телефон» бөлімін аяқта"},
+ {id:"road", e:"🚌", n:"Жол бастаушы", d:"«Жол» бөлімін аяқта"},
+ {id:"budget", e:"💰", n:"Жас қаржыгер", d:"«Бюджет» бөлімін аяқта"},
+ {id:"champ", e:"🏆", n:"Математика чемпионы", d:"Барлық 12 деңгейді аяқта"}
+];
+
+/* ============ САҚТАУ ============ */
+const KEY = "mq-v1";
+let save = {name:"", grade:"", levels:{}, badges:[]};
+function load(){ try{ const s = JSON.parse(localStorage.getItem(KEY)||"null"); if(s && typeof s==="object") save = Object.assign(save, s);}catch(e){} }
+function persist(){ try{ localStorage.setItem(KEY, JSON.stringify(save)); }catch(e){} }
+
+/* ============ КӨМЕКШІЛЕР ============ */
+const $app = document.getElementById("app");
+const esc = s => String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g," ");
+const qhtml = q => esc(q).replace(/\[([^\]]+)\]/g,'<span class="num">$1</span>');
+const lkey = (w,l) => w+"-"+l;
+const starsOf = pts => pts>=34?3:pts>=20?2:pts>0?1:0;
+function starStr(n){ let s=""; for(let i=0;i<3;i++) s+= i<n?'<span class="on">★</span>':'★'; return s; }
+function totalPoints(){ return Object.values(save.levels).reduce((a,r)=>a+(r.best||0),0); }
+function totalStars(){ return Object.values(save.levels).reduce((a,r)=>a+(r.stars||0),0); }
+function isDone(w,l){ return !!save.levels[lkey(w,l)]; }
+function isOpen(wi,li){ return li===0 || isDone(WORLDS[wi].id, li-1); }
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function toast(msg){ const t=document.createElement("div"); t.className="toast fade"; t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),2200); }
+function parseNum(s){ s=String(s).replace(/[\s₸]/g,"").replace(/[a-zA-Zа-яА-ЯәғқңөұүһіӘҒҚҢӨҰҮҺІ·]+$/,"").replace(",","."); if(!/^-?\d+(\.\d+)?$/.test(s)) return NaN; return Number(s); }
+function vibrate(p){ try{ navigator.vibrate && navigator.vibrate(p);}catch(e){} }
+
+/* ============ ЭКРАНДАР ============ */
+let view = "start", game = null, lastResult = null;
+
+function render(){
+  window.scrollTo(0,0);
+  if(view==="start") return renderStart();
+  if(view==="map") return renderMap();
+  if(view==="play") return renderPlay();
+  if(view==="result") return renderResult();
+  if(view==="me") return renderMe();
+  if(view==="help") return renderHelp();
+}
+function go(v){ view=v; render(); }
+
+/* --- Бастау --- */
+function renderStart(){
+  const g = save.grade;
+  $app.innerHTML = `
+  <div class="bar"><h1>Математика квест</h1></div>
+  <div class="hero fade">
+    <div class="tenge">₸</div>
+    <p class="big">Өмірдегі<br>математика</p>
+    <p>Дүкен, телефон, жол және отбасы бюджеті. Нақты өмірдегі есептерді шеш, ұпай мен жұлдыз жина!</p>
+  </div>
+  <form class="card stack fade" id="startForm" style="margin-top:16px" novalidate>
+    <div>
+      <label class="lbl" for="nameIn">Атың кім?</label>
+      <input class="field" id="nameIn" maxlength="30" autocomplete="given-name" placeholder="Мысалы: Айгерім" value="${esc(save.name)}">
+    </div>
+    <div>
+      <span class="lbl" id="gradeLbl">Нешінші сыныпта оқисың?</span>
+      <div class="grades" role="group" aria-labelledby="gradeLbl">
+        ${[5,6,7,8,9].map(n=>`<button type="button" data-g="${n}" aria-pressed="${g==n}">${n}</button>`).join("")}
+      </div>
+    </div>
+    <p class="err" id="startErr"></p>
+    <button class="btn btn-main" type="submit" id="startBtn">Ойынды бастау →</button>
+  </form>
+  <div class="navrow"><button class="btn btn-ghost" id="helpBtn" type="button">❓ Қалай ойнаймын?</button><button class="btn btn-ghost" id="homeBtn" type="button">📲 Телефонға қосу</button></div>`;
+  let grade = save.grade;
+  $app.querySelectorAll(".grades button").forEach(b=>b.onclick=()=>{
+    grade=b.dataset.g; $app.querySelectorAll(".grades button").forEach(x=>x.setAttribute("aria-pressed", x===b));
+  });
+  document.getElementById("startForm").onsubmit = e=>{
+    e.preventDefault();
+    const name = document.getElementById("nameIn").value.trim();
+    const err = document.getElementById("startErr");
+    if(!name){ err.textContent="Атыңды жаз 🙂"; document.getElementById("nameIn").focus(); return; }
+    if(!grade){ err.textContent="Сыныбыңды таңда (5-тен 9-ға дейін)"; return; }
+    save.name=name; save.grade=grade; persist(); go("map");
+  };
+  document.getElementById("helpBtn").onclick=()=>go("help");
+  document.getElementById("homeBtn").onclick=()=>{ go("help"); setTimeout(()=>{const el=document.getElementById("home-screen"); el&&el.scrollIntoView({behavior:"smooth"});},50); };
+}
+
+/* --- Карта --- */
+function renderMap(){
+  const initial = esc((save.name||"?").trim().charAt(0).toUpperCase());
+  $app.innerHTML = `
+  <div class="bar"><h1>Бөлімді таңда</h1><span class="pill">★ <b>${totalStars()}</b>/36</span></div>
+  <div class="hello fade">
+    <div class="avatar">${initial}</div>
+    <div><h2>Сәлем, ${esc(save.name)}!</h2><p>${esc(save.grade)}-сынып · ${fmt(totalPoints())} ұпай</p></div>
+  </div>
+  <div class="worlds">
+  ${WORLDS.map((w,wi)=>`
+    <section class="world fade">
+      <div class="world-top">
+        <div class="wicon" style="background:${w.color}" aria-hidden="true">${w.icon}</div>
+        <div><h3>${w.name}</h3><p class="sub">${w.sub}</p></div>
+      </div>
+      <div class="levels">
+        ${w.levels.map((_,li)=>{
+          const r = save.levels[lkey(w.id,li)];
+          const open = isOpen(wi,li);
+          const cls = r ? "done" : open ? "open" : "locked";
+          return `<button class="lvl ${cls}" data-w="${wi}" data-l="${li}" ${open?"":"aria-disabled=\"true\""} aria-label="${w.name}, ${li+1}-деңгей, ${LEVEL_NAMES[li]}${open?"":", жабық"}">
+            <span class="n">${open?li+1:"🔒"}</span><span class="t">${LEVEL_NAMES[li]}</span><span class="st">${starStr(r?r.stars:0)}</span></button>`;
+        }).join("")}
+      </div>
+    </section>`).join("")}
+  </div>
+  <div class="navrow"><button class="btn btn-ghost" id="meBtn" type="button">🏅 Жетістіктерім</button><button class="btn btn-ghost" id="helpBtn" type="button">❓ Көмек</button></div>`;
+  $app.querySelectorAll(".lvl").forEach(b=>b.onclick=()=>{
+    const wi=+b.dataset.w, li=+b.dataset.l;
+    if(!isOpen(wi,li)){ toast("Алдымен "+li+"-деңгейді аяқта 🔒"); vibrate(40); return; }
+    startLevel(wi,li);
+  });
+  document.getElementById("meBtn").onclick=()=>go("me");
+  document.getElementById("helpBtn").onclick=()=>go("help");
+}
+
+/* --- Ойын --- */
+function startLevel(wi,li){
+  game = {wi, li, i:0, pts:0, correct:0, hints:0, tries:0, hintShown:false, done:false, opts:null};
+  go("play");
+}
+function curTask(){ return WORLDS[game.wi].levels[game.li][game.i]; }
+
+function renderPlay(){
+  const w = WORLDS[game.wi], tasks = w.levels[game.li], t = curTask();
+  if(!game.opts && t.t==="c") game.opts = shuffle(t.o);
+  const pct = (game.i)/tasks.length*100;
+  $app.innerHTML = `
+  <div class="bar">
+    <button class="iconbtn" id="quit" aria-label="Картаға шығу">✕</button>
+    <h1>${w.icon} ${w.name} · ${game.li+1}</h1>
+    <span class="pill"><b>${game.pts}</b> ұпай</span>
+  </div>
+  <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="${tasks.length}" aria-valuenow="${game.i}"><i style="width:${pct}%"></i></div>
+  <article class="receipt fade" id="rc">
+    <div class="rhead"><span>ТАПСЫРМА №${game.i+1}/${tasks.length}</span><span>${LEVEL_NAMES[game.li].toUpperCase()}</span></div>
+    <div class="stamp g" id="stamp" aria-hidden="true">ДҰРЫС!</div>
+    <p class="situ">${esc(t.s)}</p>
+    <p class="q">${qhtml(t.q)}</p>
+    <div id="ans"></div>
+    <div id="hintArea"></div>
+    <div id="fbArea" aria-live="polite"></div>
+  </article>`;
+  document.getElementById("quit").onclick=()=>go("map");
+  drawAnswer();
+}
+
+function drawAnswer(){
+  const t = curTask(), box = document.getElementById("ans");
+  if(t.t==="c"){
+    box.innerHTML = `<div class="opts">${game.opts.map((o,k)=>`<button class="opt${t.wide?" wide":""}" data-k="${k}" type="button">${esc(o)}</button>`).join("")}</div>
+    <div class="tools" id="tools"><button class="btn btn-ghost" id="hintBtn" type="button">💡 Кеңес</button></div>`;
+    box.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{ if(game.done||b.disabled) return; checkChoice(b); });
+  } else {
+    box.innerHTML = `<form id="numForm" novalidate>
+      <div class="answer-row"><div class="inwrap">
+        <input id="numIn" inputmode="decimal" autocomplete="off" enterkeyhint="done" placeholder="Жауабың" aria-label="Жауабыңды сан түрінде жаз">
+        <span class="unit">${esc(t.u||"")}</span></div></div>
+      <p class="note" style="margin-top:8px">Тек санды жаз. Мысалы: <b>17500</b> немесе <b>2,5</b></p>
+      <div class="tools" id="tools">
+        <button class="btn btn-ghost" id="hintBtn" type="button" style="flex:1">💡 Кеңес</button>
+        <button class="btn btn-blue" type="submit" id="checkBtn" style="flex:1.4">Тексеру ✓</button>
+      </div></form>`;
+    const f = document.getElementById("numForm");
+    f.onsubmit = e=>{ e.preventDefault(); if(!game.done) checkNum(); };
+    const inp = document.getElementById("numIn");
+    if(matchMedia("(pointer:fine)").matches) inp.focus();
+  }
+  document.getElementById("hintBtn").onclick = showHint;
+}
+
+function showHint(){
+  if(game.hintShown) return;
+  game.hintShown = true; game.hints++;
+  document.getElementById("hintArea").innerHTML = `<div class="hintbox fade"><b>💡 Кеңес:</b> ${esc(curTask().h)}</div>`;
+  const hb = document.getElementById("hintBtn"); if(hb){ hb.disabled=true; }
+}
+
+function checkChoice(btn){
+  const t = curTask(), val = btn.textContent;
+  if(val===t.a){ btn.classList.add("right"); onRight(); }
+  else { btn.classList.add("wrong"); btn.disabled = true; onWrong(); }
+}
+function checkNum(){
+  const t = curTask(), inp = document.getElementById("numIn"), raw = inp.value;
+  const v = parseNum(raw);
+  if(raw.trim()===""){ softMsg("Алдымен жауабыңды жаз ✍️"); inp.focus(); return; }
+  if(isNaN(v)){ softMsg("Тек санды жаз. Мысалы: 1500 немесе 2,5"); inp.focus(); return; }
+  if(Math.abs(v - t.a) < 1e-9){ inp.style.borderColor="var(--good)"; inp.style.background="var(--good-bg)"; inp.readOnly=true; onRight(); }
+  else { inp.style.borderColor="var(--bad)"; onWrong(); if(!game.done){ inp.select(); } }
+}
+function softMsg(m){ document.getElementById("fbArea").innerHTML = `<div class="fb show fade"><p>${esc(m)}</p></div>`; }
+
+function onRight(){
+  const t = curTask();
+  game.tries++;
+  let gain = game.tries===1 ? 10 : 5;
+  if(game.hintShown) gain -= 2;
+  game.pts += gain; game.correct++; game.done = true;
+  vibrate(30);
+  document.getElementById("stamp").classList.add("on");
+  lockInputs();
+  const praise = ["Керемет!","Жарайсың!","Тамаша!","Дұп-дұрыс!","Сен мықтысың!"][Math.floor(Math.random()*5)];
+  document.getElementById("fbArea").innerHTML = `<div class="fb good fade"><h4>✅ ${praise} <span class="gain">+${gain} ұпай</span></h4>
+    <ul class="steps">${stepsHtml(t)}</ul></div>${nextBtn()}`;
+  bindNext();
+  updatePill();
+}
+function onWrong(){
+  const t = curTask();
+  game.tries++;
+  vibrate([60,40,60]);
+  const rc = document.getElementById("rc"); rc.classList.remove("shake"); void rc.offsetWidth; rc.classList.add("shake");
+  if(game.tries===1){
+    if(!game.hintShown) showHint();
+    document.getElementById("fbArea").innerHTML = `<div class="fb bad fade"><h4>Әзірге дұрыс емес 🙂</h4><p>Кеңесті оқып, тағы бір рет көр. Сен міндетті түрде табасың!</p></div>`;
+  } else {
+    game.done = true;
+    lockInputs(true);
+    const ans = t.t==="c" ? t.a : fmt(t.a)+" "+(t.u||"");
+    document.getElementById("fbArea").innerHTML = `<div class="fb show fade"><h4>Дұрыс жауабы: ${esc(ans)}</h4><p>Ештеңе етпейді! Шешуін қарап шық, келесіде міндетті түрде шығарасың.</p>
+      <ul class="steps">${stepsHtml(t)}</ul></div>${nextBtn()}`;
+    bindNext();
+  }
+}
+function stepsHtml(t){ return t.st.map((s,k)=>`<li class="${k===t.st.length-1?"total":""}">${esc(s)}</li>`).join(""); }
+function lockInputs(reveal){
+  const t = curTask();
+  document.querySelectorAll(".opt").forEach(b=>{ b.disabled=true; if(reveal && b.textContent===t.a) b.classList.add("right"); });
+  const inp = document.getElementById("numIn"); if(inp) inp.readOnly = true;
+  const tools = document.getElementById("tools"); if(tools) tools.classList.add("hidden");
+}
+function nextBtn(){
+  const last = game.i === WORLDS[game.wi].levels[game.li].length-1;
+  return `<button class="btn btn-main next" id="nextBtn" type="button">${last?"Нәтижені көру 🏁":"Келесі тапсырма →"}</button>`;
+}
+function bindNext(){
+  const b = document.getElementById("nextBtn");
+  b.onclick = nextTask;
+  setTimeout(()=>{ b.scrollIntoView({behavior:"smooth", block:"nearest"}); b.focus({preventScroll:true}); }, 120);
+}
+function updatePill(){ const p=document.querySelector(".bar .pill b"); if(p) p.textContent=game.pts; }
+function nextTask(){
+  const tasks = WORLDS[game.wi].levels[game.li];
+  if(game.i < tasks.length-1){
+    game.i++; game.tries=0; game.hintShown=false; game.done=false; game.opts=null;
+    renderPlay();
+  } else finishLevel();
+}
+
+function finishLevel(){
+  const w = WORLDS[game.wi], k = lkey(w.id, game.li);
+  const stars = starsOf(game.pts);
+  const prev = save.levels[k];
+  const record = !prev || game.pts > prev.best;
+  save.levels[k] = {best: Math.max(game.pts, prev?prev.best:0), stars: Math.max(stars, prev?prev.stars:0), correct: Math.max(game.correct, prev?prev.correct||0:0), last: game.pts};
+  const newB = [];
+  const give = id => { if(!save.badges.includes(id)){ save.badges.push(id); newB.push(id);} };
+  give("first");
+  if(stars===3) give("perfect");
+  if(game.hints===0) give("self");
+  WORLDS.forEach(ww=>{ if(ww.levels.every((_,li)=>isDone(ww.id,li))) give(ww.id); });
+  if(WORLDS.every(ww=>ww.levels.every((_,li)=>isDone(ww.id,li)))) give("champ");
+  persist();
+  lastResult = {wi:game.wi, li:game.li, pts:game.pts, stars, correct:game.correct, total:w.levels[game.li].length, hints:game.hints, newB, record:record && !!prev};
+  go("result");
+  if(stars>=2) confetti();
+}
+
+/* --- Нәтиже --- */
+function renderResult(){
+  const r = lastResult, w = WORLDS[r.wi];
+  const msg = r.stars===3 ? ["Керемет, "+save.name+"!","Сен нағыз математиксің!"] :
+              r.stars===2 ? ["Жарайсың, "+save.name+"!","Өте жақсы нәтиже. 3 жұлдызға тағы бір талпын!"] :
+              ["Жақсы бастама, "+save.name+"!","Шешулерді қайта қарап, тағы бір рет өтіп көр."];
+  const hasNext = r.li < 2;
+  $app.innerHTML = `
+  <div class="bar"><button class="iconbtn" id="back" aria-label="Картаға">✕</button><h1>${w.icon} ${w.name} · ${r.li+1}</h1></div>
+  <div class="card res fade">
+    <div class="stars" aria-label="${r.stars} жұлдыз">${starStr(r.stars)}</div>
+    <h2>${esc(msg[0])}</h2><p>${esc(msg[1])}</p>
+    <div class="stats">
+      <div class="stat"><b>${r.pts}</b><span>ұпай</span></div>
+      <div class="stat"><b>${r.correct}/${r.total}</b><span>дұрыс</span></div>
+      <div class="stat"><b>${r.hints}</b><span>кеңес</span></div>
+    </div>
+    ${r.record?'<div class="newbadge">🎉 Жаңа рекорд!</div>':''}
+    ${r.newB.length?`<div class="newbadge">Жаңа белгі: ${r.newB.map(id=>{const b=BADGES.find(x=>x.id===id);return b.e+" "+esc(b.n);}).join(", ")}</div>`:''}
+    <div class="stack">
+      ${hasNext?`<button class="btn btn-main" id="nextLvl" type="button">${r.li+2}-деңгейге өту →</button>`:''}
+      <button class="btn btn-blue" id="again" type="button">↻ Қайта ойнау</button>
+      <button class="btn btn-ghost" id="share" type="button">📋 Нәтижені мұғалімге жіберу</button>
+      <button class="btn btn-ghost" id="toMap" type="button">🗺 Бөлімдерге оралу</button>
+    </div>
+  </div>`;
+  document.getElementById("back").onclick=()=>go("map");
+  document.getElementById("toMap").onclick=()=>go("map");
+  document.getElementById("again").onclick=()=>startLevel(r.wi,r.li);
+  if(hasNext) document.getElementById("nextLvl").onclick=()=>startLevel(r.wi,r.li+1);
+  document.getElementById("share").onclick=()=>{ go("me"); setTimeout(()=>{ const el=document.getElementById("shareSec"); el&&el.scrollIntoView({behavior:"smooth"}); },50); };
+}
+
+/* --- Жетістіктер --- */
+function reportText(){
+  const lines = ["📘 Математика квест — нәтиже", "Оқушы: "+save.name+", "+save.grade+"-сынып", ""];
+  WORLDS.forEach(w=>{
+    w.levels.forEach((_,li)=>{
+      const r = save.levels[lkey(w.id,li)];
+      if(r) lines.push(w.icon+" "+w.name+" · "+(li+1)+"-деңгей: "+r.best+" ұпай, "+"★".repeat(r.stars)+"☆".repeat(3-r.stars));
+    });
+  });
+  if(lines.length===4) lines.push("Әзірге бірде-бір деңгей аяқталған жоқ.");
+  lines.push("", "Жалпы: "+totalPoints()+" ұпай, "+totalStars()+"/36 жұлдыз", "Белгілер: "+save.badges.length+"/"+BADGES.length);
+  return lines.join("\n");
+}
+function renderMe(){
+  const done = Object.keys(save.levels).length;
+  $app.innerHTML = `
+  <div class="bar"><button class="iconbtn" id="back" aria-label="Артқа">←</button><h1>Жетістіктерім</h1></div>
+  <div class="card fade">
+    <div class="stats" style="margin:0">
+      <div class="stat"><b>${fmt(totalPoints())}</b><span>ұпай</span></div>
+      <div class="stat"><b>${totalStars()}</b><span>жұлдыз</span></div>
+      <div class="stat"><b>${done}/12</b><span>деңгей</span></div>
+    </div>
+  </div>
+  <h2 class="section-t">Белгілер</h2>
+  <div class="badges">${BADGES.map(b=>`<div class="badge ${save.badges.includes(b.id)?"got":""}"><div class="e" aria-hidden="true">${b.e}</div><h4>${b.n}</h4><p>${b.d}</p></div>`).join("")}</div>
+  <h2 class="section-t" id="shareSec">Мұғалімге жіберу</h2>
+  <div class="card stack">
+    <p class="note">«Көшіру» батырмасын бас, сосын WhatsApp-та мұғаліміңе жібер.</p>
+    <textarea class="copybox" id="rep" readonly aria-label="Нәтиже мәтіні">${esc(reportText())}</textarea>
+    <button class="btn btn-main" id="copy" type="button">📋 Көшіру</button>
+  </div>
+  <h2 class="section-t">Баптаулар</h2>
+  <div class="card stack">
+    <button class="btn btn-ghost" id="rename" type="button">✏️ Атымды / сыныбымды өзгерту</button>
+    <button class="btn btn-ghost" id="reset" type="button" style="color:var(--bad)">🗑 Барлық нәтижені өшіру</button>
+  </div>`;
+  document.getElementById("back").onclick=()=>go("map");
+  document.getElementById("copy").onclick=async()=>{
+    const ta=document.getElementById("rep");
+    try{ await navigator.clipboard.writeText(ta.value); toast("Көшірілді! Енді WhatsApp-қа қой ✅"); }
+    catch(e){ ta.focus(); ta.select(); toast("Мәтінді белгілеп, «Көшіру» деп бас"); }
+  };
+  document.getElementById("rename").onclick=()=>go("start");
+  let armed=false;
+  const rs=document.getElementById("reset");
+  rs.onclick=()=>{
+    if(!armed){ armed=true; rs.textContent="Сенімдісің бе? Тағы бір рет бас"; rs.style.background="var(--bad-bg)"; setTimeout(()=>{ if(armed){armed=false; rs.textContent="🗑 Барлық нәтижені өшіру"; rs.style.background="";} },4000); return; }
+    save.levels={}; save.badges=[]; persist(); toast("Нәтижелер өшірілді"); go("map");
+  };
+}
+
+/* --- Көмек --- */
+function renderHelp(){
+  $app.innerHTML = `
+  <div class="bar"><button class="iconbtn" id="back" aria-label="Артқа">←</button><h1>Қалай ойнаймын?</h1></div>
+  <div class="stack help fade">
+    <div class="card"><h3>🎮 Ойын ережесі</h3><ol>
+      <li>Бөлімді таңда: дүкен, телефон, жол немесе бюджет.</li>
+      <li>Әр бөлімде 3 деңгей бар: жеңіл, орташа, қиын. Келесі деңгей алдыңғысын аяқтағанда ашылады.</li>
+      <li>Әр деңгейде 4 тапсырма. Дұрыс жауапты бас немесе санды жазып, «Тексеру» бас.</li>
+      <li>Қиналсаң — «💡 Кеңес» батырмасын бас.</li>
+      <li>Қателессең, тағы бір мүмкіндік бар. Әр тапсырмадан кейін толық шешуі көрсетіледі.</li>
+    </ol></div>
+    <div class="card"><h3>⭐ Ұпай қалай есептеледі?</h3><div class="legend">
+      <div><span>+10</span> бірінші реттен дұрыс</div>
+      <div><span>+5</span> екінші реттен дұрыс</div>
+      <div><span>−2</span> кеңесті пайдалансаң</div>
+      <div>★★★ — 34 ұпайдан жоғары · ★★ — 20 ұпайдан жоғары</div>
+    </div></div>
+    <div class="card"><h3>✍️ Санды қалай жазамын?</h3><ul>
+      <li>Тек санды жаз: <b>17500</b> (бос орынмен де болады: 17 500).</li>
+      <li>Бөлшек сан: <b>2,5</b> немесе <b>2.5</b>.</li>
+      <li>₸, км, сағ деген бірлікті жазудың қажеті жоқ — ол өзі тұр.</li>
+    </ul></div>
+    <div class="card" id="home-screen"><h3>📲 Телефонның басты экранына қосу</h3>
+      <p class="note" style="margin-bottom:8px">Сонда сайт қосымша сияқты бір басқанда ашылады.</p>
+      <ul>
+        <li><b>Android (Chrome):</b> оң жақ жоғарыдағы ⋮ → «Басты экранға қосу».</li>
+        <li><b>iPhone (Safari):</b> төмендегі «Бөлісу» ⬆️ → «На экран Домой / Add to Home Screen».</li>
+      </ul></div>
+    <div class="card"><h3>👩‍🏫 Мұғалімге</h3><ul>
+      <li>Сілтемені сынып чатына жіберіңіз — оқушылар ештеңе орнатпай ашады.</li>
+      <li>Оқушы «Жетістіктерім» бетінде нәтижесін көшіріп, сізге жібере алады.</li>
+      <li>Нәтиже әр оқушының өз телефонында сақталады.</li>
+    </ul></div>
+    <button class="btn btn-main" id="go" type="button">Түсінікті, ойнаймын! →</button>
+  </div>`;
+  const back = ()=> go(save.name&&save.grade ? "map" : "start");
+  document.getElementById("back").onclick=back;
+  document.getElementById("go").onclick=back;
+}
+
+/* --- Конфетти --- */
+function confetti(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const c=document.getElementById("confetti"), x=c.getContext("2d");
+  c.classList.remove("hidden"); c.width=innerWidth; c.height=innerHeight;
+  const cols=["#ffc21a","#0a6f86","#1a8f4c","#ff7a59","#7fd3e6"];
+  const ps=Array.from({length:110},()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.5,vx:(Math.random()-.5)*3,vy:2+Math.random()*3,r:Math.random()*6,s:5+Math.random()*6,c:cols[Math.floor(Math.random()*cols.length)],a:Math.random()*6}));
+  let f=0;
+  (function tick(){
+    x.clearRect(0,0,c.width,c.height);
+    ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.a+=.1;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);x.restore();});
+    if(++f<170) requestAnimationFrame(tick); else { x.clearRect(0,0,c.width,c.height); c.classList.add("hidden"); }
+  })();
+}
+
+/* ============ ІСКЕ ҚОСУ ============ */
+function start(data){
+  load();
+  if(data && data.save) save = Object.assign(save, data.save);
+  view = save.name && save.grade ? "map" : "start";
+  render();
+}
+window.claude?.hot?.snapshot?.(()=>({save}));
+window.claude?.hot?.ready ? window.claude.hot.ready(start) : start(window.claude?.hot?.data ?? {});
+</script>
+</body>
+</html>
