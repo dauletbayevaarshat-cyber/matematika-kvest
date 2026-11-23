@@ -166,6 +166,19 @@ textarea{min-height:96px;resize:vertical}
 .imgfail{display:grid;place-items:center;height:100%;color:#F6EEDB;font:600 24px Rubik;text-align:center;padding:30px}
 @media(prefers-reduced-motion:reduce){.slide,.slide>.stg,.kb,.draw,.pulse{animation:none!important}.draw{stroke-dashoffset:0}}
 
+@media(max-width:760px){
+ .topbar{gap:6px;padding:6px 8px;flex-wrap:wrap}
+ #bStage{display:none}.topbar .grow{display:none}
+ .tb{font-size:13px;padding:4px 9px;min-height:34px;flex:none}
+ .clock{font-size:15px;min-width:64px;padding:4px 8px;flex:none}
+ .score{gap:4px;padding:6px 6px 8px}
+ .team{flex-direction:column;gap:2px;padding:4px 2px}
+ .team .nm{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+ .team .sc{font-size:18px}
+ .team button{min-height:26px;padding:0 6px;font-size:12px}
+ .team button{display:none}.team button:nth-of-type(2){display:inline-block}
+ .notes{font-size:15px}
+}
 @media(prefers-reduced-motion:reduce){.hid{transition:none}}
 </style>
 </head>
@@ -195,9 +208,9 @@ textarea{min-height:96px;resize:vertical}
     <span class="clock" id="clock">00:00</span>
     <button class="tb" id="noteBtn" onclick="toggleNotes()">Мұғалім мәтіні (N)</button>
     <button class="tb on" id="scoreBtn" onclick="toggleScore()">Ұпай</button>
-    <button class="tb" onclick="prevS()">◀</button>
+    <button class="tb" onclick="prevS()" aria-label="артқа">&#9664;&#xFE0E;</button>
     <span class="st" id="bNum"></span>
-    <button class="tb" onclick="nextS()">▶</button>
+    <button class="tb" onclick="nextS()" aria-label="алға">&#9654;&#xFE0E;</button>
   </div>
   <div class="stagewrap" id="wrap"><div class="stage" id="stage"></div></div>
   <div class="notes" id="notes" hidden></div>
@@ -308,7 +321,7 @@ function portolan(){
   <text x="365" y="385" text-anchor="middle" font-size="28" font-style="italic" fill="#1F3B5C" font-family="Cormorant Garamond,Georgia,serif">Mare Maius</text>
   <text x="905" y="440" text-anchor="middle" font-size="24" font-style="italic" fill="#1F3B5C" font-family="Cormorant Garamond,Georgia,serif" transform="rotate(-80 905 440)">Mare Caspium</text>
   <text x="700" y="200" text-anchor="middle" font-size="86" font-weight="700" fill="#8C3A2C" letter-spacing="14" font-family="Cormorant Garamond,Georgia,serif">COMANIA</text>
-  <text x="700" y="240" text-anchor="middle" font-size="30" font-style="italic" fill="#5B3B24" font-family="Cormorant Garamond,Georgia,serif">команлар елі — Дешті Қыпшақ</text>
+  <text x="700" y="240" text-anchor="middle" font-size="30" font-style="italic" fill="#5B3B24" font-family="Cormorant Garamond,Georgia,serif">командар елі — Дешті Қыпшақ</text>
   ${yurt(250,215)}${yurt(300,232)}${yurt(1040,210)}${yurt(1090,230)}${yurt(330,240)}
   ${city(520,335,'Tana')}${city(400,455,'Caffa')}${city(840,285,'Sarai')}
   <path class="draw" d="M1080 300 C980 330 880 300 760 330 C640 360 520 300 420 280 C330 262 230 280 120 300" fill="none" stroke="#A3402F" stroke-width="6" stroke-dasharray="1400" marker-end="url(#ar)"/>
@@ -317,6 +330,76 @@ function portolan(){
   <path d="M120 560 q20 -26 50 0 l-6 16 h-38z M140 534 v-30 l22 16z" fill="#5B3B24" opacity=".75"/>
   <text x="30" y="625" font-size="18" fill="#5B3B24" font-family="PT Sans,Arial">Сызба: XIV ғ. еуропалық теңіз карталарының (портолан) стилінде салынған; масштабсыз</text></svg>`;
 }
+
+function mappaMundi(){
+  const castle=(x,y,n,sz)=>`<g transform="translate(${x} ${y})"><rect x="-13" y="-18" width="26" height="20" fill="#F1E2B8" stroke="#6B4A2B" stroke-width="2"/><path d="M-13 -18 v-8 h6 v5 h4 v-5 h6 v5 h4 v-5 h6 v8" fill="#C98F2A" stroke="#6B4A2B" stroke-width="2"/><rect x="-4" y="-8" width="8" height="10" fill="#6B4A2B"/><text y="22" text-anchor="middle" font-size="${sz||17}" font-style="italic" fill="#5B3B24" font-family="Cormorant Garamond,Georgia,serif">${n}</text></g>`;
+  const tent=(x,y)=>`<g transform="translate(${x} ${y})"><path d="M-14 0 L0 -16 L14 0Z" fill="#A3402F" stroke="#5B3B24" stroke-width="1.5"/><rect x="-11" y="0" width="22" height="9" fill="#F6EEDB" stroke="#5B3B24" stroke-width="1.5"/></g>`;
+  return `<svg viewBox="0 0 640 640" aria-label="Ортағасыр T-O әлем картасы стилінде салынған сызба" style="width:100%;height:100%;display:block">
+  <defs><radialGradient id="mmP" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#F8EDD0"/><stop offset=".8" stop-color="#E7D3A4"/><stop offset="1" stop-color="#C9A766"/></radialGradient></defs>
+  <rect width="640" height="640" fill="#2A2116"/>
+  <circle cx="320" cy="320" r="300" fill="#6E95B4" stroke="#C98F2A" stroke-width="8"/>
+  <circle cx="320" cy="320" r="262" fill="url(#mmP)" stroke="#5B3B24" stroke-width="3"/>
+  <path d="M58 300 C140 296 210 300 296 312 L344 312 C430 300 500 296 582 300 L582 326 C500 322 430 330 344 332 L332 332 L332 582 L308 582 L308 332 L296 332 C210 330 140 322 58 326Z" fill="#7FA8C9" stroke="#4F86B5" stroke-width="2"/>
+  <path d="M120 304 C150 280 180 282 196 302 C190 318 150 322 120 304Z" fill="#7FA8C9" stroke="#4F86B5" stroke-width="2"/>
+  <text x="320" y="128" text-anchor="middle" font-size="34" font-weight="700" fill="#8C3A2C" letter-spacing="6" font-family="Cormorant Garamond,Georgia,serif">ASIA</text>
+  <text x="190" y="450" text-anchor="middle" font-size="30" font-weight="700" fill="#1F3B5C" letter-spacing="5" font-family="Cormorant Garamond,Georgia,serif">EVROPA</text>
+  <text x="455" y="450" text-anchor="middle" font-size="30" font-weight="700" fill="#5B3B24" letter-spacing="5" font-family="Cormorant Garamond,Georgia,serif">AFRICA</text>
+  <path d="M300 82 C312 66 328 66 340 82 C336 96 304 96 300 82Z" fill="#3D8B4F"/><text x="320" y="106" text-anchor="middle" font-size="15" font-style="italic" fill="#2F6B3D" font-family="Cormorant Garamond,Georgia,serif">Paradisus (шығыс)</text>
+  <g><rect x="120" y="190" width="230" height="74" rx="10" fill="#FFF8E8" opacity=".75" stroke="#A3402F" stroke-width="2.5" stroke-dasharray="6 5"/>
+  <text x="235" y="226" text-anchor="middle" font-size="34" font-weight="700" fill="#A3402F" letter-spacing="4" font-family="Cormorant Garamond,Georgia,serif">COMANIA</text>
+  <text x="235" y="252" text-anchor="middle" font-size="16" font-style="italic" fill="#5B3B24" font-family="Cormorant Garamond,Georgia,serif">командар елі — Дешті Қыпшақ</text></g>
+  ${tent(150,178)}${tent(185,168)}${tent(330,178)}
+  <text x="120" y="292" text-anchor="middle" font-size="14" font-style="italic" fill="#1F3B5C" font-family="Cormorant Garamond,Georgia,serif">Tanais (Дон)</text>
+  ${castle(320,350,'Ierusalem',16)}${castle(200,380,'Constantinopolis',15)}${castle(110,420,'Roma',16)}${castle(165,320,'Tana',15)}
+  <text x="440" y="250" text-anchor="middle" font-size="15" font-style="italic" fill="#5B3B24" font-family="Cormorant Garamond,Georgia,serif">India · Cathay</text>
+  <text x="320" y="625" text-anchor="middle" font-size="15" fill="#E7D3A4" font-family="PT Sans,Arial">Сызба: ортағасыр «T-O» әлем карталарының стилінде · шығыс жоғарыда</text></svg>`;
+}
+function stoneStatues(){
+  const statue=(x,male)=>`<g transform="translate(${x} 0)">
+   <path d="M-46 430 L-40 170 C-40 120 -26 96 0 92 C26 96 40 120 40 170 L46 430Z" fill="#B9AE98" stroke="#7D705A" stroke-width="3"/>
+   ${male?'<path d="M-30 128 C-30 90 30 90 30 128 L24 112 C16 74 -16 74 -24 112Z" fill="#9C907A" stroke="#7D705A" stroke-width="3"/><path d="M0 66 L-10 96 L10 96Z" fill="#9C907A" stroke="#7D705A" stroke-width="2"/>':'<path d="M-34 126 C-30 70 30 70 34 126 L28 104 C18 82 -18 82 -28 104Z" fill="#A79A82" stroke="#7D705A" stroke-width="3"/><path d="M-36 120 L-46 210 M36 120 L46 210" stroke="#7D705A" stroke-width="6"/>'}
+   <path d="M-14 150 Q-8 144 -2 150 M2 150 Q8 144 14 150" stroke="#5E5240" stroke-width="3" fill="none"/><path d="M0 154 L-3 172 L3 172" stroke="#5E5240" stroke-width="2.5" fill="none"/><path d="M-9 184 Q0 190 9 184" stroke="#5E5240" stroke-width="2.5" fill="none"/>
+   <path d="M-38 250 C-30 286 -12 296 0 296 C12 296 30 286 38 250" fill="none" stroke="#7D705A" stroke-width="5"/>
+   <path d="M-24 282 L24 282 L18 306 L-18 306Z" fill="#A79A82" stroke="#5E5240" stroke-width="3"/>
+   ${male?'<path d="M30 300 L44 410" stroke="#5E5240" stroke-width="7" stroke-linecap="round"/><path d="M-34 300 L-46 380 L-30 384 L-22 304Z" fill="#9C907A" stroke="#5E5240" stroke-width="2.5"/>':'<path d="M-30 330 h60" stroke="#5E5240" stroke-width="3"/><path d="M-28 350 h56" stroke="#5E5240" stroke-width="3"/>'}
+   <path d="M-40 236 h80" stroke="#7D705A" stroke-width="3"/></g>`;
+  return `<svg viewBox="0 0 760 560" aria-label="Қыпшақ тас мүсіндері: иллюстрация" style="width:100%;height:100%;display:block">
+  <defs><linearGradient id="ssk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F3C98B"/><stop offset=".55" stop-color="#F7E6C4"/><stop offset="1" stop-color="#EAD7A8"/></linearGradient></defs>
+  <rect width="760" height="560" fill="url(#ssk)"/>
+  <circle cx="610" cy="120" r="46" fill="#F7B955" opacity=".8"/>
+  <path d="M0 360 C150 330 300 350 460 330 C580 316 680 330 760 324 L760 560 L0 560Z" fill="#C9A766"/>
+  <path d="M120 470 C200 380 560 380 640 470Z" fill="#A88A55"/>
+  <path d="M0 470 C200 452 560 470 760 456 L760 560 L0 560Z" fill="#8C6B3E"/>
+  <g transform="translate(0 40)">${statue(300,true)}${statue(460,false)}</g>
+  <g stroke="#6E7B3E" stroke-width="3">${[60,90,640,690,720,30].map(x=>`<path d="M${x} 520 l-6 -26 M${x} 520 l4 -30 M${x} 520 l10 -22"/>`).join('')}</g>
+  <text x="300" y="548" text-anchor="middle" font-size="20" font-weight="700" fill="#F6EEDB" font-family="Rubik,Arial">жауынгер</text>
+  <text x="460" y="548" text-anchor="middle" font-size="20" font-weight="700" fill="#F6EEDB" font-family="Rubik,Arial">әйел</text>
+  <text x="14" y="24" font-size="16" fill="#5B3B24" font-family="PT Sans,Arial">Иллюстрация: қорған басындағы қыпшақ тас мүсіндері (сызба)</text></svg>`;
+}
+function aiWarrior(){
+  let lam=''; for(let r=0;r<6;r++) for(let c=0;c<6;c++) lam+=`<rect x="${262+c*16}" y="${240+r*22}" width="14" height="20" rx="3" fill="#9AA3AD" stroke="#5E6770" stroke-width="1.5"/>`;
+  return `<svg viewBox="0 0 640 640" aria-label="ЖИ салған қыпшақ сарбазының суреті (қателері бар)" style="width:100%;height:100%;display:block">
+  <defs><linearGradient id="awS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5E6E86"/><stop offset=".6" stop-color="#C8B48C"/><stop offset="1" stop-color="#8C7046"/></linearGradient></defs>
+  <rect width="640" height="640" fill="url(#awS)"/>
+  <path d="M0 470 C160 440 320 460 640 430 L640 640 L0 640Z" fill="#7A6038"/>
+  <g fill="#E9DCC0" opacity=".85"><path d="M60 450 l22 -20 l22 20z"/><rect x="64" y="450" width="36" height="12"/><path d="M540 432 l20 -18 l20 18z"/><rect x="544" y="432" width="32" height="10"/></g>
+  <path d="M276 540 L268 610 L298 610 L300 540Z M334 540 L340 610 L370 610 L356 540Z" fill="#4A2F1C"/>
+  <path d="M246 228 Q310 206 374 228 L384 400 Q310 420 236 400Z" fill="#6E3B26"/>${lam}
+  <path d="M240 400 Q310 424 380 400 L392 545 L228 545Z" fill="#3E5A7A"/><rect x="242" y="392" width="136" height="16" rx="5" fill="#4A2F1C"/>
+  <path d="M374 232 L420 262 L436 346 L414 352 L394 282Z" fill="#6E3B26"/>
+  <path d="M246 232 L204 268 L188 360 L212 364 L230 284Z" fill="#6E3B26"/>
+  <path d="M300 150 C300 112 340 112 340 150" fill="#C9A26F"/>
+  <path d="M272 168 Q310 120 348 168 L348 200 Q310 214 272 200Z" fill="#8D96A0" stroke="#4E5761" stroke-width="3"/>
+  <path d="M274 160 C250 150 238 122 246 96 C258 120 268 136 284 146Z" fill="#F1E8D6" stroke="#8C7B5E" stroke-width="2.5"/>
+  <path d="M346 160 C370 150 382 122 374 96 C362 120 352 136 336 146Z" fill="#F1E8D6" stroke="#8C7B5E" stroke-width="2.5"/>
+  <ellipse cx="310" cy="210" rx="30" ry="22" fill="#D9A77C"/><path d="M296 206 h8 M316 206 h8" stroke="#2A2116" stroke-width="3"/><path d="M298 222 Q310 230 322 222" stroke="#6B3A22" stroke-width="3" fill="none"/>
+  <path d="M150 260 L240 260 L240 360 C240 400 196 420 195 424 C194 420 150 400 150 360Z" fill="#F2EEE6" stroke="#5E6770" stroke-width="5"/>
+  <path d="M195 268 V414 M156 318 H234" stroke="#B0302A" stroke-width="16"/>
+  <path d="M420 330 L470 120" stroke="#4A2F1C" stroke-width="12" stroke-linecap="round"/><path d="M466 136 L476 92" stroke="#3A3F45" stroke-width="9" stroke-linecap="round"/>
+  <path d="M424 320 L410 346 L430 352 L440 326Z" fill="#4A2F1C"/><rect x="438" y="222" width="18" height="10" fill="#8D96A0" transform="rotate(-12 446 227)"/>
+  <text x="18" y="30" font-size="18" fill="#F6EEDB" font-family="PT Sans,Arial">ЖИ (Claude) салған сурет · ішінде 3 тарихи қате бар</text></svg>`;
+}
+
 const WARRIOR_IMG='img/warrior.jpg';
 function warriorPainting(){
   const H=[[47,14,'Дулыға','l'],[51,27,'Темір бет-перде','r'],[56,30,'Шынжыр сауыт (мойын)','r'],[52,40,'Тақташалы сауыт','r'],[22,49,'Қорамсақ (колчан)','l'],[57,52,'Қисық қылыш','r'],[80,63,'Садақ қабы (садақ)','r'],[79,12,'Найза','r']];
@@ -326,7 +409,7 @@ function warriorPainting(){
 
 /* ---------- ЖИ ойыны ---------- */
 const R1=[
- {s:"Қыпшақтарды орыс жылнамаларында «команлар» деп атаған.",ok:false,e:"ЖИ қателесті! Русьте — половецтер, ал Еуропада — команлар (66-бет)."},
+ {s:"Қыпшақтарды орыс жылнамаларында «командар» деп атаған.",ok:false,e:"ЖИ қателесті! Русьте — половецтер, ал Еуропада — командар (66-бет)."},
  {s:"Шығыс (сол) қанаттың орталығы — Сарайшық қаласы.",ok:false,e:"ЖИ қателесті! Сол (шығыс) қанаттың орталығы — Сығанақ. Сарайшық — оң (батыс) қанаттың ордасы, Жайық бойында (67-бет)."},
  {s:"Батыс қыпшақ бірлестігін Тоқсоба әулеттік руы басқарды.",ok:true,e:"Ақиқат! Батыс қыпшақты — Тоқсоба, Шығыс қыпшақты Елбөрілі руынан шыққан хандар басқарды (67-бет)."},
  {s:"«Колчан», «булат», «караул» сөздері орыс тіліне түркі тілінен енген.",ok:true,e:"Ақиқат! Бұл — славян-қыпшақ байланысының тілдегі ізі (70-бет)."},
@@ -376,10 +459,10 @@ const SL=[
  <div class="g3">
   <div class="cd b"><div class="k">Шығыста</div><div class="big">?</div><div class="lead hid" style="font-weight:700">қыпшақтар</div></div>
   <div class="cd"><div class="k">Русьте</div><div class="lead" style="font-weight:700">половецтер</div></div>
-  <div class="cd"><div class="k">Еуропада</div><div class="lead" style="font-weight:700">команлар</div></div>
+  <div class="cd"><div class="k">Еуропада</div><div class="lead" style="font-weight:700">командар</div></div>
  </div>
  <div class="hint">VIII–IX ғасырлардағы авторлардың еңбектері бойынша (оқулық, 66-бет)</div>`,
- note:`<b>Проблемалық сұрақ (1 мин).</b> «Русьте бұл халықты половецтер, Еуропада команлар деп атаған. Ал Шығыста қалай аталды деп ойлайсыңдар?» Жауаптан кейін ▶ басып ашыңыз. «Бір халықты Қытайдан Еуропаға дейін білген. Неге екен? Бүгін соны зерттейміз.»`},
+ note:`<b>Проблемалық сұрақ (1 мин).</b> «Русьте бұл халықты половецтер, Еуропада командар деп атаған. Ал Шығыста қалай аталды деп ойлайсыңдар?» Жауаптан кейін ▶ басып ашыңыз. «Бір халықты Қытайдан Еуропаға дейін білген. Неге екен? Бүгін соны зерттейміз.»`},
 
 {st:"Сабақтың басы · Зерттеу сұрағы", cls:"dark", html:()=>`
  <div class="eb">Деректе не делінген?</div>
@@ -409,7 +492,7 @@ const SL=[
  <div class="g3">
   <div class="cd b"><div class="k">Шығыс деректерінде</div><h3 style="font-size:44px">қыпшақтар</h3></div>
   <div class="cd"><div class="k">Орыс жылнамаларында</div><h3 style="font-size:44px">половецтер</h3></div>
-  <div class="cd"><div class="k">Еуропа деректерінде</div><h3 style="font-size:44px">команлар</h3></div>
+  <div class="cd"><div class="k">Еуропа деректерінде</div><h3 style="font-size:44px">командар</h3></div>
  </div>
  <div class="row" style="align-items:center;gap:14px;flex-wrap:wrap">
   <span class="pill">Батыс Түрік қағанаты</span><span class="arrow">→</span>
@@ -418,7 +501,7 @@ const SL=[
  </div>
 <div style="text-align:center;font:700 76px 'Cormorant Garamond',Georgia,serif;color:#8C3A2C;letter-spacing:2px;margin-top:auto">қыпшақ = половец = коман</div>
  <div class="expl" style="font-size:28px">Бір халықты үш түрлі атаған — демек оны Қытайдан Еуропаға дейінгі елдер білген. Бұл — қыпшақтардың Еуразиядағы орнының алғашқы дәлелі. <b>Неге олар соншалықты танымал болды?</b></div>`,
- note:`<b>Мұғалімнің түсіндірмесі, 1-бөлім (1,5 мин).</b> «Балалар, VIII–IX ғасырлардағы авторлар бір халықты үш түрлі атаған: Шығыста — қыпшақтар, Русьте — половецтер, Еуропада — команлар. Демек, бұл халықты Қытайдан Еуропаға дейін білген. Қыпшақтардың тарихы ұзақ: олар алғашында Батыс Түрік қағанатының құрамында болды, кейін Қимақ қағанатының құрамына еніп, оның батыс қанатын құрады. XI ғасырдың басында Қимақ қағанаты құлағаннан кейін оның жерлері қыпшақ хандарының қолына өтті. Осылай дербес Қыпшақ хандығы пайда болды.» <br><i>Оқушылар дәптерге жазады: қыпшақ = половец = коман.</i>`},
+ note:`<b>Мұғалімнің түсіндірмесі, 1-бөлім (1,5 мин).</b> «Балалар, VIII–IX ғасырлардағы авторлар бір халықты үш түрлі атаған: Шығыста — қыпшақтар, Русьте — половецтер, Еуропада — командар. Демек, бұл халықты Қытайдан Еуропаға дейін білген. Қыпшақтардың тарихы ұзақ: олар алғашында Батыс Түрік қағанатының құрамында болды, кейін Қимақ қағанатының құрамына еніп, оның батыс қанатын құрады. XI ғасырдың басында Қимақ қағанаты құлағаннан кейін оның жерлері қыпшақ хандарының қолына өтті. Осылай дербес Қыпшақ хандығы пайда болды.» <br><i>Оқушылар дәптерге жазады: қыпшақ = половец = коман.</i>`},
 
 {st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі · Үш кезең", html:()=>`
  <div class="eb">Мұғалімнің түсіндірмесі</div>
@@ -449,17 +532,17 @@ const SL=[
  <h2 class="sh" style="font-size:52px">Дешті Қыпшақ еуропалық карталарда</h2>
  <div class="row" style="flex:1;gap:26px;min-height:0">
   <div style="flex:1.35;display:flex;flex-direction:column;gap:8px;min-height:0">
-   <div class="frame" style="flex:1">${webImg('Europe Mediterranean Catalan Atlas.jpeg','Каталан атласы: Еуропа мен Жерорта теңізі','cover')}</div>
-   <div class="cap">Каталан атласы (шамамен 1375 ж.), Еуропа бөлігі. Дереккөз: Wikimedia Commons, қоғамдық игілік</div>
+   <div class="frame" style="flex:1;background:#2A2116">${mappaMundi()}</div>
+   <div class="cap">Ортағасыр «T-O» әлем карталарының стилінде салынған сызба: шығыс жоғарыда, ортасында Иерусалим, Еуропа мен Азияның шекарасы — Танаис (Дон)</div>
   </div>
   <div style="flex:1;display:flex;flex-direction:column;gap:12px">
    <div class="cd" style="padding:12px 18px"><div class="k">Каталан атласы · ~1375 ж.</div><div class="t" style="font-size:22px">Майорка картографы Авраам Крескес салған. Еуропадан Қытайға дейінгі әлем, қалалар мен билеушілер суретпен бейнеленген.</div></div>
    <div class="cd b" style="padding:12px 18px"><div class="k">Фра Мауро картасы · ~1450 ж.</div><div class="t" style="font-size:22px">Венеция монахы саудагерлер мен саяхатшылардың әңгімелерін жинап, әлемнің ірі елдерін картаға түсірген.</div></div>
-   <div class="cd r" style="padding:12px 18px"><div class="k">«Комания»</div><div class="t" style="font-size:22px">Еуропалықтар Қара теңізден солтүстіктегі кең даланы команлар, яғни қыпшақтар елі деп атаған (Марко Поло, Плано Карпини).</div></div>
+   <div class="cd r" style="padding:12px 18px"><div class="k">«Комания»</div><div class="t" style="font-size:22px">Еуропалықтар Қара теңізден солтүстіктегі кең даланы командар, яғни қыпшақтар елі деп атаған (Марко Поло, Плано Карпини).</div></div>
   </div>
  </div>
  <div class="expl" style="font-size:23px"><b>Талқылау:</b> Ортағасыр картасы бүгінгі картадан несімен өзгеше? Еуропалықтарға бұл даланы картаға түсіру неге маңызды болды?</div>`,
- note:`<b>Ортағасыр карталары (1 мин).</b> «Қыпшақтарды тек көршілері ғана емес, алыстағы Еуропа да білген. Мына карта — 1375 жылы шамасында Майорка аралында картограф Авраам Крескес салған Каталан атласы. Ол кезде карталар бүгінгідей дәл емес еді: қалалар, патшалар, керуендер суретпен салынған, ал ақпаратты саудагерлер мен саяхатшылар әкелген. 1450 жылы шамасында Венецияда Фра Мауро деген монах та осылай әлем картасын жасады. Еуропалықтар Қара теңізден солтүстікке қарай жатқан ұлан-ғайыр даланы «Комания» — команлар, яғни қыпшақтар елі деп атаған. Марко Поло мен Плано Карпини де осы атауды қолданған. Демек, қыпшақтардың аты олардың мемлекеті құлағаннан кейін де картада сақталып қалды.» Сұрақ: «Неге еуропалықтарға бұл дала маңызды болды?» — Жауап: сауда жолдары, Ұлы Жібек жолы, Қырым мен Дон бойындағы сауда қалалары. <br><i>Сурет интернеттен (Wikimedia Commons) жүктеледі — тақтада интернет болуы керек.</i>`},
+ note:`<b>Ортағасыр карталары (1 мин).</b> «Қыпшақтарды тек көршілері ғана емес, алыстағы Еуропа да білген. Мына карта — 1375 жылы шамасында Майорка аралында картограф Авраам Крескес салған Каталан атласы. Ол кезде карталар бүгінгідей дәл емес еді: қалалар, патшалар, керуендер суретпен салынған, ал ақпаратты саудагерлер мен саяхатшылар әкелген. 1450 жылы шамасында Венецияда Фра Мауро деген монах та осылай әлем картасын жасады. Еуропалықтар Қара теңізден солтүстікке қарай жатқан ұлан-ғайыр даланы «Комания» — командар, яғни қыпшақтар елі деп атаған. Марко Поло мен Плано Карпини де осы атауды қолданған. Демек, қыпшақтардың аты олардың мемлекеті құлағаннан кейін де картада сақталып қалды.» Сұрақ: «Неге еуропалықтарға бұл дала маңызды болды?» — Жауап: сауда жолдары, Ұлы Жібек жолы, Қырым мен Дон бойындағы сауда қалалары. <br><i>Сызба туралы: ортағасыр еуропалық әлем карталарында шығыс жоғарыда салынған, ортасы — Иерусалим; Еуропа мен Азияны Танаис (Дон) өзені бөлген. «Комания» осы өзеннің шығысындағы далада, яғни Азия бөлігінде орналасқан. Бұл сызба нағыз карта емес, сол стильде салынған.</i>`},
 
 {st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі · Портолан стиліндегі сызба", html:()=>`
  <div class="eb">Ортағасыр картографы қалай салар еді?</div>
@@ -487,8 +570,8 @@ const SL=[
  <h2 class="sh" style="font-size:52px">Қыпшақ тас мүсіндері</h2>
  <div class="row" style="flex:1;gap:26px;min-height:0">
   <div style="flex:1.25;display:flex;flex-direction:column;gap:8px;min-height:0">
-   <div class="frame" style="flex:1">${webImg("Lapidarium of Dnipropetrovs'k Museum of Local History 03 (YDS 6897).jpg",'Қыпшақ (половец) тас мүсіндері, Днепр мұражайы','cover')}</div>
-   <div class="cap">Қыпшақ тас мүсіндері, XI–XIII ғғ. Днепр тарихи мұражайы. Дереккөз: Wikimedia Commons</div>
+   <div class="frame" style="flex:1;background:#F3C98B">${stoneStatues()}</div>
+   <div class="cap">Иллюстрация: қорған басындағы қыпшақ тас мүсіндері — жауынгер мен әйел, қолдарында тостаған</div>
   </div>
   <div style="flex:1;display:flex;flex-direction:column;gap:12px">
    <div class="cd" style="padding:16px 20px"><div class="k">Не бейнеленген?</div><div class="t">Ер жауынгерлер — дулыға, сауыт, қылыш, садақ пен қорамсақпен; әйел мүсіндері де көп. Қолында көбіне тостаған ұстайды.</div></div>
@@ -497,7 +580,7 @@ const SL=[
   </div>
  </div>
  <div class="expl"><b>Сұрақ:</b> Тас мүсін — тарихи дерек пе? Одан қыпшақтар туралы не білуге болады?</div>`,
- note:`<b>Тас мүсіндер (40 сек).</b> «Дала бізге тек жазба ғана емес, тас шежіре де қалдырды. Бұл — қыпшақ тас мүсіндері. Оларды Украина мен Ресейдің далаларынан, Қазақстаннан табады. Ер мүсіндер көбіне жауынгер: басында дулыға, белінде қылыш, садақ пен қорамсақ. Әйел мүсіндері де көп — бұл қыпшақ қоғамында әйелдің орны ерекше болғанын көрсетеді. Мүсіндер ата-баба аруағын құрметтеу үшін қорғандардың басына қойылған. XIII ғасырда Еуропадан келген саяхатшы Гильом Рубрук қыпшақтардың осы мүсіндерді қабір басына қоятынын өз көзімен көріп жазған. Ендеше, тас мүсін де — тарихи дерек: одан киімді, қаруды, сенімді білеміз.» <br><i>Сурет интернеттен жүктеледі.</i>`},
+ note:`<b>Тас мүсіндер (40 сек).</b> «Дала бізге тек жазба ғана емес, тас шежіре де қалдырды. Бұл — қыпшақ тас мүсіндері. Оларды Украина мен Ресейдің далаларынан, Қазақстаннан табады. Ер мүсіндер көбіне жауынгер: басында дулыға, белінде қылыш, садақ пен қорамсақ. Әйел мүсіндері де көп — бұл қыпшақ қоғамында әйелдің орны ерекше болғанын көрсетеді. Мүсіндер ата-баба аруағын құрметтеу үшін қорғандардың басына қойылған. XIII ғасырда Еуропадан келген саяхатшы Гильом Рубрук қыпшақтардың осы мүсіндерді қабір басына қоятынын өз көзімен көріп жазған. Ендеше, тас мүсін де — тарихи дерек: одан киімді, қаруды, сенімді білеміз.» <br><i>Слайдтағы сурет — иллюстрация (сызба); нақты мүсіндерді мұражайлардан көруге болады.</i>`},
 
 {st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі · Қыпшақ сарбазы", cls:"dark nohills", html:()=>`
  <div class="row" style="height:100%;gap:40px;align-items:stretch">
@@ -519,16 +602,18 @@ const SL=[
 
 {st:"Сабақтың ортасы · ЖИ суретін тексер", html:()=>`
  <div class="eb">Сыни ойлау · ЖИ</div>
- <h2 class="sh" style="font-size:50px">ЖИ салған суретті тексерейік</h2>
- <div class="row" style="flex:1;gap:24px;min-height:0">
-  <div style="flex:1;min-height:0">${warriorSvg()}</div>
-  <div style="flex:1.1;display:flex;flex-direction:column;gap:12px;min-height:0">
-   ${aiSlot(360)}
-   <div class="qb" style="padding:14px 20px"><div class="q" style="font-size:28px">ЖИ суретін тексер: сызбадағы жабдықтың қайсысы бар? Не күмәнді?</div></div>
-   ${AIIMG?'<button class="tb" style="background:var(--line);color:var(--ink);align-self:flex-start" onclick="clearAI()">Суретті ауыстыру</button>':''}
+ <h2 class="sh" style="font-size:50px">ЖИ салған суретті тексерейік: 3 қатені тап!</h2>
+ <div class="row" style="flex:1;gap:26px;min-height:0">
+  <div class="frame" style="flex:none;height:100%;aspect-ratio:1/1">${aiWarrior()}</div>
+  <div style="flex:1;display:flex;flex-direction:column;gap:12px">
+   <div class="qb" style="padding:14px 20px"><div class="q" style="font-size:28px">Алдыңғы слайдтағы сарбазбен салыстыр. ЖИ неден қателесті?</div></div>
+   <div class="cd r hid" style="padding:12px 18px"><div class="k">1-қате: мүйізді дулыға</div><div class="t" style="font-size:22px">Мүйізді дулыға — викингтер туралы кейінгі аңыз. Қыпшақ дулығасы — биік, ұшкір, кейде бет-перделі.</div></div>
+   <div class="cd r hid" style="padding:12px 18px"><div class="k">2-қате: айқыш салынған қалқан</div><div class="t" style="font-size:22px">Бұл — еуропалық рыцарьдың белгісі. Қыпшақ қалқаны дөңгелек, айқышсыз.</div></div>
+   <div class="cd r hid" style="padding:12px 18px"><div class="k">3-қате: мылтық</div><div class="t" style="font-size:22px">XI–XIII ғасырларда далада мылтық болған жоқ. Қыпшақтың қаруы — садақ, найза, қисық қылыш.</div></div>
+   <div class="expl hid" style="font-size:22px"><b>Қорытынды:</b> ЖИ сурет те, мәтін де жасай алады, бірақ тарихи дәлдікті тексермейді. Тексеру — біздің міндетіміз.</div>
   </div>
  </div>`,
- note:`<b>ЖИ суретін тексеру (30 сек).</b> Алдыңғы слайдты қорытындылап, ЖИ суретін көрсетіңіз. Қысқаша: «Қыпшақтар Еуразияның ең мықты жауынгерлерінің бірі болған. Негізгі күші — атты әскер. Сарбаздың басында биік дулыға, кейде бетін темір бет-перде жапқан. Денесінде темір тақташалардан немесе шынжырдан тоқылған сауыт. Қаруы — садақ пен жебе салынған қорамсақ, қисық қылыш, найза, қалқан. Орыс тіліндегі «колчан» сөзі де осы қорамсақтың түркі атауынан шыққан. Қыпшақтар жау әскерін әдейі шегініп алдап, сосын кері бұрылып соққы беретін болған.» Сосын ЖИ суретін көрсетіп сұраңыз: «Бұл суретті жасанды интеллект салды. Сызбадағы жабдықтың қайсысы бар? Суретте не күмәнді — мұражай ма, далада ма, сауыт қай дәуірге ұқсайды?» <br><i>Сурет: сабаққа дейін Canva-дағы ЖИ суретін компьютерге жүктеп, сол жақтағы аймақты басып таңдаңыз.</i>`},
+ note:`<b>ЖИ суретін тексеру (1 мин).</b> «Бұл суретті жасанды интеллект салды. Алдыңғы слайдтағы сарбазбен салыстырыңдар. Онда үш тарихи қате бар — табыңдар!» Оқушылар тапқан сайын ▶ басып ашыңыз: 1) мүйізді дулыға — викингтер туралы аңыз; 2) айқыш салынған қалқан — еуропалық рыцарь белгісі; 3) мылтық — ол кезде далада болған жоқ. Қорытынды: «ЖИ тез салады, бірақ тарихи дәлдікке біз жауаптымыз.» Қысқаша: «Қыпшақтар Еуразияның ең мықты жауынгерлерінің бірі болған. Негізгі күші — атты әскер. Сарбаздың басында биік дулыға, кейде бетін темір бет-перде жапқан. Денесінде темір тақташалардан немесе шынжырдан тоқылған сауыт. Қаруы — садақ пен жебе салынған қорамсақ, қисық қылыш, найза, қалқан. Орыс тіліндегі «колчан» сөзі де осы қорамсақтың түркі атауынан шыққан. Қыпшақтар жау әскерін әдейі шегініп алдап, сосын кері бұрылып соққы беретін болған.» Сосын ЖИ суретін көрсетіп сұраңыз: «Бұл суретті жасанды интеллект салды. Сызбадағы жабдықтың қайсысы бар? Суретте не күмәнді — мұражай ма, далада ма, сауыт қай дәуірге ұқсайды?» <br><i>Сурет: сабаққа дейін Canva-дағы ЖИ суретін компьютерге жүктеп, сол жақтағы аймақты басып таңдаңыз.</i>`},
 
 {st:"Сабақтың ортасы · Топтық зерттеу (10 мин)", html:()=>`
  <div class="row" style="align-items:center;justify-content:space-between"><h2 class="sh">Топтық зерттеу</h2><span class="pill g">10 мин · ватман + дерек + телефон</span></div>
@@ -569,7 +654,7 @@ const SL=[
  <div class="eb">Тексерейік</div>
  <h2 class="sh">Жауап кілті</h2>
  <div class="g3">
-  <div class="cd hid"><div class="k">А деңгейі</div><div class="t">1. половецтер, команлар<br>2. Дунайға<br>3. Сарайшық</div></div>
+  <div class="cd hid"><div class="k">А деңгейі</div><div class="t">1. половецтер, командар<br>2. Дунайға<br>3. Сарайшық</div></div>
   <div class="cd b hid"><div class="k">В деңгейі</div><div class="t">1. Византия, Венгрия, Русь<br>2. қыпшақтар<br>3. Сығанақ</div></div>
   <div class="cd r hid"><div class="k">С деңгейі</div><div class="t">XII ғ. басында қыпшақтар Алтайдан Дунайға дейінгі «Ұлы Даланы» билеп, оған өз атын берді: «дешт» — дала, яғни «қыпшақтың даласы» (Ибн Батута).</div></div>
  </div>`,
@@ -720,9 +805,9 @@ const GT=[ // топтық тапсырма + дерек карточкасы
      {q:"Бұл дерек — таза факт пе?",o:["Факт пен аңыз араласқан: хандар нақты, ал жусан туралы оқиға — аңыз","Иә, бәрі дәлелденген факт","Бәрі ойдан шығарылған ертегі"],a:0,e:"Тарихшы деректегі факт пен аңызды ажыратады."}]},
  {task:"Қыпшақтардың көршілерімен қарым-қатынасын кестеге түсіріңдер: Ел · Қарым-қатынас түрі · Дәлел.",
   desc:["Хорезм, Русь, Қарахан мемлекетін атадық","Әрқайсысына қарым-қатынас түрін анықтадық","Әр елге оқулықтан 1 дәлел келтірдік","Карпини деректегі көршілерді кестеге қосып, 1 дәлел жаздық"],
-  src:{t:"Плано Карпини. «Моңғолдар тарихы»",a:"Моңғолдарға барған еуропалық елші-монах, 1245–1247 жылдар",txt:"«Комания — өте үлкен ел, жері түгел жазық. Солтүстігінде Русьтен әрі мордвалар, бұлғарлар мен башқұрттар тұрады. Оңтүстігінде — алан, черкес, хазарлар, Грекия мен Константинополь. Батысында — Венгрия мен Русь. Бұл жерде бұрын команлар тұрған, оларды татарлар жаулап алды.»"},
+  src:{t:"Плано Карпини. «Моңғолдар тарихы»",a:"Моңғолдарға барған еуропалық елші-монах, 1245–1247 жылдар",txt:"«Комания — өте үлкен ел, жері түгел жазық. Солтүстігінде Русьтен әрі мордвалар, бұлғарлар мен башқұрттар тұрады. Оңтүстігінде — алан, черкес, хазарлар, Грекия мен Константинополь. Батысында — Венгрия мен Русь. Бұл жерде бұрын командар тұрған, оларды татарлар жаулап алды.»"},
   q:[{q:"Плано Карпини кім?",o:["Араб географы, IX ғасыр","Қыпшақ ханы","Моңғолдарға барған еуропалық елші-монах, XIII ғасыр"],a:2,e:"Ол 1245–1247 жылдары моңғолдарға елші болып барған."},
-     {q:"Карпини «Комания» деп нені атады?",o:["Қыпшақтар (команлар) елін","Византияны","Хорезмді"],a:0,e:"Еуропада қыпшақтарды команлар деп атаған."},
+     {q:"Карпини «Комания» деп нені атады?",o:["Қыпшақтар (командар) елін","Византияны","Хорезмді"],a:0,e:"Еуропада қыпшақтарды командар деп атаған."},
      {q:"Деректе батыста қай елдер аталады?",o:["Қытай мен Үндістан","Венгрия мен Русь","Египет пен Сирия"],a:1,e:"Батысында — Венгрия мен Русь."},
      {q:"Деректен қандай қорытынды шығады?",o:["Қыпшақтардың көршісі болмады","Қыпшақтар тек таулы өлкеде тұрды","Қыпшақтар Еуропа мен Азия арасындағы кең даланы алып, көп елмен көрші болды"],a:2,e:"Көршілердің көптігі — Еуразиядағы маңызды орынның дәлелі."}]},
  {task:"Деректерді салыстырып, «Орыс тіліндегі түркі сөздері» сөздігін жасаңдар.",
@@ -734,8 +819,8 @@ const GT=[ // топтық тапсырма + дерек карточкасы
      {q:"Бұл дерек қыпшақтардың Еуразиядағы орны туралы нені дәлелдейді?",o:["Қыпшақ тілі халықаралық сауда тілі болды","Қыпшақтардың өз тілі болмады","Қыпшақтар тек Қытаймен сауда жасады"],a:0,e:"Еуропалықтар қыпшақ тілін арнайы үйренген."}]}
 ];
 const TEST={
- A:[{q:["Ортағасыр деректерінде Русьте қыпшақтарды","деп атаған."],o:["половецтер","команлар","қимақтар","печенегтер"],a:0},
-    {q:["Еуропада қыпшақтарды","деп атаған."],o:["половецтер","команлар","қимақтар","печенегтер"],a:1},
+ A:[{q:["Ортағасыр деректерінде Русьте қыпшақтарды","деп атаған."],o:["половецтер","командар","қимақтар","печенегтер"],a:0},
+    {q:["Еуропада қыпшақтарды","деп атаған."],o:["половецтер","командар","қимақтар","печенегтер"],a:1},
     {q:["XI ғасырдың ортасында қыпшақтар Еділден өтіп,","дейін жетті."],o:["Дунайға","Ертіске","Сырдарияға","Шуға"],a:0},
     {q:["Оң (батыс) қанаттың ордасы —","қаласы."],o:["Сығанақ","Сарайшық","Отырар","Тараз"],a:1}],
  B1:{q:"Шығыс Еуропада қыпшақтармен байланыс орнатқан мемлекеттерді белгіле (бірнешеуі):",o:["Византия","Венгрия","Румыния","Русь","Хорватия","Польша"],a:[0,1,3]},
@@ -790,7 +875,7 @@ window.gtAns=(i,k)=>{ if(ST.gt[i]!==undefined) return; ST.gt[i]=k; save(); stRen
 
 function konHtml(){
   const parts=[
-   ["Қыпшақтар кімдер?","Шығыста — қыпшақтар, Русьте — половецтер, Еуропада — команлар. Алдымен Батыс Түрік қағанатының, кейін Қимақ қағанатының құрамында болып, оның батыс қанатын құрады. XI ғасырдың басында Қимақ құлап, жерлері қыпшақ хандарына өтті."],
+   ["Қыпшақтар кімдер?","Шығыста — қыпшақтар, Русьте — половецтер, Еуропада — командар. Алдымен Батыс Түрік қағанатының, кейін Қимақ қағанатының құрамында болып, оның батыс қанатын құрады. XI ғасырдың басында Қимақ құлап, жерлері қыпшақ хандарына өтті."],
    ["Үш кезең","VII–VIII ғғ. — Батыс Түрік қағанатының құрамында; VIII–XI ғғ. — Қимақ қағанатының құрамында; XI – XIII ғ. басы — дербес Қыпшақ хандығы. XI ғ. ортасында Еділден өтіп, Дунайға жетті; XII ғ. басында Алтайдан Дунайға дейін билеп, дала «Дешті Қыпшақ» атанды."],
    ["Аумағы мен құрылымы","Батыс қыпшақ — Тоқсоба руы, Еділден Дунайға дейін. Шығыс қыпшақ — Елбөрілі руы, Еділден Алтайға дейін. Оң (батыс) қанаттың ордасы — Сарайшық (Жайық), сол (шығыс) қанаттың орталығы — Сығанақ (Сырдария). Қоғам: хан, бектер, қарапайым малшылар, құлдар."],
    ["Көршілері мен Еуразиядағы орны","Русь, Византия, Венгриямен байланыс; Хорезммен күрделі қарым-қатынас; Қарахан билеушілерімен күрделі байланыс. Орыс тіліне енген түркі сөздері: колчан, булат, караул, есаул, атаман, богатырь."],
@@ -865,7 +950,7 @@ function adviceList(){
   t.q.forEach((q,i)=>{ if(ST.gt[i]!==undefined&&ST.gt[i]!==q.a) out.push(`Дерек, ${i+1}-сұрақ: ${q.e}`); });
   const T=ST.test;
   if(ST.testDone&&T){
-    if(!(T.A[0]===0&&T.A[1]===1)) out.push("Атауларды қайтала: Русьте — половецтер, Еуропада — команлар (66-бет).");
+    if(!(T.A[0]===0&&T.A[1]===1)) out.push("Атауларды қайтала: Русьте — половецтер, Еуропада — командар (66-бет).");
     if(T.A[2]!==0) out.push("XI ғасырдың ортасында қыпшақтар Еділден өтіп, Дунайға дейін жетті.");
     if(T.A[3]!==1) out.push("Оң (батыс) қанаттың ордасы — Сарайшық, сол (шығыс) қанаттың орталығы — Сығанақ.");
     if(JSON.stringify([...T.B1].sort())!==JSON.stringify(TEST.B1.a)) out.push("Шығыс Еуропада қыпшақтар Византия, Венгрия және Русьпен байланыс орнатты (67-бет).");
