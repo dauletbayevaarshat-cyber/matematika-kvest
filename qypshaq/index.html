@@ -179,6 +179,16 @@ textarea{min-height:96px;resize:vertical}
  .team button{display:none}.team button:nth-of-type(2){display:inline-block}
  .notes{font-size:15px}
 }
+.zoomable{cursor:zoom-in}
+.zbadge{position:absolute;right:10px;bottom:10px;background:rgba(20,30,45,.75);color:#F6EEDB;font:600 16px Rubik;padding:4px 10px;border-radius:16px;pointer-events:none}
+#lb{position:fixed;inset:0;background:rgba(10,16,26,.94);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+#lb .lbw{flex:1;width:100%;overflow:hidden;display:grid;place-items:center;cursor:zoom-in}
+#lb img{max-width:96vw;max-height:84vh;transition:transform .35s ease;transform-origin:center}
+#lb.zin .lbw{cursor:zoom-out}
+#lb .lbc{color:#F6EEDB;font:500 18px 'PT Sans',Arial;padding:0 20px 14px;text-align:center}
+#lb .lbx{position:absolute;top:12px;right:14px;background:#F6EEDB;color:#1F2A3A;font:700 22px Rubik;width:48px;height:48px;border-radius:50%}
+.ring{position:absolute;border:5px solid #E8432F;border-radius:50%;box-shadow:0 0 0 4px rgba(255,255,255,.6);pointer-events:none;animation:pulse 1.8s ease-in-out infinite}
+.tagline{position:absolute;background:#E8432F;color:#fff;font:700 18px Rubik;padding:3px 10px;border-radius:12px;pointer-events:none;white-space:nowrap}
 @media(prefers-reduced-motion:reduce){.hid{transition:none}}
 </style>
 </head>
@@ -217,6 +227,7 @@ textarea{min-height:96px;resize:vertical}
   <div class="score" id="score"></div>
 </div>
 
+<div id="lb" hidden onclick="if(event.target.id==='lb')closeLB()"><button class="lbx" onclick="closeLB()" aria-label="жабу">✕</button><div class="lbw" onclick="zoomLB(event)"><img id="lbImg" alt=""></div><div class="lbc" id="lbCap"></div></div>
 <div id="student" hidden></div>
 
 <script>
@@ -401,6 +412,10 @@ function aiWarrior(){
 }
 
 const WARRIOR_IMG='img/warrior.jpg';
+window.openLB=(src,cap)=>{ const lb=$('lb'); $('lbImg').src=src; $('lbImg').style.transform=''; $('lbCap').textContent=cap||''; lb.classList.remove('zin'); lb.hidden=false; };
+window.closeLB=()=>{ $('lb').hidden=true; };
+window.zoomLB=e=>{ const im=$('lbImg'), lb=$('lb'); if(lb.classList.toggle('zin')){ const r=im.getBoundingClientRect(); im.style.transformOrigin=`${(e.clientX-r.left)/r.width*100}% ${(e.clientY-r.top)/r.height*100}%`; im.style.transform='scale(2.6)'; } else im.style.transform=''; };
+function pic(src,alt,cap,extra){ return `<div class="frame zoomable" style="${extra||''}" onclick="openLB('${src}','${cap.replace(/'/g,"&#39;")}')"><img class="kb" src="${src}" alt="${alt}">${''}<span class="zbadge">⤢ үлкейту</span></div>`; }
 function warriorPainting(){
   const H=[[47,14,'Дулыға','l'],[51,27,'Темір бет-перде','r'],[56,30,'Шынжыр сауыт (мойын)','r'],[52,40,'Тақташалы сауыт','r'],[22,49,'Қорамсақ (колчан)','l'],[57,52,'Қисық қылыш','r'],[80,63,'Садақ қабы (садақ)','r'],[79,12,'Найза','r']];
   return `<div style="position:relative;height:100%;aspect-ratio:1257/2160" class="frame"><img src="${WARRIOR_IMG}" alt="Қыпшақ сарбазы: суретшінің реконструкциясы" onerror="this.parentNode.innerHTML='<div class=imgfail>Сурет табылмады</div>'">
@@ -528,28 +543,40 @@ const SL=[
  note:`<b>3-бөлім (1,5 мин).</b> Картаны көрсетіп түсіндіріңіз: «XI ғасырда қыпшақтар екі бірлестікке бөлінді. Батыс қыпшақ бірлестігі Еділден Дунайға дейін қоныстанды, оны Тоқсоба әулеттік руы басқарды. Шығыс қыпшақ бірлестігі Еділден Алтайға дейінгі аумақта құрылды, оны Елбөрілі руынан шыққан хандар басқарды. Көне түркі дәстүрі бойынша хандық екі қанатқа бөлінді: оң, яғни батыс қанаттың ордасы — Жайық бойындағы Сарайшық, сол, яғни шығыс қанаттың орталығы — Сырдария бойындағы Сығанақ. Қоғамның басында хан, одан кейін бектер мен қарапайым малшылар тұрды. Құқығы жоқ топты құлдар құрады, олардың саны соғыс тұтқындары есебінен толықты.»`},
 
 {st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі · Ортағасыр карталары", html:()=>`
- <div class="eb">Ортағасыр еуропалықтарының көзімен</div>
- <h2 class="sh" style="font-size:52px">Дешті Қыпшақ еуропалық карталарда</h2>
- <div class="row" style="flex:1;gap:26px;min-height:0">
-  <div style="flex:1.35;display:flex;flex-direction:column;gap:8px;min-height:0">
-   <div class="frame" style="flex:1;background:#2A2116">${mappaMundi()}</div>
-   <div class="cap">Ортағасыр «T-O» әлем карталарының стилінде салынған сызба: шығыс жоғарыда, ортасында Иерусалим, Еуропа мен Азияның шекарасы — Танаис (Дон)</div>
+ <div class="eb">Нағыз ортағасыр карталары</div>
+ <h2 class="sh" style="font-size:50px">Дешті Қыпшақ еуропалық карталарда</h2>
+ <div class="g3" style="flex:1;min-height:0">
+  <div style="display:flex;flex-direction:column;gap:8px;min-height:0">
+   ${pic('img/catalan_west.jpg','Каталан атласы, Еуропа бөлігі','Каталан атласы (~1375 ж.), Еуропа мен Жерорта теңізі. Қара теңіз — жоғарғы оң жақта','flex:1;position:relative')}
+   <div class="cd" style="padding:12px 16px"><div class="k">Каталан атласы · ~1375 ж.</div><div class="t" style="font-size:20px">Еуропа бөлігі. Қара теңіз — жоғарғы оң жақта, оның солтүстігі — Комания даласы</div></div>
   </div>
-  <div style="flex:1;display:flex;flex-direction:column;gap:12px">
-   <div class="cd" style="padding:12px 18px"><div class="k">Каталан атласы · ~1375 ж.</div><div class="t" style="font-size:22px">Майорка картографы Авраам Крескес салған. Еуропадан Қытайға дейінгі әлем, қалалар мен билеушілер суретпен бейнеленген.</div></div>
-   <div class="cd b" style="padding:12px 18px"><div class="k">Фра Мауро картасы · ~1450 ж.</div><div class="t" style="font-size:22px">Венеция монахы саудагерлер мен саяхатшылардың әңгімелерін жинап, әлемнің ірі елдерін картаға түсірген.</div></div>
-   <div class="cd r" style="padding:12px 18px"><div class="k">«Комания»</div><div class="t" style="font-size:22px">Еуропалықтар Қара теңізден солтүстіктегі кең даланы командар, яғни қыпшақтар елі деп атаған (Марко Поло, Плано Карпини).</div></div>
+  <div style="display:flex;flex-direction:column;gap:8px;min-height:0">
+   ${pic('img/catalan_east.jpg','Каталан атласы, Азия бөлігі','Каталан атласы (~1375 ж.), Азия бөлігі: жоғарыда Ұлы Жібек жолындағы керуен, сол жақта Каспий теңізі','flex:1;position:relative')}
+   <div class="cd b" style="padding:12px 16px"><div class="k">Каталан атласы · Азия бөлігі</div><div class="t" style="font-size:20px">Жоғарыда — Ұлы Жібек жолындағы керуен, сол жақта — Каспий, ортада — дала билеушілері</div></div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:8px;min-height:0">
+   ${pic('img/framauro.jpg','Фра Мауро картасы','Фра Мауро картасы (~1450 ж., 1804 жылғы көшірме). Назар аударыңыз: оңтүстік жоғарыда! Каспий мен «Tartaria» төменгі бөлікте','flex:1;position:relative;background:#E9DFC6')}
+   <div class="cd r" style="padding:12px 16px"><div class="k">Фра Мауро · ~1450 ж.</div><div class="t" style="font-size:20px">Венеция. Оңтүстік жоғарыда! Каспий мен дала аймағы — картаның төменгі жағында</div></div>
   </div>
  </div>
- <div class="expl" style="font-size:23px"><b>Талқылау:</b> Ортағасыр картасы бүгінгі картадан несімен өзгеше? Еуропалықтарға бұл даланы картаға түсіру неге маңызды болды?</div>`,
- note:`<b>Ортағасыр карталары (1 мин).</b> «Қыпшақтарды тек көршілері ғана емес, алыстағы Еуропа да білген. Мына карта — 1375 жылы шамасында Майорка аралында картограф Авраам Крескес салған Каталан атласы. Ол кезде карталар бүгінгідей дәл емес еді: қалалар, патшалар, керуендер суретпен салынған, ал ақпаратты саудагерлер мен саяхатшылар әкелген. 1450 жылы шамасында Венецияда Фра Мауро деген монах та осылай әлем картасын жасады. Еуропалықтар Қара теңізден солтүстікке қарай жатқан ұлан-ғайыр даланы «Комания» — командар, яғни қыпшақтар елі деп атаған. Марко Поло мен Плано Карпини де осы атауды қолданған. Демек, қыпшақтардың аты олардың мемлекеті құлағаннан кейін де картада сақталып қалды.» Сұрақ: «Неге еуропалықтарға бұл дала маңызды болды?» — Жауап: сауда жолдары, Ұлы Жібек жолы, Қырым мен Дон бойындағы сауда қалалары. <br><i>Сызба туралы: ортағасыр еуропалық әлем карталарында шығыс жоғарыда салынған, ортасы — Иерусалим; Еуропа мен Азияны Танаис (Дон) өзені бөлген. «Комания» осы өзеннің шығысындағы далада, яғни Азия бөлігінде орналасқан. Бұл сызба нағыз карта емес, сол стильде салынған.</i>`},
+ <div class="expl" style="font-size:22px"><b>Талқылау:</b> Ортағасыр картасы бүгінгіден несімен өзгеше? Неге қалалар мен билеушілер суретпен салынған? Ақпаратты кім жеткізді? <i>(саудагерлер, саяхатшылар)</i></div>`,
+ note:`<b>Нағыз ортағасыр карталары (1 мин).</b> Әр картаны басып, толық экранда көрсетіңіз (тағы бір басу — жақындату). «Қыпшақтарды алыстағы Еуропа да білген. Мынау — 1375 жылы шамасында Майорка аралында картограф Авраам Крескес салған Каталан атласы. Бірінші бөлігі — Еуропа: жоғарғы оң жақтағы жасыл теңіз — Қара теңіз, оның солтүстігіндегі дала — еуропалықтар «Комания», яғни командар елі деп атаған дала. Екінші бөлігі — Азия: жоғарыда Ұлы Жібек жолымен келе жатқан керуен, сол жақта Каспий теңізі. Үшіншісі — 1450 жылы шамасында Венецияда Фра Мауро жасаған әлем картасы. Абайлаңдар: онда оңтүстік жоғарыда салынған, сондықтан Каспий мен дала төменде тұр. Ол кезде карталар бүгінгідей дәл емес еді: қалалар, патшалар, керуендер суретпен салынған, ақпаратты саудагерлер мен саяхатшылар әкелген.»`},
 
-{st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі · Портолан стиліндегі сызба", html:()=>`
- <div class="eb">Ортағасыр картографы қалай салар еді?</div>
- <h2 class="sh" style="font-size:50px">«COMANIA» — теңіз картасы стилінде</h2>
- <div class="frame" style="flex:1;background:#E6D0A0;border-color:#F3E6C6">${portolan()}</div>
- <div class="expl">Қызыл жебе — XI ғасырда қыпшақтардың Еділден Дунайға қарай жылжуы. <b>Tana</b> (Азақ) мен <b>Caffa</b> (Қырым) — италиялық саудагерлердің бекеттері, <b>Sarai</b> — кейінгі Алтын Орда астанасы. Еуропалықтар қыпшақ тілін осы сауда қалаларында үйренген.</div>`,
- note:`<b>Портолан сызбасы (40 сек).</b> «Бұл — нағыз ортағасыр картасы емес, XIV ғасырдағы итальян теңізшілерінің карталары — портолан стилінде салынған сызба. Портолан карталарда компастан шыққан сызықтар, кемелер мен шатырлар салынады, жер атаулары латынша жазылады: Қара теңіз — Mare Maius, Каспий — Mare Caspium, дала — COMANIA. Қызыл жебеге қараңдар: XI ғасырда қыпшақтар шығыстан батысқа, Еділден Дунайға қарай жылжыды. Кейін, XIII–XIV ғасырларда, Дон сағасындағы Тана мен Қырымдағы Каффада италиялық саудагерлер қыпшақтармен сауда жасап, олардың тілін үйренді. Сол үшін Codex Cumanicus сөздігі жасалды — бұл 5-топтың дерегі.»`},
+{st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі · Бір дала — әр атау", html:()=>`
+ <div class="eb">Атау қалай өзгерді?</div>
+ <h2 class="sh" style="font-size:50px">Бір дала — әр дәуірде әр атау</h2>
+ <div class="row" style="flex:1;gap:24px;min-height:0">
+  <div style="flex:1;display:flex;flex-direction:column;gap:8px;min-height:0">
+   <div class="frame" style="flex:1;background:#E6D0A0;border-color:#F3E6C6">${portolan()}</div>
+   <div class="cd" style="padding:12px 16px"><div class="k">XIII–XIV ғғ. · «COMANIA»</div><div class="t" style="font-size:20px">Оңайлатылған сызба: еуропалықтар бұл даланы командар (қыпшақтар) елі деп атаған. Қызыл жебе — XI ғ. қыпшақтардың батысқа жылжуы</div></div>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;gap:8px;min-height:0">
+   ${pic('img/blaeu.jpg','Блау картасы, XVII ғасыр','Голланд картографтары Блау картасы (XVII ғ.): Қара теңіздің солтүстігі енді «Tartaria» деп жазылған','flex:1;position:relative;background:#F1E6CC')}
+   <div class="cd r" style="padding:12px 16px"><div class="k">XVII ғ. · «TARTARIA»</div><div class="t" style="font-size:20px">Голланд картографтары Блау: сол дала енді «Tartaria» — Қырым мен Ноғай жұрты</div></div>
+  </div>
+ </div>
+ <div class="expl" style="font-size:22px">Еуропа карталарында атау өзгерді: <b>Comania → Tartaria</b>. Ал шығыс деректерінде бұл дала ұзақ уақыт <b>Дешті Қыпшақ</b> деп аталды. <b>Сұрақ:</b> Атау неге өзгерді?</div>`,
+ note:`<b>Бір дала — әр атау (40 сек).</b> «Сол жақтағысы — ортағасыр теңіз карталарының стилінде салынған оңайлатылған сызба: XIII–XIV ғасырларда еуропалықтар бұл даланы COMANIA деп жазған. Қызыл жебе — XI ғасырда қыпшақтардың Еділден Дунайға қарай жылжуы. Оң жақтағысы — XVII ғасырдағы голланд картографтары Блаудың картасы. Қараңдар, сол дала енді «Tartaria» деп жазылған: моңғол жаулап алуынан кейін еуропалықтар бұл өңірді «татарлар елі» деп атай бастады. Ал шығыс авторлары бұл даланы ұзақ уақыт Дешті Қыпшақ деп атады. Атау неге өзгерді? — Билік ауысты, бірақ дала халқы, тілі мен дәстүрі сақталды.»`},
 
 {st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі · Көршілері", html:()=>`
  <div class="eb">Мұғалімнің түсіндірмесі</div>
@@ -570,8 +597,8 @@ const SL=[
  <h2 class="sh" style="font-size:52px">Қыпшақ тас мүсіндері</h2>
  <div class="row" style="flex:1;gap:26px;min-height:0">
   <div style="flex:1.25;display:flex;flex-direction:column;gap:8px;min-height:0">
-   <div class="frame" style="flex:1;background:#F3C98B">${stoneStatues()}</div>
-   <div class="cap">Иллюстрация: қорған басындағы қыпшақ тас мүсіндері — жауынгер мен әйел, қолдарында тостаған</div>
+   ${pic('img/balbal.jpg','Даладағы көне тас мүсіндер','Даладағы көне түркі тас мүсіндері — балбалдар. Қыпшақтар осы дәстүрді жалғастырды','flex:1;position:relative')}
+   <div class="cap">Даладағы көне түркі тас мүсіндері. Қыпшақтар осы дәстүрді жалғастырып, қорғандарға мүсін қойған</div>
   </div>
   <div style="flex:1;display:flex;flex-direction:column;gap:12px">
    <div class="cd" style="padding:16px 20px"><div class="k">Не бейнеленген?</div><div class="t">Ер жауынгерлер — дулыға, сауыт, қылыш, садақ пен қорамсақпен; әйел мүсіндері де көп. Қолында көбіне тостаған ұстайды.</div></div>
@@ -580,12 +607,12 @@ const SL=[
   </div>
  </div>
  <div class="expl"><b>Сұрақ:</b> Тас мүсін — тарихи дерек пе? Одан қыпшақтар туралы не білуге болады?</div>`,
- note:`<b>Тас мүсіндер (40 сек).</b> «Дала бізге тек жазба ғана емес, тас шежіре де қалдырды. Бұл — қыпшақ тас мүсіндері. Оларды Украина мен Ресейдің далаларынан, Қазақстаннан табады. Ер мүсіндер көбіне жауынгер: басында дулыға, белінде қылыш, садақ пен қорамсақ. Әйел мүсіндері де көп — бұл қыпшақ қоғамында әйелдің орны ерекше болғанын көрсетеді. Мүсіндер ата-баба аруағын құрметтеу үшін қорғандардың басына қойылған. XIII ғасырда Еуропадан келген саяхатшы Гильом Рубрук қыпшақтардың осы мүсіндерді қабір басына қоятынын өз көзімен көріп жазған. Ендеше, тас мүсін де — тарихи дерек: одан киімді, қаруды, сенімді білеміз.» <br><i>Слайдтағы сурет — иллюстрация (сызба); нақты мүсіндерді мұражайлардан көруге болады.</i>`},
+ note:`<b>Тас мүсіндер (40 сек).</b> «Дала бізге тек жазба ғана емес, тас шежіре де қалдырды. Бұл — қыпшақ тас мүсіндері. Оларды Украина мен Ресейдің далаларынан, Қазақстаннан табады. Ер мүсіндер көбіне жауынгер: басында дулыға, белінде қылыш, садақ пен қорамсақ. Әйел мүсіндері де көп — бұл қыпшақ қоғамында әйелдің орны ерекше болғанын көрсетеді. Мүсіндер ата-баба аруағын құрметтеу үшін қорғандардың басына қойылған. XIII ғасырда Еуропадан келген саяхатшы Гильом Рубрук қыпшақтардың осы мүсіндерді қабір басына қоятынын өз көзімен көріп жазған. Ендеше, тас мүсін де — тарихи дерек: одан киімді, қаруды, сенімді білеміз.» <br><i>Фотодағы мүсіндер — даладағы көне түркі тас мүсіндері; қыпшақ мүсіндері осы дәстүрдің жалғасы. Суретті басып, үлкейтіп көрсетіңіз.</i>`},
 
 {st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі · Қыпшақ сарбазы", cls:"dark nohills", html:()=>`
  <div class="row" style="height:100%;gap:40px;align-items:stretch">
   <div style="height:100%;flex:none;position:relative" class="frame">
-   <img src="${WARRIOR_IMG}" alt="Қыпшақ сарбазы: суретшінің реконструкциясы" style="height:100%;width:auto" onerror="this.parentNode.innerHTML='<div class=imgfail>Сурет табылмады</div>'">
+   <img src="${WARRIOR_IMG}" alt="Қыпшақ сарбазы: суретшінің реконструкциясы" style="height:100%;width:auto;cursor:zoom-in" onclick="openLB('img/warrior.jpg','Қыпшақ сарбазы: суретшінің реконструкциясы')" onerror="this.parentNode.innerHTML='<div class=imgfail>Сурет табылмады</div>'">
    ${[[48,15],[51,27],[57,31],[52,41],[21,48],[55,51],[78,64],[79,9]].map(([x,y],i)=>`<span class="hot hid" data-g="w${i}" style="left:${x}%;top:${y}%;padding:4px;transform:translate(-50%,-50%)"><b class="pulse">${i+1}</b></span>`).join('')}
   </div>
   <div style="flex:1;display:flex;flex-direction:column;gap:16px">
@@ -998,6 +1025,7 @@ window.addEventListener('hashchange',route);
 window.addEventListener('resize',fit);
 const ro=new ResizeObserver(fit); ro.observe($('wrap'));
 document.addEventListener('keydown',e=>{
+  if(!$('lb').hidden){ if(e.key==='Escape') closeLB(); return; }
   if($('board').hidden) return;
   if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
   if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){ e.preventDefault(); nextS(); }
