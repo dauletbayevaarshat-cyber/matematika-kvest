@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Қыпшақ хандығы — сабақ</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400..800&family=PT+Sans:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400..800&family=PT+Sans:wght@400;700&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&display=swap">
 <style>
 /*
 VOICE: жылы, сенімді сабақ; тақтада үлкен әріп, телефонда жинақы.
@@ -134,6 +134,38 @@ textarea{min-height:96px;resize:vertical}
 .grpgrid button.sel{border-color:var(--gold);background:#FBEFD6}
 .grpgrid b{display:block;font:700 17px Rubik}
 .err{color:var(--rust);font-size:15px}
+
+/* ---- тақырыптық фон, ою-өрнек, өту анимациялары ---- */
+.slide{background:radial-gradient(ellipse at 50% 40%,#FBF3DE 0%,#F1E3C0 62%,#DDC690 100%)}
+.slide::before{content:"";position:absolute;inset:20px;border:2px solid rgba(180,132,47,.55);border-radius:10px;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 90'%3E%3Cg fill='none' stroke='%23B4842F' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 84 L6 40 C6 18 18 6 40 6 L84 6'/%3E%3Cpath d='M16 74 C16 50 30 34 46 34 C58 34 64 44 58 52 C53 58 44 55 46 48'/%3E%3Cpath d='M74 16 C50 16 34 30 34 46 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 90'%3E%3Cg transform='scale%281 -1%29 translate%280 -90%29' fill='none' stroke='%23B4842F' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 84 L6 40 C6 18 18 6 40 6 L84 6'/%3E%3Cpath d='M16 74 C16 50 30 34 46 34 C58 34 64 44 58 52 C53 58 44 55 46 48'/%3E%3Cpath d='M74 16 C50 16 34 30 34 46 C34 58 44 64 52 58 C58 53 55 44 48 46'/%3E%3C/g%3E%3C/svg%3E")4 58 44 64 52 58 C58 53 55 44 48 46'/%3E%3C/g%3E%3C/svg%3E"),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 90'%3E%3Cg transform='scale%28-1 1%29 translate%28-90 0%29' fill='none' stroke='%23B4842F' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 84 L6 40 C6 18 18 6 40 6 L84 6'/%3E%3Cpath d='M16 74 C16 50 30 34 46 34 C58 34 64 44 58 52 C53 58 44 55 46 48'/%3E%3Cpath d='M74 16 C50 16 34 30 34 46 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 90'%3E%3Cg transform='scale%281 -1%29 translate%280 -90%29' fill='none' stroke='%23B4842F' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 84 L6 40 C6 18 18 6 40 6 L84 6'/%3E%3Cpath d='M16 74 C16 50 30 34 46 34 C58 34 64 44 58 52 C53 58 44 55 46 48'/%3E%3Cpath d='M74 16 C50 16 34 30 34 46 C34 58 44 64 52 58 C58 53 55 44 48 46'/%3E%3C/g%3E%3C/svg%3E")4 58 44 64 52 58 C58 53 55 44 48 46'/%3E%3C/g%3E%3C/svg%3E"),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 90'%3E%3Cg transform='scale%281 -1%29 translate%280 -90%29' fill='none' stroke='%23B4842F' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 84 L6 40 C6 18 18 6 40 6 L84 6'/%3E%3Cpath d='M16 74 C16 50 30 34 46 34 C58 34 64 44 58 52 C53 58 44 55 46 48'/%3E%3Cpath d='M74 16 C50 16 34 30 34 46 C34 58 44 64 52 58 C58 53 55 44 48 46'/%3E%3C/g%3E%3C/svg%3E"),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 90'%3E%3Cg transform='rotate%28180 45 45%29' fill='none' stroke='%23B4842F' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 84 L6 40 C6 18 18 6 40 6 L84 6'/%3E%3Cpath d='M16 74 C16 50 30 34 46 34 C58 34 64 44 58 52 C53 58 44 55 46 48'/%3E%3Cpath d='M74 16 C50 16 34 30 34 46 C34 58 44 64 52 58 C58 53 55 44 48 46'/%3E%3C/g%3E%3C/svg%3E");background-repeat:no-repeat;background-size:70px;background-position:left top,right top,left bottom,right bottom}
+.slide.dark{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cg fill='%23F6EEDB'%3E%3Ccircle cx='20' cy='30' r='1.4'/%3E%3Ccircle cx='90' cy='80' r='1'/%3E%3Ccircle cx='160' cy='20' r='1.6'/%3E%3Ccircle cx='230' cy='110' r='1'/%3E%3Ccircle cx='300' cy='40' r='1.3'/%3E%3Ccircle cx='370' cy='90' r='1'/%3E%3Ccircle cx='60' cy='150' r='1.1'/%3E%3Ccircle cx='200' cy='170' r='1.4'/%3E%3Ccircle cx='340' cy='190' r='1'/%3E%3Ccircle cx='120' cy='230' r='1.2'/%3E%3Ccircle cx='260' cy='260' r='1'/%3E%3Ccircle cx='380' cy='250' r='1.5'/%3E%3C/g%3E%3C/svg%3E") repeat 0 0/400px 300px,linear-gradient(180deg,#0E2136 0%,#1F3B5C 60%,#2B4D73 100%)}
+.slide.dark::after,.slide.steppe::after{content:"";position:absolute;left:0;right:0;bottom:0;height:120px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 260' preserveAspectRatio='none'%3E%3Cpath d='M0 150 C220 100 420 140 640 112 C880 82 1060 140 1300 104 C1440 86 1530 96 1600 90 L1600 260 L0 260Z' fill='%23284A70'/%3E%3Cpath d='M0 200 C300 160 600 196 900 172 C1180 150 1400 190 1600 172 L1600 260 L0 260Z' fill='%23B98E4E' opacity='.9'/%3E%3Cpath d='M0 236 C380 214 760 240 1140 224 C1380 214 1500 230 1600 224 L1600 260 L0 260Z' fill='%238C3A2C'/%3E%3Cg fill='%23F2E2B8'%3E%3Cpath d='M1180 176 l28 -22 l28 22 z'/%3E%3Crect x='1186' y='176' width='44' height='14'/%3E%3Cpath d='M1260 182 l20 -16 l20 16 z'/%3E%3Crect x='1264' y='182' width='32' height='10'/%3E%3C/g%3E%3C/svg%3E") no-repeat bottom/100% 100%;pointer-events:none;z-index:0}
+.slide.dark>*,.slide.steppe>*{position:relative;z-index:1}
+.slide.dark,.slide.steppe{padding-bottom:96px}
+.slide.nohills::after{display:none}
+.slide.steppe{background:linear-gradient(180deg,#F3C98B 0%,#F6E3BE 38%,#F4EAD3 70%)}
+.slide.gold{background:radial-gradient(ellipse at 50% 30%,#E2B25A 0%,#C98F2A 70%,#A9741C 100%)}
+.slide.enter-f{animation:slIn .75s cubic-bezier(.2,.7,.2,1) both}
+.slide.enter-b{animation:slInB .75s cubic-bezier(.2,.7,.2,1) both}
+@keyframes slIn{from{opacity:0;transform:translateX(70px) scale(.98);filter:blur(6px)}}
+@keyframes slInB{from{opacity:0;transform:translateX(-70px) scale(.98);filter:blur(6px)}}
+.slide>.stg{animation:stgIn .7s ease-out both}
+@keyframes stgIn{from{opacity:0;transform:translateY(26px)}}
+.kb{animation:kb 22s ease-in-out infinite alternate}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.12) translate(-2%,-1%)}}
+.draw{stroke-dasharray:1400;stroke-dashoffset:1400;animation:draw 2.6s .8s ease-in-out forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.pulse{animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.25);opacity:.7}}
+.frame{border-radius:14px;overflow:hidden;box-shadow:0 14px 34px rgba(60,40,10,.35);border:6px solid #FFF8E8;background:#2A2116;position:relative}
+.frame img{width:100%;height:100%;object-fit:cover;display:block}
+.cap{font-size:20px;color:var(--soft);font-style:italic}
+.expl{background:rgba(255,251,242,.85);border-left:8px solid var(--gold);border-radius:12px;padding:14px 22px;font-size:25px;line-height:1.4}
+.hot{position:absolute;display:flex;align-items:center;gap:8px;font:700 21px Rubik;color:#1F2A3A;background:#FFF8E8;border:3px solid var(--rust);border-radius:30px;padding:4px 14px 4px 6px;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.35)}
+.hot b{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--rust);color:#fff;font-size:18px}
+.imgfail{display:grid;place-items:center;height:100%;color:#F6EEDB;font:600 24px Rubik;text-align:center;padding:30px}
+@media(prefers-reduced-motion:reduce){.slide,.slide>.stg,.kb,.draw,.pulse{animation:none!important}.draw{stroke-dashoffset:0}}
+
 @media(prefers-reduced-motion:reduce){.hid{transition:none}}
 </style>
 </head>
@@ -229,7 +261,7 @@ function warriorSvg(){
 }
 
 
-function mapSvg(mode, hl){
+function mapSvg(mode, hl, route){
   // mode 'label' — атаулармен; 'num' — нөмірлермен (ойын)
   const P=[{n:1,x:150,y:300,l:"Дунай"},{n:2,x:455,y:250,l:"Еділ"},{n:3,x:548,y:298,l:"Сарайшық"},{n:4,x:812,y:388,l:"Сығанақ"},{n:5,x:905,y:150,l:"Ертіс"}];
   const pts=P.map(p=>{
@@ -255,7 +287,41 @@ function mapSvg(mode, hl){
   <path d="M960,290 C930,240 915,190 905,150 C895,110 860,70 820,40"/></g>
   ${mode==='label'?'<text x="975" y="40" text-anchor="end" font-size="22" font-weight="700" fill="#5A503F" font-family="Rubik,Arial">Алтай →</text><text x="600" y="150" font-size="20" fill="#5A503F">Жайық</text><text x="845" y="440" font-size="20" fill="#5A503F">Сырдария</text>':''}
   <text x="16" y="458" font-size="16" fill="#5A503F">Сызба карта (масштабсыз) · батыс ← → шығыс</text>
+  ${route?'<defs><marker id="mar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#A3402F"/></marker></defs><path class="draw" d="M905 175 C800 215 640 235 470 262 C340 282 240 292 165 300" fill="none" stroke="#A3402F" stroke-width="7" stroke-linecap="round" marker-end="url(#mar)"/><text x="640" y="215" text-anchor="middle" font-size="22" font-weight="700" fill="#A3402F" font-family="Rubik,Arial">XI ғ. батысқа жылжу</text>':''}
   ${pts}</svg>`;
+}
+
+
+const CM=(f,w)=>`https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(f)}?width=${w||1600}`;
+function webImg(f,alt,fit){ return `<img class="kb" src="${CM(f)}" alt="${alt}" style="object-fit:${fit||'cover'}" onerror="this.parentNode.innerHTML='<div class=imgfail>Сурет ашылмады — интернетті тексеріңіз</div>'">`; }
+function portolan(){
+  let rh=''; for(let k=0;k<16;k++){ const a=k*Math.PI/8; rh+=`<line x1="760" y1="250" x2="${760+1100*Math.cos(a)}" y2="${250+1100*Math.sin(a)}" stroke="#B4842F" stroke-width="1" opacity=".35"/>`; }
+  const yurt=(x,y)=>`<g transform="translate(${x} ${y})"><path d="M-18 0 L0 -18 L18 0Z" fill="#A3402F"/><rect x="-14" y="0" width="28" height="12" fill="#F6EEDB" stroke="#5B3B24" stroke-width="2"/></g>`;
+  const city=(x,y,n)=>`<g transform="translate(${x} ${y})"><rect x="-12" y="-16" width="24" height="18" fill="#E9D29E" stroke="#5B3B24" stroke-width="2"/><path d="M-12 -16 L-6 -26 L0 -16 L6 -26 L12 -16" fill="#C98F2A" stroke="#5B3B24" stroke-width="2"/><text x="0" y="24" text-anchor="middle" font-size="22" font-style="italic" fill="#5B3B24" font-family="Cormorant Garamond,Georgia,serif">${n}</text></g>`;
+  return `<svg viewBox="0 0 1500 640" aria-label="XIV ғасыр еуропалық карталары стилінде салынған Комания сызбасы" style="width:100%;height:100%;display:block">
+  <defs><radialGradient id="pg" cx="50%" cy="45%" r="70%"><stop offset="0" stop-color="#F7EBCD"/><stop offset=".75" stop-color="#E6D0A0"/><stop offset="1" stop-color="#C9A766"/></radialGradient></defs>
+  <rect width="1500" height="640" fill="url(#pg)"/>${rh}
+  <path d="M260 360 C300 300 420 300 470 330 C520 360 500 420 430 430 C360 440 300 420 260 360Z" fill="#9DB9C8" stroke="#5B3B24" stroke-width="3"/>
+  <path d="M520 300 C540 285 575 292 578 310 C580 326 556 330 540 322Z" fill="#9DB9C8" stroke="#5B3B24" stroke-width="2.5"/>
+  <path d="M860 300 C900 280 950 300 955 350 C962 420 930 480 950 560 C910 600 860 580 860 520 C858 460 880 400 850 350Z" fill="#9DB9C8" stroke="#5B3B24" stroke-width="3"/>
+  <g stroke="#4F86B5" stroke-width="4" fill="none"><path d="M40 330 C120 345 200 345 262 352"/><path d="M380 120 C400 200 380 260 410 318"/><path d="M640 110 C620 190 600 250 560 296"/><path d="M760 90 C800 170 790 240 860 305"/><path d="M1010 140 C990 200 970 250 955 300"/></g>
+  <text x="365" y="385" text-anchor="middle" font-size="28" font-style="italic" fill="#1F3B5C" font-family="Cormorant Garamond,Georgia,serif">Mare Maius</text>
+  <text x="905" y="440" text-anchor="middle" font-size="24" font-style="italic" fill="#1F3B5C" font-family="Cormorant Garamond,Georgia,serif" transform="rotate(-80 905 440)">Mare Caspium</text>
+  <text x="700" y="200" text-anchor="middle" font-size="86" font-weight="700" fill="#8C3A2C" letter-spacing="14" font-family="Cormorant Garamond,Georgia,serif">COMANIA</text>
+  <text x="700" y="240" text-anchor="middle" font-size="30" font-style="italic" fill="#5B3B24" font-family="Cormorant Garamond,Georgia,serif">команлар елі — Дешті Қыпшақ</text>
+  ${yurt(250,215)}${yurt(300,232)}${yurt(1040,210)}${yurt(1090,230)}${yurt(330,240)}
+  ${city(520,335,'Tana')}${city(400,455,'Caffa')}${city(840,285,'Sarai')}
+  <path class="draw" d="M1080 300 C980 330 880 300 760 330 C640 360 520 300 420 280 C330 262 230 280 120 300" fill="none" stroke="#A3402F" stroke-width="6" stroke-dasharray="1400" marker-end="url(#ar)"/>
+  <defs><marker id="ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#A3402F"/></marker></defs>
+  <g transform="translate(1320 520)"><circle r="70" fill="#F6EEDB" stroke="#5B3B24" stroke-width="3"/><path d="M0 -66 L12 0 L0 66 L-12 0Z" fill="#8C3A2C"/><path d="M-66 0 L0 12 L66 0 L0 -12Z" fill="#C98F2A"/><text y="-78" text-anchor="middle" font-size="22" font-weight="700" fill="#5B3B24" font-family="Cormorant Garamond,Georgia,serif">N</text></g>
+  <path d="M120 560 q20 -26 50 0 l-6 16 h-38z M140 534 v-30 l22 16z" fill="#5B3B24" opacity=".75"/>
+  <text x="30" y="625" font-size="18" fill="#5B3B24" font-family="PT Sans,Arial">Сызба: XIV ғ. еуропалық теңіз карталарының (портолан) стилінде салынған; масштабсыз</text></svg>`;
+}
+const WARRIOR_IMG='img/warrior.jpg';
+function warriorPainting(){
+  const H=[[47,14,'Дулыға','l'],[51,27,'Темір бет-перде','r'],[56,30,'Шынжыр сауыт (мойын)','r'],[52,40,'Тақташалы сауыт','r'],[22,49,'Қорамсақ (колчан)','l'],[57,52,'Қисық қылыш','r'],[80,63,'Садақ қабы (садақ)','r'],[79,12,'Найза','r']];
+  return `<div style="position:relative;height:100%;aspect-ratio:1257/2160" class="frame"><img src="${WARRIOR_IMG}" alt="Қыпшақ сарбазы: суретшінің реконструкциясы" onerror="this.parentNode.innerHTML='<div class=imgfail>Сурет табылмады</div>'">
+   ${H.map(([x,y,t,side],i)=>`<span class="hot hid" style="left:${side==='l'?Math.max(x-30,1):x}%;top:${y}%"><b>${i+1}</b>${t}</span>`).join('')}</div>`;
 }
 
 /* ---------- ЖИ ойыны ---------- */
@@ -290,7 +356,7 @@ const SL=[
  </div>`,
  note:`<b>Сәлемдесу (1 мин).</b> «Қайырлы күн, балалар! Бүгін біз Ұлы Даланың ең кең аумағын билеген халық туралы сөйлесеміз. Телефондарыңды алып, тақтадағы QR кодты сканерлеңдер. «Мен оқушымын» батырмасын басып, аты-жөндеріңді жазып, өз топтарыңды таңдаңдар.»`},
 
-{st:"Сабақтың басы · Топтар", html:()=>`
+{st:"Сабақтың басы · Топтар", cls:"steppe", html:()=>`
  <div class="eb">Топтар алдын ала бөлінген</div>
  <h2 class="sh" style="font-size:48px">Бес қыпшақ руы — бес зерттеу тобы</h2>
  <div class="g5">${GROUPS.map((g,i)=>`<div class="cd" style="padding:18px 18px"><div class="k">${i+1}-топ · ${g.r}</div><h3>${g.n}</h3>${g.m.map(([n,r])=>`<div style="font-size:20px;line-height:1.25"><b>${n}</b><br><span style="color:var(--soft)">${r}</span></div>`).join("")}</div>`).join("")}</div>
@@ -304,7 +370,7 @@ const SL=[
  <div class="hint" style="margin-top:auto">▶ басқанда жауап ашылады</div>`,
  note:`<b>Бастапқы білімді белсендіру (1 мин).</b> Сұрақты қойып, 2–3 оқушыдан жауап алыңыз. Сосын жауапты ашыңыз: «Дұрыс! Демек, бүгінгі кейіпкерлеріміз — Қимақтың мұрагерлері, қыпшақтар.»`},
 
-{st:"Сабақтың басы · Қызығушылықты ояту", html:()=>`
+{st:"Сабақтың басы · Қызығушылықты ояту", cls:"steppe", html:()=>`
  <div class="eb">Жұмбақ</div>
  <h2 class="sh">Бір халық — үш атау</h2>
  <div class="g3">
@@ -337,7 +403,7 @@ const SL=[
  <div class="row" style="gap:16px;flex-wrap:wrap;align-items:center"><b class="rub" style="font-size:26px">Бүгін 16 балл:</b><span class="pill">Ватман · 4</span><span class="pill">Дерекпен жұмыс · 4</span><span class="pill">Жеке тест · 8</span><span class="pill g">16 балл → ФБ баға (10)</span></div>`,
  note:`<b>Мақсат қою (1 мин).</b> Критерийлерді бір оқушыға дауыстап оқытыңыз. «Сабақ соңында телефондағы жеке тест осы үш критерий бойынша бағаланады.»`},
 
-{st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі 1/5", html:()=>`
+{st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі · Қыпшақтар кімдер?", cls:"steppe", html:()=>`
  <div class="eb">Мұғалімнің түсіндірмесі</div>
  <h2 class="sh">Қыпшақтар кімдер?</h2>
  <div class="g3">
@@ -350,10 +416,11 @@ const SL=[
   <span class="pill">Қимақ қағанатының батыс қанаты</span><span class="arrow">→</span>
   <span class="pill g">XI ғ. басы: Қимақ құлап, жерлері қыпшақ хандарына өтті</span>
  </div>
- <div class="qb" style="margin-top:auto"><div class="q">Демек, бұл халықты Қытайдан Еуропаға дейін білген. Неге?</div></div>`,
+<div style="text-align:center;font:700 76px 'Cormorant Garamond',Georgia,serif;color:#8C3A2C;letter-spacing:2px;margin-top:auto">қыпшақ = половец = коман</div>
+ <div class="expl" style="font-size:28px">Бір халықты үш түрлі атаған — демек оны Қытайдан Еуропаға дейінгі елдер білген. Бұл — қыпшақтардың Еуразиядағы орнының алғашқы дәлелі. <b>Неге олар соншалықты танымал болды?</b></div>`,
  note:`<b>Мұғалімнің түсіндірмесі, 1-бөлім (1,5 мин).</b> «Балалар, VIII–IX ғасырлардағы авторлар бір халықты үш түрлі атаған: Шығыста — қыпшақтар, Русьте — половецтер, Еуропада — команлар. Демек, бұл халықты Қытайдан Еуропаға дейін білген. Қыпшақтардың тарихы ұзақ: олар алғашында Батыс Түрік қағанатының құрамында болды, кейін Қимақ қағанатының құрамына еніп, оның батыс қанатын құрады. XI ғасырдың басында Қимақ қағанаты құлағаннан кейін оның жерлері қыпшақ хандарының қолына өтті. Осылай дербес Қыпшақ хандығы пайда болды.» <br><i>Оқушылар дәптерге жазады: қыпшақ = половец = коман.</i>`},
 
-{st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі 2/5", html:()=>`
+{st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі · Үш кезең", html:()=>`
  <div class="eb">Мұғалімнің түсіндірмесі</div>
  <h2 class="sh">Қыпшақ мемлекеттілігінің үш кезеңі</h2>
  <div class="g3">
@@ -364,11 +431,11 @@ const SL=[
  <div class="qb"><div class="q" style="font-size:32px">Сондықтан бұл ұлан-ғайыр аумақ «Дешті Қыпшақ» — «қыпшақтың даласы» деп аталды.</div></div>`,
  note:`<b>2-бөлім (1,5 мин).</b> «Қыпшақ мемлекеттілігі үш кезеңнен өтті. Бірінші кезеңде, VII–VIII ғасырларда, қыпшақтар Батыс Түрік қағанатына бағынды. Екінші кезеңде, VIII–XI ғасырларда, Қимақ қағанатының құрамында болды. Үшінші кезең — XI ғасырдан XIII ғасырдың басына дейінгі дербес Қыпшақ хандығы. XI ғасырдың ортасында қыпшақтар Еділден өтіп, батысқа қарай Дунайға дейін жетті. XII ғасырдың басында олар Алтайдан Дунайға дейінгі «Ұлы Даланы» билеп отырды. Сондықтан бұл ұлан-ғайыр аумақ «Дешті Қыпшақ», яғни «қыпшақтың даласы» деп аталды. Бұл — зерттеу сұрағымыздың негізгі жауабы.»`},
 
-{st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі 3/5", html:()=>`
+{st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі · Аумағы мен екі қанат", html:()=>`
  <div class="eb">Мұғалімнің түсіндірмесі</div>
  <h2 class="sh" style="font-size:50px">Аумағы, бірлестіктері және екі қанаты</h2>
  <div class="row" style="flex:1;gap:24px">
-  <div style="flex:1.45;border-radius:16px;overflow:hidden">${mapSvg('label')}</div>
+  <div style="flex:1.45;border-radius:16px;overflow:hidden;box-shadow:0 10px 26px rgba(60,40,10,.3)">${mapSvg('label',0,true)}</div>
   <div style="flex:1;display:flex;flex-direction:column;gap:14px">
    <div class="cd" style="padding:16px 20px"><div class="k">Батыс қыпшақ</div><div class="t">Тоқсоба руы · Еділден Дунайға дейін</div></div>
    <div class="cd b" style="padding:16px 20px"><div class="k">Шығыс қыпшақ</div><div class="t">Елбөрілі руы · Еділден Алтайға дейін</div></div>
@@ -377,7 +444,31 @@ const SL=[
  </div>`,
  note:`<b>3-бөлім (1,5 мин).</b> Картаны көрсетіп түсіндіріңіз: «XI ғасырда қыпшақтар екі бірлестікке бөлінді. Батыс қыпшақ бірлестігі Еділден Дунайға дейін қоныстанды, оны Тоқсоба әулеттік руы басқарды. Шығыс қыпшақ бірлестігі Еділден Алтайға дейінгі аумақта құрылды, оны Елбөрілі руынан шыққан хандар басқарды. Көне түркі дәстүрі бойынша хандық екі қанатқа бөлінді: оң, яғни батыс қанаттың ордасы — Жайық бойындағы Сарайшық, сол, яғни шығыс қанаттың орталығы — Сырдария бойындағы Сығанақ. Қоғамның басында хан, одан кейін бектер мен қарапайым малшылар тұрды. Құқығы жоқ топты құлдар құрады, олардың саны соғыс тұтқындары есебінен толықты.»`},
 
-{st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі 4/5", html:()=>`
+{st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі · Ортағасыр карталары", html:()=>`
+ <div class="eb">Ортағасыр еуропалықтарының көзімен</div>
+ <h2 class="sh" style="font-size:52px">Дешті Қыпшақ еуропалық карталарда</h2>
+ <div class="row" style="flex:1;gap:26px;min-height:0">
+  <div style="flex:1.35;display:flex;flex-direction:column;gap:8px;min-height:0">
+   <div class="frame" style="flex:1">${webImg('Europe Mediterranean Catalan Atlas.jpeg','Каталан атласы: Еуропа мен Жерорта теңізі','cover')}</div>
+   <div class="cap">Каталан атласы (шамамен 1375 ж.), Еуропа бөлігі. Дереккөз: Wikimedia Commons, қоғамдық игілік</div>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;gap:12px">
+   <div class="cd" style="padding:12px 18px"><div class="k">Каталан атласы · ~1375 ж.</div><div class="t" style="font-size:22px">Майорка картографы Авраам Крескес салған. Еуропадан Қытайға дейінгі әлем, қалалар мен билеушілер суретпен бейнеленген.</div></div>
+   <div class="cd b" style="padding:12px 18px"><div class="k">Фра Мауро картасы · ~1450 ж.</div><div class="t" style="font-size:22px">Венеция монахы саудагерлер мен саяхатшылардың әңгімелерін жинап, әлемнің ірі елдерін картаға түсірген.</div></div>
+   <div class="cd r" style="padding:12px 18px"><div class="k">«Комания»</div><div class="t" style="font-size:22px">Еуропалықтар Қара теңізден солтүстіктегі кең даланы команлар, яғни қыпшақтар елі деп атаған (Марко Поло, Плано Карпини).</div></div>
+  </div>
+ </div>
+ <div class="expl" style="font-size:23px"><b>Талқылау:</b> Ортағасыр картасы бүгінгі картадан несімен өзгеше? Еуропалықтарға бұл даланы картаға түсіру неге маңызды болды?</div>`,
+ note:`<b>Ортағасыр карталары (1 мин).</b> «Қыпшақтарды тек көршілері ғана емес, алыстағы Еуропа да білген. Мына карта — 1375 жылы шамасында Майорка аралында картограф Авраам Крескес салған Каталан атласы. Ол кезде карталар бүгінгідей дәл емес еді: қалалар, патшалар, керуендер суретпен салынған, ал ақпаратты саудагерлер мен саяхатшылар әкелген. 1450 жылы шамасында Венецияда Фра Мауро деген монах та осылай әлем картасын жасады. Еуропалықтар Қара теңізден солтүстікке қарай жатқан ұлан-ғайыр даланы «Комания» — команлар, яғни қыпшақтар елі деп атаған. Марко Поло мен Плано Карпини де осы атауды қолданған. Демек, қыпшақтардың аты олардың мемлекеті құлағаннан кейін де картада сақталып қалды.» Сұрақ: «Неге еуропалықтарға бұл дала маңызды болды?» — Жауап: сауда жолдары, Ұлы Жібек жолы, Қырым мен Дон бойындағы сауда қалалары. <br><i>Сурет интернеттен (Wikimedia Commons) жүктеледі — тақтада интернет болуы керек.</i>`},
+
+{st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі · Портолан стиліндегі сызба", html:()=>`
+ <div class="eb">Ортағасыр картографы қалай салар еді?</div>
+ <h2 class="sh" style="font-size:50px">«COMANIA» — теңіз картасы стилінде</h2>
+ <div class="frame" style="flex:1;background:#E6D0A0;border-color:#F3E6C6">${portolan()}</div>
+ <div class="expl">Қызыл жебе — XI ғасырда қыпшақтардың Еділден Дунайға қарай жылжуы. <b>Tana</b> (Азақ) мен <b>Caffa</b> (Қырым) — италиялық саудагерлердің бекеттері, <b>Sarai</b> — кейінгі Алтын Орда астанасы. Еуропалықтар қыпшақ тілін осы сауда қалаларында үйренген.</div>`,
+ note:`<b>Портолан сызбасы (40 сек).</b> «Бұл — нағыз ортағасыр картасы емес, XIV ғасырдағы итальян теңізшілерінің карталары — портолан стилінде салынған сызба. Портолан карталарда компастан шыққан сызықтар, кемелер мен шатырлар салынады, жер атаулары латынша жазылады: Қара теңіз — Mare Maius, Каспий — Mare Caspium, дала — COMANIA. Қызыл жебеге қараңдар: XI ғасырда қыпшақтар шығыстан батысқа, Еділден Дунайға қарай жылжыды. Кейін, XIII–XIV ғасырларда, Дон сағасындағы Тана мен Қырымдағы Каффада италиялық саудагерлер қыпшақтармен сауда жасап, олардың тілін үйренді. Сол үшін Codex Cumanicus сөздігі жасалды — бұл 5-топтың дерегі.»`},
+
+{st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі · Көршілері", html:()=>`
  <div class="eb">Мұғалімнің түсіндірмесі</div>
  <h2 class="sh">Көршілері және Еуразиядағы орны</h2>
  <div class="g4">
@@ -386,12 +477,49 @@ const SL=[
   <div class="cd r"><div class="k">Хорезм</div><div class="t">Күрделі қарым-қатынас; хорезмшахтар қыпшақ ақсүйектерін исламға енгізуге тырысты</div></div>
   <div class="cd"><div class="k">Қарахан</div><div class="t">Махмұд Қашғари дерегі: билеушілерімен күрделі қарым-қатынас</div></div>
  </div>
- <div class="qb"><div style="font:700 24px Rubik;color:var(--rust)">Тілдегі із: орыс тіліне енген түркі сөздері</div><div style="font:600 36px Rubik;color:var(--blue)">колчан · булат · караул · есаул · атаман · богатырь</div></div>`,
+ <div class="qb"><div style="font:700 24px Rubik;color:var(--rust)">Тілдегі із: орыс тіліне енген түркі сөздері</div><div style="font:600 36px Rubik;color:var(--blue)">колчан · булат · караул · есаул · атаман · богатырь</div></div>
+ <div class="row" style="margin-top:auto;align-items:center;justify-content:center;gap:24px"><span class="pill" style="font-size:30px">Еуропа</span><span class="arrow" style="font-size:44px">⟷</span><span class="pill g" style="font-size:34px;padding:14px 34px">Қыпшақтар — Дешті Қыпшақ</span><span class="arrow" style="font-size:44px">⟷</span><span class="pill" style="font-size:30px">Азия</span></div>
+ <div class="expl">Қыпшақтар — Еуропа мен Азияның арасындағы көпір: олар сауда, неке, соғыс және тіл арқылы екі құрлықты байланыстырды.</div>`,
  note:`<b>4-бөлім (1,5 мин).</b> «Қыпшақтар тек далада ғана емес, бүкіл Еуразия тарихында із қалдырды. Олар Шығыс Еуропада Русь, Византия, Венгриямен байланыс орнатты: бірде соғысты, бірде одақтасты. Хорезммен қарым-қатынасы күрделі болды: хорезмшахтар қыпшақ ақсүйектерін ислам дініне енгізуге, қыпшақ әскерін өз мүддесіне пайдалануға тырысты. Махмұд Қашғари дерегі бойынша, қыпшақтар Қарахан билеушілерімен де күрделі қарым-қатынаста болды. Қыпшақтардың ізі тілде де қалды: орыс тіліндегі колчан, булат, караул, есаул, атаман, богатырь сөздері — түркі сөздері. Міне, сондықтан қыпшақтар Еуразия тарихында ерекше орын алады. Енді осыны өздерің зерттейсіңдер.»`},
 
-{st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі 5/5", html:()=>`
- <div class="eb">Мұғалімнің түсіндірмесі · әскери өнер</div>
- <h2 class="sh" style="font-size:50px">Қыпшақ сарбазы: жабдығы мен соғыс тәсілі</h2>
+{st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі · Тас мүсіндер", html:()=>`
+ <div class="eb">Даладағы тас шежіре</div>
+ <h2 class="sh" style="font-size:52px">Қыпшақ тас мүсіндері</h2>
+ <div class="row" style="flex:1;gap:26px;min-height:0">
+  <div style="flex:1.25;display:flex;flex-direction:column;gap:8px;min-height:0">
+   <div class="frame" style="flex:1">${webImg("Lapidarium of Dnipropetrovs'k Museum of Local History 03 (YDS 6897).jpg",'Қыпшақ (половец) тас мүсіндері, Днепр мұражайы','cover')}</div>
+   <div class="cap">Қыпшақ тас мүсіндері, XI–XIII ғғ. Днепр тарихи мұражайы. Дереккөз: Wikimedia Commons</div>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;gap:12px">
+   <div class="cd" style="padding:16px 20px"><div class="k">Не бейнеленген?</div><div class="t">Ер жауынгерлер — дулыға, сауыт, қылыш, садақ пен қорамсақпен; әйел мүсіндері де көп. Қолында көбіне тостаған ұстайды.</div></div>
+   <div class="cd b" style="padding:16px 20px"><div class="k">Не үшін қойылған?</div><div class="t">Ата-баба аруағын құрметтеу үшін қорғандардың басына қойылған.</div></div>
+   <div class="cd r" style="padding:16px 20px"><div class="k">Кім жазды?</div><div class="t">XIII ғасырда еуропалық саяхатшы Гильом Рубрук қыпшақтардың мүсіндерді қабір басына қоятынын жазған.</div></div>
+  </div>
+ </div>
+ <div class="expl"><b>Сұрақ:</b> Тас мүсін — тарихи дерек пе? Одан қыпшақтар туралы не білуге болады?</div>`,
+ note:`<b>Тас мүсіндер (40 сек).</b> «Дала бізге тек жазба ғана емес, тас шежіре де қалдырды. Бұл — қыпшақ тас мүсіндері. Оларды Украина мен Ресейдің далаларынан, Қазақстаннан табады. Ер мүсіндер көбіне жауынгер: басында дулыға, белінде қылыш, садақ пен қорамсақ. Әйел мүсіндері де көп — бұл қыпшақ қоғамында әйелдің орны ерекше болғанын көрсетеді. Мүсіндер ата-баба аруағын құрметтеу үшін қорғандардың басына қойылған. XIII ғасырда Еуропадан келген саяхатшы Гильом Рубрук қыпшақтардың осы мүсіндерді қабір басына қоятынын өз көзімен көріп жазған. Ендеше, тас мүсін де — тарихи дерек: одан киімді, қаруды, сенімді білеміз.» <br><i>Сурет интернеттен жүктеледі.</i>`},
+
+{st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі · Қыпшақ сарбазы", cls:"dark nohills", html:()=>`
+ <div class="row" style="height:100%;gap:40px;align-items:stretch">
+  <div style="height:100%;flex:none;position:relative" class="frame">
+   <img src="${WARRIOR_IMG}" alt="Қыпшақ сарбазы: суретшінің реконструкциясы" style="height:100%;width:auto" onerror="this.parentNode.innerHTML='<div class=imgfail>Сурет табылмады</div>'">
+   ${[[48,15],[51,27],[57,31],[52,41],[21,48],[55,51],[78,64],[79,9]].map(([x,y],i)=>`<span class="hot hid" data-g="w${i}" style="left:${x}%;top:${y}%;padding:4px;transform:translate(-50%,-50%)"><b class="pulse">${i+1}</b></span>`).join('')}
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;gap:16px">
+   <div class="eb">Мұғалімнің түсіндірмесі · әскери өнер</div>
+   <h2 class="sh" style="font-size:52px">Қыпшақ сарбазы</h2>
+   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 22px">
+    ${['Биік дулыға, ұшында үкі-шашақ','Темір бет-перде — бетті қорғайды','Шынжыр сауыт — мойын мен иықты жабады','Тақташалы сауыт — темір тілімшелерден','Қорамсақ (колчан) — жебе салатын қап','Қисық қылыш — атпен шабуға ыңғайлы','Садақ қабы — садақты сақтайды','Найза — шашақты, ұзын сапты'].map((t,i)=>`<div class="hid" data-g="w${i}" style="font-size:25px;line-height:1.3"><b style="color:#E8B65A;font-family:Rubik">${i+1}.</b> ${t}</div>`).join('')}
+   </div>
+   <div class="expl" style="color:var(--ink);margin-top:auto">Негізгі күш — <b>жеңіл және ауыр атты әскер</b>. Тәсілі — әдейі шегініп, жауды алдап, кері бұрылып соққы беру.</div>
+   <div class="hint">Суретшінің реконструкциясы · ▶ басқан сайын бір бөлік ашылады</div>
+  </div>
+ </div>`,
+ note:`<b>Қыпшақ сарбазы (1 мин).</b> ▶ басқан сайын суретте бір нөмір мен оның атауы шығады. «Қараңдар, бұл — суретшінің қыпшақ сарбазын қалай елестеткені. 1 — биік дулыға, ұшында шашағы бар. 2 — темір бет-перде: ол жауынгердің бетін жебе мен қылыштан қорғаған; мұндай бет-перделер қыпшақ қорғандарынан табылған. 3 — мойынды жабатын шынжыр сауыт. 4 — кеудедегі темір тілімшелерден құралған сауыт. 5 — қорамсақ, яғни жебе салатын қап; орыс тіліндегі «колчан» сөзі осыдан шыққан. 6 — қисық қылыш, атпен шабуға ыңғайлы. 7 — садақ қабы. 8 — найза. Қыпшақтардың негізгі күші — атты әскер. Олар жауды әдейі шегініп алдап, кейін кері бұрылып соққы беретін.» Сұрақ: «Мұндай жабдықты қолдан жасау үшін не керек? (ұсталар, темір, сауда)»`},
+
+{st:"Сабақтың ортасы · ЖИ суретін тексер", html:()=>`
+ <div class="eb">Сыни ойлау · ЖИ</div>
+ <h2 class="sh" style="font-size:50px">ЖИ салған суретті тексерейік</h2>
  <div class="row" style="flex:1;gap:24px;min-height:0">
   <div style="flex:1;min-height:0">${warriorSvg()}</div>
   <div style="flex:1.1;display:flex;flex-direction:column;gap:12px;min-height:0">
@@ -400,7 +528,7 @@ const SL=[
    ${AIIMG?'<button class="tb" style="background:var(--line);color:var(--ink);align-self:flex-start" onclick="clearAI()">Суретті ауыстыру</button>':''}
   </div>
  </div>`,
- note:`<b>5-бөлім. Қыпшақ сарбазы (1 мин).</b> «Қыпшақтар Еуразияның ең мықты жауынгерлерінің бірі болған. Негізгі күші — атты әскер. Сарбаздың басында биік дулыға, кейде бетін темір бет-перде жапқан. Денесінде темір тақташалардан немесе шынжырдан тоқылған сауыт. Қаруы — садақ пен жебе салынған қорамсақ, қисық қылыш, найза, қалқан. Орыс тіліндегі «колчан» сөзі де осы қорамсақтың түркі атауынан шыққан. Қыпшақтар жау әскерін әдейі шегініп алдап, сосын кері бұрылып соққы беретін болған.» Сосын ЖИ суретін көрсетіп сұраңыз: «Бұл суретті жасанды интеллект салды. Сызбадағы жабдықтың қайсысы бар? Суретте не күмәнді — мұражай ма, далада ма, сауыт қай дәуірге ұқсайды?» <br><i>Сурет: сабаққа дейін Canva-дағы ЖИ суретін компьютерге жүктеп, сол жақтағы аймақты басып таңдаңыз.</i>`},
+ note:`<b>ЖИ суретін тексеру (30 сек).</b> Алдыңғы слайдты қорытындылап, ЖИ суретін көрсетіңіз. Қысқаша: «Қыпшақтар Еуразияның ең мықты жауынгерлерінің бірі болған. Негізгі күші — атты әскер. Сарбаздың басында биік дулыға, кейде бетін темір бет-перде жапқан. Денесінде темір тақташалардан немесе шынжырдан тоқылған сауыт. Қаруы — садақ пен жебе салынған қорамсақ, қисық қылыш, найза, қалқан. Орыс тіліндегі «колчан» сөзі де осы қорамсақтың түркі атауынан шыққан. Қыпшақтар жау әскерін әдейі шегініп алдап, сосын кері бұрылып соққы беретін болған.» Сосын ЖИ суретін көрсетіп сұраңыз: «Бұл суретті жасанды интеллект салды. Сызбадағы жабдықтың қайсысы бар? Суретте не күмәнді — мұражай ма, далада ма, сауыт қай дәуірге ұқсайды?» <br><i>Сурет: сабаққа дейін Canva-дағы ЖИ суретін компьютерге жүктеп, сол жақтағы аймақты басып таңдаңыз.</i>`},
 
 {st:"Сабақтың ортасы · Топтық зерттеу (10 мин)", html:()=>`
  <div class="row" style="align-items:center;justify-content:space-between"><h2 class="sh">Топтық зерттеу</h2><span class="pill g">10 мин · ватман + дерек + телефон</span></div>
@@ -477,7 +605,7 @@ const SL=[
 ];
 
 /* ======================= BOARD ======================= */
-let cur=0, notesOn=false, scoreOn=true;
+let cur=0, notesOn=false, scoreOn=true, dir=1;
 let scores=[0,0,0,0,0], turn=0;
 let G={mode:'intro', i:0, picked:null, rev:false};
 const $=id=>document.getElementById(id);
@@ -490,7 +618,8 @@ function fit(){
 }
 function renderSlide(){
   const s=SL[cur];
-  $('stage').innerHTML=`<div class="slide ${s.cls||''}">${s.html()}</div>`;
+  $('stage').innerHTML=`<div class="slide ${s.cls||''} ${dir>0?'enter-f':'enter-b'}">${s.html()}</div>`;
+  [...$('stage').firstElementChild.children].forEach((c,i)=>{ c.classList.add('stg'); c.style.animationDelay=(0.18+i*0.13)+'s'; });
   $('bStage').textContent=s.st;
   $('bNum').textContent=`${cur+1}/${SL.length}`;
   $('notes').innerHTML=s.note||'';
@@ -499,12 +628,12 @@ function renderSlide(){
 function hiddenLeft(){ return [...$('stage').querySelectorAll('.hid:not(.show)')]; }
 function nextS(){
   if(SL[cur].game && gameNext()) return;
-  const h=hiddenLeft(); if(h.length){ h[0].classList.add('show'); return; }
-  if(cur<SL.length-1){ cur++; if(SL[cur].game) G={mode:'intro',i:0,picked:null,rev:false}; renderSlide(); }
+  const h=hiddenLeft(); if(h.length){ const g=h[0].dataset.g; (g?[...$('stage').querySelectorAll(`.hid[data-g="${g}"]`)]:[h[0]]).forEach(e=>e.classList.add('show')); return; }
+  if(cur<SL.length-1){ dir=1; cur++; if(SL[cur].game) G={mode:'intro',i:0,picked:null,rev:false}; renderSlide(); }
 }
 function prevS(){
   if(SL[cur].game && gamePrev()) return;
-  if(cur>0){ cur--; renderSlide(); }
+  if(cur>0){ dir=-1; cur--; renderSlide(); }
 }
 function toggleNotes(){ notesOn=!notesOn; $('notes').hidden=!notesOn; $('noteBtn').classList.toggle('on',notesOn); setTimeout(fit,10); }
 function toggleScore(){ scoreOn=!scoreOn; $('score').hidden=!scoreOn; $('scoreBtn').classList.toggle('on',scoreOn); setTimeout(fit,10); }
@@ -790,7 +919,7 @@ document.addEventListener('keydown',e=>{
   if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); prevS(); }
   if(e.key==='n'||e.key==='N'||e.key==='т'||e.key==='Т') toggleNotes();
 });
-window.nextS=nextS; window.prevS=prevS; window.toggleNotes=toggleNotes; window.toggleScore=toggleScore;
+window.goSlide=i=>{cur=i;renderSlide();}; window.nextS=nextS; window.prevS=prevS; window.toggleNotes=toggleNotes; window.toggleScore=toggleScore;
 route();
 }
 </script>
