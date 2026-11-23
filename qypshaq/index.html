@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Қыпшақ хандығы — сабақ</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400..800&family=PT+Sans:wght@400;700&display=swap">
+<style>
+/*
+VOICE: жылы, сенімді сабақ; тақтада үлкен әріп, телефонда жинақы.
+IDEA: дала картасы мен көне шежіре — көк аспан, сары дала, жосадай қызыл белгі.
+PICTURE: Еділден Ертіске дейінгі сызба карта, уақыт таспасы, ойын тақтасы.
+COLOUR and TYPE: аспан-көк #1F3B5C, дала-құм #F6EEDB, алтын #C98F2A, қызыл #A3402F; Rubik + PT Sans (қазақ әріптері бар).
+LAYOUT: тақтада 16:9 сахна, төменде ұпай жолағы; телефонда бір баған, үлкен батырмалар.
+*/
+:root{color-scheme:light;--blue:#1F3B5C;--sky:#2C5179;--sand:#F6EEDB;--paper:#FFFBF2;--line:#E6D5AE;--gold:#C98F2A;--rust:#A3402F;--green:#2F7D45;--ink:#1F2A3A;--soft:#5A503F}
+:root[data-theme=dark]{color-scheme:light}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%}
+body{background:var(--sand);color:var(--ink);font:17px/1.5 "PT Sans",Arial,sans-serif;overflow-x:clip}
+h1,h2,h3,.rub{font-family:Rubik,Arial,sans-serif}
+button{font:inherit;cursor:pointer;border:0;border-radius:12px;min-height:44px}
+button:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+[hidden]{display:none!important}
+
+/* ---------- HOME ---------- */
+#home{min-height:100vh;display:grid;place-items:center;padding:24px;background:linear-gradient(180deg,var(--blue) 0 58%,#B98E4E 58% 100%)}
+.homebox{background:var(--paper);border-radius:22px;padding:clamp(22px,4vw,44px);max-width:760px;width:100%;box-shadow:0 18px 40px rgba(0,0,0,.3);display:grid;gap:18px}
+.homebox h1{margin:0;font-size:clamp(30px,6vw,48px);line-height:1.05;color:var(--blue)}
+.homebox p{margin:0;color:var(--soft)}
+.homebtns{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.homebtns button{padding:22px 16px;font-family:Rubik,Arial;font-weight:700;font-size:22px;color:#fff;text-align:left;line-height:1.2}
+.homebtns button small{display:block;font:400 15px "PT Sans",Arial;opacity:.9;margin-top:6px}
+.b-blue{background:var(--blue)}.b-gold{background:var(--gold);color:var(--ink)!important}.b-rust{background:var(--rust)}.b-green{background:var(--green)}
+@media(max-width:560px){.homebtns{grid-template-columns:1fr}}
+
+/* ---------- BOARD ---------- */
+#board{height:100vh;display:grid;grid-template-rows:auto 1fr auto auto;background:#17304D}
+.topbar{display:flex;align-items:center;gap:10px;padding:8px 14px;color:#fff;flex-wrap:wrap}
+.topbar .st{font-family:Rubik;font-weight:600;background:rgba(255,255,255,.14);padding:6px 12px;border-radius:20px;font-size:15px}
+.topbar .grow{flex:1}
+.tb{background:rgba(255,255,255,.14);color:#fff;padding:6px 12px;font-size:15px;min-height:38px}
+.tb.on{background:var(--gold);color:var(--ink)}
+.clock{font:700 20px Rubik;background:#fff;color:var(--blue);border-radius:10px;padding:5px 12px;min-width:92px;text-align:center}
+.clock.low{color:var(--rust)}
+.stagewrap{position:relative;overflow:hidden}
+.stage{position:absolute;left:50%;top:50%;width:1600px;height:900px;transform-origin:center;background:var(--sand);border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.slide{position:absolute;inset:0;padding:60px 70px;display:flex;flex-direction:column;gap:26px;font-size:28px;line-height:1.35}
+.slide.dark{background:var(--blue);color:var(--sand)}
+.slide.gold{background:var(--gold);color:var(--ink)}
+.eb{font:600 22px Rubik;letter-spacing:2px;text-transform:uppercase;color:var(--rust)}
+.dark .eb{color:#E8B65A}.gold .eb{color:var(--ink)}
+.sh{margin:0;font:700 58px/1.08 Rubik;color:var(--blue)}
+.dark .sh{color:var(--sand)}.gold .sh{color:var(--ink)}
+.lead{font-size:34px;line-height:1.3}
+.mut{color:var(--soft)}.dark .mut{color:#D3DFEB}
+.row{display:flex;gap:22px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:18px}
+.cd{background:var(--paper);border-radius:18px;padding:24px 26px;border-top:9px solid var(--gold);display:flex;flex-direction:column;gap:8px;color:var(--ink)}
+.cd.b{border-top-color:var(--blue)}.cd.r{border-top-color:var(--rust)}
+.cd.fill{background:#183150;color:var(--sand);border-top-color:var(--gold)}
+.cd .k{font:700 22px Rubik;color:var(--rust)}.cd.fill .k{color:#E8B65A}
+.cd h3{margin:0;font:600 32px/1.15 Rubik}
+.cd .t{font-size:25px;line-height:1.35;color:var(--soft)}.cd.fill .t{color:#D3DFEB}
+.qb{background:var(--paper);border-left:12px solid var(--rust);border-radius:14px;padding:22px 30px;color:var(--ink)}
+.qb .q{font:600 38px/1.25 Rubik;color:var(--blue)}
+.pill{display:inline-block;background:var(--blue);color:var(--sand);font:600 24px Rubik;padding:10px 22px;border-radius:40px}
+.pill.g{background:var(--gold);color:var(--ink)}
+.arrow{font:700 34px Rubik;color:var(--rust)}
+.quote{font:500 64px/1.18 Rubik}
+.big{font:800 96px/1 Rubik;color:var(--rust)}
+.hid{opacity:0;transform:translateY(14px);transition:.4s}
+.hid.show{opacity:1;transform:none}
+.hint{font-size:22px;color:var(--soft)}
+.dark .hint{color:#D3DFEB}
+.phone{display:inline-flex;align-items:center;gap:10px;background:var(--green);color:#fff;font:600 24px Rubik;padding:10px 20px;border-radius:14px}
+.qrbox{background:#fff;border-radius:20px;padding:22px;display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--ink);width:420px}
+.qrbox svg{width:330px;height:330px}
+.tl{position:relative;height:120px}
+.notes{background:#FFF7E2;color:var(--ink);padding:14px 22px;max-height:34vh;overflow:auto;border-top:4px solid var(--gold);font-size:19px;line-height:1.5}
+.notes b{font-family:Rubik}
+.score{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:8px 14px 12px}
+.team{background:#FFFBF2;border-radius:12px;padding:6px 8px;display:flex;align-items:center;justify-content:space-between;gap:6px;border:3px solid transparent}
+.team.turn{border-color:var(--gold)}
+.team .nm{font:700 16px Rubik}
+.team .sc{font:800 26px Rubik;color:var(--blue);min-width:34px;text-align:center}
+.team button{min-height:34px;padding:2px 8px;font:700 15px Rubik;background:var(--line)}
+.team button.p{background:var(--gold)}
+/* game */
+.gbtn{font:700 30px Rubik;color:#fff;padding:16px 30px;border-radius:14px;box-shadow:0 5px 0 rgba(0,0,0,.2)}
+.opt{background:var(--paper);border:3px solid var(--line);font-size:26px;padding:12px 18px;text-align:left;color:var(--ink);border-radius:14px}
+.opt.ok{background:#DDF1E1;border-color:var(--green)}.opt.no{background:#F7DAD5;border-color:var(--rust)}
+.rev{background:var(--paper);border-left:10px solid var(--green);border-radius:12px;padding:14px 20px;font-size:26px;color:var(--ink)}
+.rev.bad{border-left-color:var(--rust)}
+.gnav{display:flex;gap:12px;align-items:center;margin-top:auto}
+.gnav button{background:var(--blue);color:#fff;padding:10px 22px;font:600 22px Rubik}
+
+/* ---------- STUDENT ---------- */
+#student{min-height:100vh;background:var(--sand)}
+.shead{background:var(--blue);color:var(--sand);padding:14px 16px 0;position:sticky;top:0;z-index:5}
+.shead .who{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:15px}
+.shead h2{margin:4px 0 10px;font:700 22px/1.15 Rubik}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px}
+.tabs button{flex:none;background:rgba(255,255,255,.14);color:#fff;padding:8px 14px;font:600 15px Rubik;min-height:40px}
+.tabs button.on{background:var(--gold);color:var(--ink)}
+.sbody{max-width:720px;margin:0 auto;padding:16px 14px 60px;display:grid;gap:14px}
+.box{background:var(--paper);border-radius:16px;padding:16px 18px;border:1px solid var(--line)}
+.box h3{margin:0 0 6px;font:700 20px Rubik;color:var(--blue)}
+.box p{margin:6px 0}
+.tag{display:inline-block;font:600 13px Rubik;background:var(--blue);color:#fff;border-radius:20px;padding:3px 10px}
+.choices{display:grid;gap:8px;margin-top:8px}
+.ch{background:#fff;border:2px solid var(--line);text-align:left;padding:10px 14px;font-size:17px;color:var(--ink);border-radius:12px}
+.ch.sel{border-color:var(--blue);background:#E9F0F7}
+.ch.ok{border-color:var(--green);background:#DDF1E1}
+.ch.no{border-color:var(--rust);background:#F7DAD5}
+.fb{font-size:15px;margin-top:6px;color:var(--soft)}
+.fb.ok{color:var(--green)}.fb.no{color:var(--rust)}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:8px 0;font-size:17px}
+.chk input{width:24px;height:24px;flex:none;margin-top:2px;accent-color:var(--green)}
+select,input[type=text],textarea{font:16px "PT Sans",Arial;width:100%;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:#fff;color:var(--ink)}
+textarea{min-height:96px;resize:vertical}
+.inl{display:inline-block;width:auto;min-width:150px;margin:2px 4px}
+.act{width:100%;padding:14px;font:700 18px Rubik;color:#fff;background:var(--green)}
+.act.blue{background:var(--blue)}.act.ghost{background:var(--line);color:var(--ink)}
+.res{background:var(--blue);color:var(--sand);border-radius:20px;padding:22px;text-align:center;display:grid;gap:8px}
+.res .n{font:700 26px Rubik}
+.res .s{font:800 54px/1 Rubik;color:#E8B65A}
+.res .l{font-size:16px;color:#D3DFEB}
+.grpgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grpgrid button{background:#fff;border:2px solid var(--line);padding:12px;text-align:left;color:var(--ink)}
+.grpgrid button.sel{border-color:var(--gold);background:#FBEFD6}
+.grpgrid b{display:block;font:700 17px Rubik}
+.err{color:var(--rust);font-size:15px}
+@media(prefers-reduced-motion:reduce){.hid{transition:none}}
+</style>
+</head>
+<body>
+
+<div id="home">
+  <div class="homebox">
+    <span class="tag">6-сынып · Қазақстан тарихы · §14</span>
+    <h1>Қыпшақ хандығы</h1>
+    <p>XI – XIII ғасырдың басы. Зерттеу сұрағы: <b>Не себепті Еуразия даласы «Дешті Қыпшақ» деп аталды?</b></p>
+    <div class="homebtns">
+      <button class="b-green" onclick="location.hash='student'">Мен оқушымын<small>Телефоннан: тапсырма, тест, рефлексия</small></button>
+      <button class="b-blue" onclick="location.hash='board'">Мұғалім / тақта<small>Презентация, мұғалім мәтіні, ЖИ ойыны</small></button>
+    </div>
+    <p style="font-size:14px">Серікқалиев Ә.С. · №209 мектеп-гимназия</p>
+  </div>
+</div>
+
+<div id="board" hidden>
+  <div class="topbar">
+    <button class="tb" onclick="location.hash=''" aria-label="Басты бет">⌂</button>
+    <span class="st" id="bStage"></span>
+    <span class="grow"></span>
+    <button class="tb" onclick="startT(90)">1,5 мин</button>
+    <button class="tb" onclick="startT(300)">5 мин</button>
+    <button class="tb" onclick="startT(600)">10 мин</button>
+    <span class="clock" id="clock">00:00</span>
+    <button class="tb" id="noteBtn" onclick="toggleNotes()">Мұғалім мәтіні (N)</button>
+    <button class="tb on" id="scoreBtn" onclick="toggleScore()">Ұпай</button>
+    <button class="tb" onclick="prevS()">◀</button>
+    <span class="st" id="bNum"></span>
+    <button class="tb" onclick="nextS()">▶</button>
+  </div>
+  <div class="stagewrap" id="wrap"><div class="stage" id="stage"></div></div>
+  <div class="notes" id="notes" hidden></div>
+  <div class="score" id="score"></div>
+</div>
+
+<div id="student" hidden></div>
+
+<script>
+{
+/* ======================= DATA ======================= */
+const SITE_URL = "https://dauletbayevaarshat-cyber.github.io/matematika-kvest/qypshaq/#student";
+const QR_SVG = `<svg viewBox="0 0 39 39" aria-label="Сабақ сайтына QR код" shape-rendering="crispEdges"><rect width="39" height="39" fill="#fff"/><path d="M1,1h1v1h-1zM2,1h1v1h-1zM3,1h1v1h-1zM4,1h1v1h-1zM5,1h1v1h-1zM6,1h1v1h-1zM7,1h1v1h-1zM9,1h1v1h-1zM14,1h1v1h-1zM15,1h1v1h-1zM16,1h1v1h-1zM19,1h1v1h-1zM20,1h1v1h-1zM21,1h1v1h-1zM24,1h1v1h-1zM25,1h1v1h-1zM26,1h1v1h-1zM28,1h1v1h-1zM29,1h1v1h-1zM31,1h1v1h-1zM32,1h1v1h-1zM33,1h1v1h-1zM34,1h1v1h-1zM35,1h1v1h-1zM36,1h1v1h-1zM37,1h1v1h-1zM1,2h1v1h-1zM7,2h1v1h-1zM13,2h1v1h-1zM14,2h1v1h-1zM15,2h1v1h-1zM18,2h1v1h-1zM20,2h1v1h-1zM21,2h1v1h-1zM26,2h1v1h-1zM27,2h1v1h-1zM29,2h1v1h-1zM31,2h1v1h-1zM37,2h1v1h-1zM1,3h1v1h-1zM3,3h1v1h-1zM4,3h1v1h-1zM5,3h1v1h-1zM7,3h1v1h-1zM11,3h1v1h-1zM15,3h1v1h-1zM16,3h1v1h-1zM17,3h1v1h-1zM18,3h1v1h-1zM19,3h1v1h-1zM21,3h1v1h-1zM22,3h1v1h-1zM24,3h1v1h-1zM27,3h1v1h-1zM29,3h1v1h-1zM31,3h1v1h-1zM33,3h1v1h-1zM34,3h1v1h-1zM35,3h1v1h-1zM37,3h1v1h-1zM1,4h1v1h-1zM3,4h1v1h-1zM4,4h1v1h-1zM5,4h1v1h-1zM7,4h1v1h-1zM9,4h1v1h-1zM10,4h1v1h-1zM11,4h1v1h-1zM13,4h1v1h-1zM15,4h1v1h-1zM16,4h1v1h-1zM19,4h1v1h-1zM24,4h1v1h-1zM26,4h1v1h-1zM27,4h1v1h-1zM28,4h1v1h-1zM29,4h1v1h-1zM31,4h1v1h-1zM33,4h1v1h-1zM34,4h1v1h-1zM35,4h1v1h-1zM37,4h1v1h-1zM1,5h1v1h-1zM3,5h1v1h-1zM4,5h1v1h-1zM5,5h1v1h-1zM7,5h1v1h-1zM9,5h1v1h-1zM11,5h1v1h-1zM12,5h1v1h-1zM13,5h1v1h-1zM18,5h1v1h-1zM19,5h1v1h-1zM22,5h1v1h-1zM23,5h1v1h-1zM24,5h1v1h-1zM26,5h1v1h-1zM28,5h1v1h-1zM29,5h1v1h-1zM31,5h1v1h-1zM33,5h1v1h-1zM34,5h1v1h-1zM35,5h1v1h-1zM37,5h1v1h-1zM1,6h1v1h-1zM7,6h1v1h-1zM9,6h1v1h-1zM10,6h1v1h-1zM11,6h1v1h-1zM13,6h1v1h-1zM14,6h1v1h-1zM17,6h1v1h-1zM18,6h1v1h-1zM20,6h1v1h-1zM21,6h1v1h-1zM22,6h1v1h-1zM23,6h1v1h-1zM25,6h1v1h-1zM26,6h1v1h-1zM31,6h1v1h-1zM37,6h1v1h-1zM1,7h1v1h-1zM2,7h1v1h-1zM3,7h1v1h-1zM4,7h1v1h-1zM5,7h1v1h-1zM6,7h1v1h-1zM7,7h1v1h-1zM9,7h1v1h-1zM11,7h1v1h-1zM13,7h1v1h-1zM15,7h1v1h-1zM17,7h1v1h-1zM19,7h1v1h-1zM21,7h1v1h-1zM23,7h1v1h-1zM25,7h1v1h-1zM27,7h1v1h-1zM29,7h1v1h-1zM31,7h1v1h-1zM32,7h1v1h-1zM33,7h1v1h-1zM34,7h1v1h-1zM35,7h1v1h-1zM36,7h1v1h-1zM37,7h1v1h-1zM9,8h1v1h-1zM14,8h1v1h-1zM17,8h1v1h-1zM20,8h1v1h-1zM21,8h1v1h-1zM22,8h1v1h-1zM24,8h1v1h-1zM29,8h1v1h-1zM1,9h1v1h-1zM5,9h1v1h-1zM7,9h1v1h-1zM8,9h1v1h-1zM9,9h1v1h-1zM10,9h1v1h-1zM11,9h1v1h-1zM12,9h1v1h-1zM13,9h1v1h-1zM14,9h1v1h-1zM15,9h1v1h-1zM16,9h1v1h-1zM17,9h1v1h-1zM22,9h1v1h-1zM24,9h1v1h-1zM27,9h1v1h-1zM29,9h1v1h-1zM30,9h1v1h-1zM31,9h1v1h-1zM32,9h1v1h-1zM33,9h1v1h-1zM34,9h1v1h-1zM37,9h1v1h-1zM1,10h1v1h-1zM2,10h1v1h-1zM3,10h1v1h-1zM4,10h1v1h-1zM5,10h1v1h-1zM6,10h1v1h-1zM10,10h1v1h-1zM11,10h1v1h-1zM14,10h1v1h-1zM15,10h1v1h-1zM18,10h1v1h-1zM19,10h1v1h-1zM24,10h1v1h-1zM27,10h1v1h-1zM28,10h1v1h-1zM29,10h1v1h-1zM33,10h1v1h-1zM36,10h1v1h-1zM1,11h1v1h-1zM2,11h1v1h-1zM3,11h1v1h-1zM5,11h1v1h-1zM7,11h1v1h-1zM8,11h1v1h-1zM11,11h1v1h-1zM12,11h1v1h-1zM13,11h1v1h-1zM14,11h1v1h-1zM16,11h1v1h-1zM18,11h1v1h-1zM22,11h1v1h-1zM24,11h1v1h-1zM25,11h1v1h-1zM28,11h1v1h-1zM32,11h1v1h-1zM35,11h1v1h-1zM2,12h1v1h-1zM3,12h1v1h-1zM5,12h1v1h-1zM6,12h1v1h-1zM8,12h1v1h-1zM9,12h1v1h-1zM10,12h1v1h-1zM11,12h1v1h-1zM12,12h1v1h-1zM16,12h1v1h-1zM17,12h1v1h-1zM18,12h1v1h-1zM19,12h1v1h-1zM20,12h1v1h-1zM21,12h1v1h-1zM22,12h1v1h-1zM23,12h1v1h-1zM24,12h1v1h-1zM27,12h1v1h-1zM28,12h1v1h-1zM30,12h1v1h-1zM33,12h1v1h-1zM35,12h1v1h-1zM36,12h1v1h-1zM2,13h1v1h-1zM7,13h1v1h-1zM12,13h1v1h-1zM14,13h1v1h-1zM15,13h1v1h-1zM18,13h1v1h-1zM21,13h1v1h-1zM22,13h1v1h-1zM25,13h1v1h-1zM30,13h1v1h-1zM31,13h1v1h-1zM32,13h1v1h-1zM34,13h1v1h-1zM35,13h1v1h-1zM36,13h1v1h-1zM37,13h1v1h-1zM2,14h1v1h-1zM3,14h1v1h-1zM4,14h1v1h-1zM6,14h1v1h-1zM13,14h1v1h-1zM15,14h1v1h-1zM16,14h1v1h-1zM17,14h1v1h-1zM21,14h1v1h-1zM24,14h1v1h-1zM27,14h1v1h-1zM28,14h1v1h-1zM29,14h1v1h-1zM33,14h1v1h-1zM34,14h1v1h-1zM1,15h1v1h-1zM2,15h1v1h-1zM4,15h1v1h-1zM5,15h1v1h-1zM6,15h1v1h-1zM7,15h1v1h-1zM8,15h1v1h-1zM9,15h1v1h-1zM16,15h1v1h-1zM18,15h1v1h-1zM23,15h1v1h-1zM24,15h1v1h-1zM25,15h1v1h-1zM26,15h1v1h-1zM27,15h1v1h-1zM28,15h1v1h-1zM29,15h1v1h-1zM30,15h1v1h-1zM31,15h1v1h-1zM32,15h1v1h-1zM33,15h1v1h-1zM34,15h1v1h-1zM35,15h1v1h-1zM3,16h1v1h-1zM4,16h1v1h-1zM5,16h1v1h-1zM8,16h1v1h-1zM13,16h1v1h-1zM14,16h1v1h-1zM16,16h1v1h-1zM17,16h1v1h-1zM18,16h1v1h-1zM19,16h1v1h-1zM20,16h1v1h-1zM22,16h1v1h-1zM27,16h1v1h-1zM28,16h1v1h-1zM31,16h1v1h-1zM32,16h1v1h-1zM33,16h1v1h-1zM35,16h1v1h-1zM1,17h1v1h-1zM2,17h1v1h-1zM3,17h1v1h-1zM7,17h1v1h-1zM8,17h1v1h-1zM10,17h1v1h-1zM11,17h1v1h-1zM12,17h1v1h-1zM16,17h1v1h-1zM19,17h1v1h-1zM20,17h1v1h-1zM21,17h1v1h-1zM22,17h1v1h-1zM23,17h1v1h-1zM25,17h1v1h-1zM30,17h1v1h-1zM31,17h1v1h-1zM32,17h1v1h-1zM34,17h1v1h-1zM35,17h1v1h-1zM36,17h1v1h-1zM1,18h1v1h-1zM2,18h1v1h-1zM5,18h1v1h-1zM9,18h1v1h-1zM11,18h1v1h-1zM15,18h1v1h-1zM17,18h1v1h-1zM22,18h1v1h-1zM23,18h1v1h-1zM24,18h1v1h-1zM26,18h1v1h-1zM28,18h1v1h-1zM29,18h1v1h-1zM33,18h1v1h-1zM34,18h1v1h-1zM36,18h1v1h-1zM1,19h1v1h-1zM3,19h1v1h-1zM4,19h1v1h-1zM6,19h1v1h-1zM7,19h1v1h-1zM9,19h1v1h-1zM10,19h1v1h-1zM14,19h1v1h-1zM15,19h1v1h-1zM17,19h1v1h-1zM18,19h1v1h-1zM19,19h1v1h-1zM21,19h1v1h-1zM22,19h1v1h-1zM24,19h1v1h-1zM27,19h1v1h-1zM28,19h1v1h-1zM29,19h1v1h-1zM30,19h1v1h-1zM34,19h1v1h-1zM35,19h1v1h-1zM1,20h1v1h-1zM4,20h1v1h-1zM5,20h1v1h-1zM8,20h1v1h-1zM10,20h1v1h-1zM11,20h1v1h-1zM12,20h1v1h-1zM13,20h1v1h-1zM14,20h1v1h-1zM18,20h1v1h-1zM21,20h1v1h-1zM22,20h1v1h-1zM24,20h1v1h-1zM27,20h1v1h-1zM32,20h1v1h-1zM35,20h1v1h-1zM36,20h1v1h-1zM2,21h1v1h-1zM4,21h1v1h-1zM5,21h1v1h-1zM7,21h1v1h-1zM10,21h1v1h-1zM11,21h1v1h-1zM13,21h1v1h-1zM15,21h1v1h-1zM16,21h1v1h-1zM18,21h1v1h-1zM20,21h1v1h-1zM22,21h1v1h-1zM23,21h1v1h-1zM24,21h1v1h-1zM29,21h1v1h-1zM30,21h1v1h-1zM31,21h1v1h-1zM32,21h1v1h-1zM35,21h1v1h-1zM3,22h1v1h-1zM4,22h1v1h-1zM6,22h1v1h-1zM8,22h1v1h-1zM9,22h1v1h-1zM14,22h1v1h-1zM16,22h1v1h-1zM17,22h1v1h-1zM18,22h1v1h-1zM19,22h1v1h-1zM24,22h1v1h-1zM26,22h1v1h-1zM28,22h1v1h-1zM29,22h1v1h-1zM30,22h1v1h-1zM32,22h1v1h-1zM33,22h1v1h-1zM3,23h1v1h-1zM7,23h1v1h-1zM8,23h1v1h-1zM12,23h1v1h-1zM15,23h1v1h-1zM16,23h1v1h-1zM17,23h1v1h-1zM19,23h1v1h-1zM21,23h1v1h-1zM23,23h1v1h-1zM24,23h1v1h-1zM28,23h1v1h-1zM30,23h1v1h-1zM32,23h1v1h-1zM33,23h1v1h-1zM34,23h1v1h-1zM35,23h1v1h-1zM4,24h1v1h-1zM5,24h1v1h-1zM9,24h1v1h-1zM12,24h1v1h-1zM13,24h1v1h-1zM15,24h1v1h-1zM21,24h1v1h-1zM22,24h1v1h-1zM27,24h1v1h-1zM28,24h1v1h-1zM32,24h1v1h-1zM33,24h1v1h-1zM35,24h1v1h-1zM37,24h1v1h-1zM2,25h1v1h-1zM7,25h1v1h-1zM8,25h1v1h-1zM9,25h1v1h-1zM10,25h1v1h-1zM12,25h1v1h-1zM15,25h1v1h-1zM16,25h1v1h-1zM17,25h1v1h-1zM20,25h1v1h-1zM21,25h1v1h-1zM22,25h1v1h-1zM23,25h1v1h-1zM25,25h1v1h-1zM29,25h1v1h-1zM31,25h1v1h-1zM34,25h1v1h-1zM35,25h1v1h-1zM36,25h1v1h-1zM1,26h1v1h-1zM5,26h1v1h-1zM6,26h1v1h-1zM9,26h1v1h-1zM10,26h1v1h-1zM11,26h1v1h-1zM14,26h1v1h-1zM18,26h1v1h-1zM19,26h1v1h-1zM23,26h1v1h-1zM24,26h1v1h-1zM26,26h1v1h-1zM28,26h1v1h-1zM29,26h1v1h-1zM33,26h1v1h-1zM34,26h1v1h-1zM3,27h1v1h-1zM7,27h1v1h-1zM8,27h1v1h-1zM10,27h1v1h-1zM13,27h1v1h-1zM15,27h1v1h-1zM16,27h1v1h-1zM18,27h1v1h-1zM23,27h1v1h-1zM24,27h1v1h-1zM25,27h1v1h-1zM26,27h1v1h-1zM27,27h1v1h-1zM28,27h1v1h-1zM32,27h1v1h-1zM35,27h1v1h-1zM6,28h1v1h-1zM8,28h1v1h-1zM10,28h1v1h-1zM11,28h1v1h-1zM12,28h1v1h-1zM14,28h1v1h-1zM15,28h1v1h-1zM16,28h1v1h-1zM17,28h1v1h-1zM18,28h1v1h-1zM21,28h1v1h-1zM22,28h1v1h-1zM29,28h1v1h-1zM35,28h1v1h-1zM36,28h1v1h-1zM1,29h1v1h-1zM2,29h1v1h-1zM4,29h1v1h-1zM6,29h1v1h-1zM7,29h1v1h-1zM8,29h1v1h-1zM10,29h1v1h-1zM13,29h1v1h-1zM15,29h1v1h-1zM18,29h1v1h-1zM20,29h1v1h-1zM21,29h1v1h-1zM22,29h1v1h-1zM23,29h1v1h-1zM28,29h1v1h-1zM29,29h1v1h-1zM30,29h1v1h-1zM31,29h1v1h-1zM32,29h1v1h-1zM33,29h1v1h-1zM35,29h1v1h-1zM36,29h1v1h-1zM9,30h1v1h-1zM12,30h1v1h-1zM14,30h1v1h-1zM16,30h1v1h-1zM23,30h1v1h-1zM24,30h1v1h-1zM27,30h1v1h-1zM29,30h1v1h-1zM33,30h1v1h-1zM1,31h1v1h-1zM2,31h1v1h-1zM3,31h1v1h-1zM4,31h1v1h-1zM5,31h1v1h-1zM6,31h1v1h-1zM7,31h1v1h-1zM9,31h1v1h-1zM13,31h1v1h-1zM16,31h1v1h-1zM17,31h1v1h-1zM18,31h1v1h-1zM22,31h1v1h-1zM24,31h1v1h-1zM25,31h1v1h-1zM29,31h1v1h-1zM31,31h1v1h-1zM33,31h1v1h-1zM36,31h1v1h-1zM1,32h1v1h-1zM7,32h1v1h-1zM11,32h1v1h-1zM13,32h1v1h-1zM14,32h1v1h-1zM17,32h1v1h-1zM18,32h1v1h-1zM19,32h1v1h-1zM20,32h1v1h-1zM22,32h1v1h-1zM23,32h1v1h-1zM24,32h1v1h-1zM27,32h1v1h-1zM29,32h1v1h-1zM33,32h1v1h-1zM34,32h1v1h-1zM35,32h1v1h-1zM37,32h1v1h-1zM1,33h1v1h-1zM3,33h1v1h-1zM4,33h1v1h-1zM5,33h1v1h-1zM7,33h1v1h-1zM9,33h1v1h-1zM11,33h1v1h-1zM14,33h1v1h-1zM15,33h1v1h-1zM19,33h1v1h-1zM20,33h1v1h-1zM21,33h1v1h-1zM22,33h1v1h-1zM23,33h1v1h-1zM29,33h1v1h-1zM30,33h1v1h-1zM31,33h1v1h-1zM32,33h1v1h-1zM33,33h1v1h-1zM34,33h1v1h-1zM35,33h1v1h-1zM36,33h1v1h-1zM1,34h1v1h-1zM3,34h1v1h-1zM4,34h1v1h-1zM5,34h1v1h-1zM7,34h1v1h-1zM10,34h1v1h-1zM17,34h1v1h-1zM22,34h1v1h-1zM23,34h1v1h-1zM24,34h1v1h-1zM26,34h1v1h-1zM30,34h1v1h-1zM31,34h1v1h-1zM32,34h1v1h-1zM34,34h1v1h-1zM35,34h1v1h-1zM37,34h1v1h-1zM1,35h1v1h-1zM3,35h1v1h-1zM4,35h1v1h-1zM5,35h1v1h-1zM7,35h1v1h-1zM11,35h1v1h-1zM12,35h1v1h-1zM14,35h1v1h-1zM17,35h1v1h-1zM18,35h1v1h-1zM19,35h1v1h-1zM21,35h1v1h-1zM22,35h1v1h-1zM23,35h1v1h-1zM24,35h1v1h-1zM30,35h1v1h-1zM31,35h1v1h-1zM35,35h1v1h-1zM1,36h1v1h-1zM7,36h1v1h-1zM10,36h1v1h-1zM13,36h1v1h-1zM18,36h1v1h-1zM19,36h1v1h-1zM21,36h1v1h-1zM22,36h1v1h-1zM24,36h1v1h-1zM27,36h1v1h-1zM28,36h1v1h-1zM31,36h1v1h-1zM33,36h1v1h-1zM35,36h1v1h-1zM36,36h1v1h-1zM1,37h1v1h-1zM2,37h1v1h-1zM3,37h1v1h-1zM4,37h1v1h-1zM5,37h1v1h-1zM6,37h1v1h-1zM7,37h1v1h-1zM9,37h1v1h-1zM10,37h1v1h-1zM16,37h1v1h-1zM18,37h1v1h-1zM20,37h1v1h-1zM21,37h1v1h-1zM22,37h1v1h-1zM23,37h1v1h-1zM25,37h1v1h-1zM28,37h1v1h-1zM30,37h1v1h-1zM31,37h1v1h-1zM32,37h1v1h-1zM35,37h1v1h-1zM36,37h1v1h-1zM37,37h1v1h-1z" fill="#1F2A3A"/></svg>`;
+const GROUPS = [
+  {n:"Тоқсоба", r:"Картографтар", pg:"67, 69-бет", m:[["Далелхан Даурен","Спикер"],["Марат Айсұлтан","Тексеруші"],["Едигенова Аяна","Хатшы"],["Нағысхан Жасмин","Суретші"],["Марат Амирлан","Уақыт сақшысы"]]},
+  {n:"Елбөрілі", r:"Шежірешілер", pg:"66–67-бет", m:[["Хайбулла Мади","Спикер"],["Баймұрат Нұртай","Тексеруші"],["Ақжолтай Аяна","Хатшы"],["Бексерік Шахназар","Суретші"],["Мұхтар Бауыржан","Уақыт сақшысы"]]},
+  {n:"Дурут", r:"Мемлекет құрушылар", pg:"67–68-бет", m:[["Айдын Інжу","Спикер"],["Мырзабек Мансур","Тексеруші"],["Болатхан Адия","Хатшы"],["Билихан Амир","Суретші"],["Рыскелді Ақбөпе","Уақыт сақшысы"]]},
+  {n:"Бұржоғлы", r:"Елшілер", pg:"67–68, 70-бет", m:[["Асқарбек Айғаным","Спикер"],["Сабыржан Ерсұлтан","Тексеруші"],["Тоғызбай Қабдол уақап","Хатшы"],["Муратқызы Медина","Суретші"],["Рахымбай Батыр","Уақыт сақшысы"]]},
+  {n:"Кумандар", r:"Деректанушылар", pg:"66, 68, 70-бет", m:[["Жаңқұтқызы Бегімай","Спикер"],["Жоламан Айша","Тексеруші"],["Ерболат Елсая","Хатшы"],["Жақсылық Жанасыл","Дерек оқушы"],["Болат Дильназ","Суретші"],["Қайратұлы Абдулазиз","Уақыт сақшысы"]]}
+];
+const ALL = GROUPS.flatMap((g,gi)=>g.m.map(([nm,rl])=>({nm,rl,gi}))).sort((a,b)=>a.nm.localeCompare(b.nm,'kk'));
+let AIIMG=null; try{ AIIMG=localStorage.getItem('qypshaq-ai-img'); }catch(e){}
+function aiSlot(h){
+  if(AIIMG) return `<div style="position:relative;height:${h}px;border-radius:16px;overflow:hidden;background:#000"><img src="${AIIMG}" alt="ЖИ салған сурет: қыпшақ сарбазы" style="width:100%;height:100%;object-fit:contain"><span class="pill g" style="position:absolute;left:14px;top:14px;font-size:20px">ЖИ салған сурет</span></div>`;
+  return `<label style="height:${h}px;border:4px dashed var(--gold);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;color:var(--soft);text-align:center;padding:20px;background:var(--paper)"><b class="rub" style="font-size:28px;color:var(--blue)">ЖИ салған суретті қосу</b><span style="font-size:22px">Canva-дан жүктеген суретті таңдаңыз — осы компьютерде сақталады</span><input type="file" accept="image/*" style="display:none" onchange="setAI(this)"></label>`;
+}
+window.setAI=inp=>{ const f=inp.files&&inp.files[0]; if(!f) return; const im=new Image(); const rd=new FileReader();
+  rd.onload=()=>{ im.onload=()=>{ const c=document.createElement('canvas'); const k=Math.min(1,1400/im.width); c.width=im.width*k; c.height=im.height*k; c.getContext('2d').drawImage(im,0,0,c.width,c.height); AIIMG=c.toDataURL('image/jpeg',0.85); try{ localStorage.setItem('qypshaq-ai-img',AIIMG); }catch(e){} renderSlide(); }; im.src=rd.result; }; rd.readAsDataURL(f); };
+window.clearAI=()=>{ AIIMG=null; try{ localStorage.removeItem('qypshaq-ai-img'); }catch(e){} renderSlide(); };
+function warriorSvg(){
+  const lab=(x,y,tx,ty,t,txx)=>`<line x1="${x}" y1="${y}" x2="${tx}" y2="${ty}" stroke="#A3402F" stroke-width="2.5"/><circle cx="${x}" cy="${y}" r="6" fill="#A3402F"/><text x="${txx}" y="${ty-8}" font-size="24" font-weight="700" fill="#1F2A3A" font-family="Rubik,Arial">${t}</text>`;
+  let lam=''; for(let r=0;r<7;r++) for(let c=0;c<6;c++) lam+=`<rect x="${252+c*16}" y="${222+r*22}" width="14" height="20" rx="3" fill="#8D96A0" stroke="#5E6770" stroke-width="1.5"/>`;
+  return `<svg viewBox="0 0 640 640" aria-label="Қыпшақ сарбазының жабдығы: сызба" style="width:100%;height:100%">
+  <rect width="640" height="640" rx="18" fill="#F2E2B8"/>
+  <path d="M0,560 C160,530 300,545 640,520 L640,640 L0,640Z" fill="#E1C98F"/>
+  <line x1="420" y1="40" x2="420" y2="600" stroke="#6B4A2B" stroke-width="7"/>
+  <path d="M420,40 L458,22 L420,10Z" fill="#A3402F"/><path d="M412,70 L420,30 L428,70Z" fill="#8D96A0"/>
+  <path d="M420,62 L480,78 L420,96Z" fill="#C98F2A"/>
+  <path d="M270,520 L262,600 L292,600 L296,520Z M320,520 L326,600 L356,600 L346,520Z" fill="#5B3B24"/>
+  <path d="M240,212 Q300,190 360,212 L372,380 Q300,400 228,380Z" fill="#7C858F"/>
+  ${lam}
+  <path d="M232,380 Q300,402 368,380 L380,520 L220,520Z" fill="#3E5A7A"/>
+  <rect x="236" y="372" width="128" height="16" rx="5" fill="#6B4A2B"/>
+  <path d="M240,214 L196,250 L180,350 L204,354 L222,268Z" fill="#7C858F"/><path d="M360,214 L404,248 L416,330 L396,336 L378,266Z" fill="#7C858F"/>
+  <circle cx="190" cy="330" r="78" fill="#8C5A2E" stroke="#5B3B24" stroke-width="8"/><circle cx="190" cy="330" r="18" fill="#C98F2A"/>
+  <circle cx="190" cy="330" r="56" fill="none" stroke="#C98F2A" stroke-width="4" stroke-dasharray="8 10"/>
+  <path d="M300,82 L270,150 L330,150Z" fill="#8D96A0" stroke="#5E6770" stroke-width="2"/><line x1="300" y1="56" x2="300" y2="84" stroke="#5E6770" stroke-width="4"/>
+  <path d="M266,150 L334,150 L338,206 Q300,222 262,206Z" fill="#B7BEC6" stroke="#5E6770" stroke-width="2"/>
+  <path d="M282,170 Q292,164 298,172 M302,172 Q308,164 318,170" stroke="#1F2A3A" stroke-width="4" fill="none"/><path d="M296,184 L300,198 L304,184" stroke="#5E6770" stroke-width="3" fill="none"/>
+  <path d="M262,206 Q300,236 338,206 L344,226 Q300,250 256,226Z" fill="#6B737C"/>
+  <path d="M370,392 Q440,440 470,520" stroke="#C9CED4" stroke-width="10" fill="none" stroke-linecap="round"/><rect x="356" y="380" width="26" height="12" rx="4" fill="#C98F2A"/>
+  <path d="M232,392 L214,500 L244,504 L256,396Z" fill="#6B4A2B"/><line x1="226" y1="390" x2="218" y2="350" stroke="#C9CED4" stroke-width="3"/><line x1="236" y1="390" x2="232" y2="346" stroke="#C9CED4" stroke-width="3"/><line x1="246" y1="392" x2="246" y2="350" stroke="#C9CED4" stroke-width="3"/>
+  ${lab(300,100,470,110,'Дулыға',470)}
+  ${lab(286,176,150,110,'Темір бет-перде',20)}
+  ${lab(300,290,470,250,'Сауыт',470)}
+  ${lab(150,300,100,200,'Қалқан',20)}
+  ${lab(236,470,150,580,'Қорамсақ (колчан)',20)}
+  ${lab(452,486,520,450,'Қисық қылыш',440)}
+  ${lab(420,330,500,330,'Найза',480)}
+  </svg>`;
+}
+
+
+function mapSvg(mode, hl){
+  // mode 'label' — атаулармен; 'num' — нөмірлермен (ойын)
+  const P=[{n:1,x:150,y:300,l:"Дунай"},{n:2,x:455,y:250,l:"Еділ"},{n:3,x:548,y:298,l:"Сарайшық"},{n:4,x:812,y:388,l:"Сығанақ"},{n:5,x:905,y:150,l:"Ертіс"}];
+  const pts=P.map(p=>{
+    const h=p.n===hl;
+    if(mode==='label') return `<circle cx="${p.x}" cy="${p.y}" r="11" fill="${p.n===3||p.n===4?'#A3402F':'#1F3B5C'}" stroke="#fff" stroke-width="3"/><text x="${p.x+(p.n===1?-10:14)}" y="${p.y-16}" text-anchor="${p.n===1?'end':'start'}" font-size="26" font-weight="700" fill="#1F2A3A" font-family="Rubik,Arial">${p.l}</text>`;
+    return `<circle cx="${p.x}" cy="${p.y}" r="${h?30:22}" fill="${h?'#A3402F':'#1F3B5C'}" stroke="#fff" stroke-width="4"/><text x="${p.x}" y="${p.y+9}" text-anchor="middle" font-size="26" font-weight="800" fill="#fff" font-family="Rubik,Arial">${p.n}</text>`;
+  }).join("");
+  return `<svg viewBox="0 0 1000 470" aria-label="Дешті Қыпшақ сызба картасы" style="width:100%;height:100%;display:block">
+  <rect width="1000" height="470" fill="#F2E2B8"/>
+  <path d="M60,40 C300,10 700,10 960,60 L960,200 C800,240 650,250 560,250 C450,250 300,230 190,250 C120,260 80,250 60,240 Z" fill="#E9D29E" opacity=".6"/>
+  <text x="520" y="115" text-anchor="middle" font-size="50" font-weight="800" fill="#B4894A" opacity=".55" letter-spacing="16" font-family="Rubik,Arial">ДЕШТІ ҚЫПШАҚ</text>
+  <path d="M190,300 C230,270 300,280 330,310 C350,340 310,370 260,365 C215,360 180,335 190,300 Z" fill="#7FA8C9"/>
+  <text x="262" y="333" text-anchor="middle" font-size="18" fill="#1F3B5C">Қара теңіз</text>
+  <path d="M470,300 C500,285 545,295 555,320 C565,360 545,400 560,440 C540,465 500,460 490,430 C480,395 500,360 470,330 Z" fill="#7FA8C9"/>
+  <text x="518" y="392" text-anchor="middle" font-size="18" fill="#1F3B5C">Каспий</text>
+  <path d="M690,330 C715,315 750,325 752,350 C752,375 720,385 700,372 C685,362 680,342 690,330 Z" fill="#7FA8C9"/>
+  <text x="720" y="355" text-anchor="middle" font-size="15" fill="#1F3B5C">Арал</text>
+  <g stroke="#4F86B5" stroke-width="5" fill="none">
+  <path d="M40,280 C80,300 120,295 150,300 C170,303 185,305 195,306"/>
+  <path d="M400,60 C430,110 410,160 445,210 C465,245 455,270 478,300"/>
+  <path d="M590,120 C580,170 570,220 556,250 C548,275 548,290 545,300"/>
+  <path d="M940,440 C900,420 860,410 820,392 C790,378 770,365 752,352"/>
+  <path d="M960,290 C930,240 915,190 905,150 C895,110 860,70 820,40"/></g>
+  ${mode==='label'?'<text x="975" y="40" text-anchor="end" font-size="22" font-weight="700" fill="#5A503F" font-family="Rubik,Arial">Алтай →</text><text x="600" y="150" font-size="20" fill="#5A503F">Жайық</text><text x="845" y="440" font-size="20" fill="#5A503F">Сырдария</text>':''}
+  <text x="16" y="458" font-size="16" fill="#5A503F">Сызба карта (масштабсыз) · батыс ← → шығыс</text>
+  ${pts}</svg>`;
+}
+
+/* ---------- ЖИ ойыны ---------- */
+const R1=[
+ {s:"Қыпшақтарды орыс жылнамаларында «команлар» деп атаған.",ok:false,e:"ЖИ қателесті! Русьте — половецтер, ал Еуропада — команлар (66-бет)."},
+ {s:"Шығыс (сол) қанаттың орталығы — Сарайшық қаласы.",ok:false,e:"ЖИ қателесті! Сол (шығыс) қанаттың орталығы — Сығанақ. Сарайшық — оң (батыс) қанаттың ордасы, Жайық бойында (67-бет)."},
+ {s:"Батыс қыпшақ бірлестігін Тоқсоба әулеттік руы басқарды.",ok:true,e:"Ақиқат! Батыс қыпшақты — Тоқсоба, Шығыс қыпшақты Елбөрілі руынан шыққан хандар басқарды (67-бет)."},
+ {s:"«Колчан», «булат», «караул» сөздері орыс тіліне түркі тілінен енген.",ok:true,e:"Ақиқат! Бұл — славян-қыпшақ байланысының тілдегі ізі (70-бет)."},
+ {s:"Ибн Батута «дешт» сөзі «тау» дегенді білдіреді деп жазды.",ok:false,e:"ЖИ қателесті! Ибн Батута: «дешт» — түркі тілінде дала мағынасын береді (70-бет)."}
+];
+const R2=[
+ {p:1,q:"№1 — қыпшақтар батыста қай өзенге дейін жетті?",o:["Дунай","Днепр","Жайық","Ертіс"],a:0},
+ {p:3,q:"№3 — Жайық бойындағы оң (батыс) қанаттың ордасы:",o:["Сығанақ","Отырар","Сарайшық","Тараз"],a:2},
+ {p:4,q:"№4 — Сырдария бойындағы сол (шығыс) қанаттың орталығы:",o:["Баласағұн","Сығанақ","Янгикент","Сауран"],a:1}
+];
+const R3=[
+ {q:"Айдос үй тапсырмасындағы эссені ЖИ-ге толық жаздырып, өз атынан тапсырды. Мұғалім «5» қойды. Сен — Айдостың досысың. Не істейсің?",o:["Ештеңе демеймін — бұл оның ісі","Айдосқа шындықты айтуға кеңес беремін: ЖИ — көмекші, жұмысты өзі жазуы керек","Келесі жолы мен де солай істеймін"],a:1,e:"Адал азамат өз еңбегін өзі жасайды. ЖИ-ден идея сұрауға, қатені тексеруге болады, бірақ оның жазғанын өз жұмысым деп тапсыру — алдау."},
+ {q:"ЖИ саған: «Сығанақ — Батыс қыпшақтың астанасы» деп жауап берді. Сен оны слайдқа салғың келеді. Не істейсің?",o:["ЖИ қателеспейді — бірден саламын","Оқулықтан немесе сенімді деректен тексеріп барып саламын","Слайдқа ештеңе салмаймын"],a:1,e:"Тексеру керек! Сығанақ — сол (шығыс) қанаттың орталығы. ЖИ де қателеседі, ал ақпараттың дұрыстығына сен жауаптысың."}
+];
+
+/* ---------- Тақта слайдтары ---------- */
+const SL=[
+{st:"Сабақтың басы · Ұйымдастыру", cls:"dark", html:()=>`
+ <div class="row" style="gap:50px;align-items:center;height:100%">
+  <div style="flex:1;display:flex;flex-direction:column;gap:22px">
+   <div class="eb">6-сынып · Қазақстан тарихы · Ашық сабақ</div>
+   <h1 class="sh" style="font-size:104px">Қыпшақ хандығы</h1>
+   <div class="lead mut">XI – XIII ғасырдың басы · §14</div>
+   <div class="hint">Серікқалиев Ә.С. · №209 мектеп-гимназия</div>
+  </div>
+  <div class="qrbox">${QR_SVG}<b class="rub" style="font-size:24px">Телефонмен сканерле</b><span style="font-size:20px;text-align:center">«Мен оқушымын» → атың → тобың</span></div>
+ </div>`,
+ note:`<b>Сәлемдесу (1 мин).</b> «Қайырлы күн, балалар! Бүгін біз Ұлы Даланың ең кең аумағын билеген халық туралы сөйлесеміз. Телефондарыңды алып, тақтадағы QR кодты сканерлеңдер. «Мен оқушымын» батырмасын басып, аты-жөндеріңді жазып, өз топтарыңды таңдаңдар.»`},
+
+{st:"Сабақтың басы · Топтар", html:()=>`
+ <div class="eb">Топтар алдын ала бөлінген</div>
+ <h2 class="sh" style="font-size:48px">Бес қыпшақ руы — бес зерттеу тобы</h2>
+ <div class="g5">${GROUPS.map((g,i)=>`<div class="cd" style="padding:18px 18px"><div class="k">${i+1}-топ · ${g.r}</div><h3>${g.n}</h3>${g.m.map(([n,r])=>`<div style="font-size:20px;line-height:1.25"><b>${n}</b><br><span style="color:var(--soft)">${r}</span></div>`).join("")}</div>`).join("")}</div>
+ <div class="hint">Топтар 1-тоқсан нәтижесі бойынша аралас құрылды: әр топта 2 жоғары, 1–2 орташа және 1–2 қолдау қажет оқушы.</div>`,
+ note:`<b>Топтар (1 мин).</b> Оқушылар алдын ала бөлінген тізім бойынша отыр (ҚМЖ, 1-қосымша). «Әр топ бір қыпшақ руының атымен аталады. Рөлдеріңді 30 секундта бөліңдер: спикер — қорғайды, хатшы — жазады, суретші — ватманды безендіреді, уақыт сақшысы — уақытты қадағалайды, тексеруші — телефондағы тексеру сұрақтарына жауап береді.»`},
+
+{st:"Сабақтың басы · Еске түсіру", html:()=>`
+ <div class="eb">Өткенді еске түсірейік</div>
+ <h2 class="sh">Қимақ қағанаты қашан құлады және оның жерлері кімге өтті?</h2>
+ <div class="qb hid"><div class="q">XI ғасырдың басында құлады, жерлері қыпшақ хандарының қолына өтті.</div><div class="hint">Оқулық, 66-бет</div></div>
+ <div class="hint" style="margin-top:auto">▶ басқанда жауап ашылады</div>`,
+ note:`<b>Бастапқы білімді белсендіру (1 мин).</b> Сұрақты қойып, 2–3 оқушыдан жауап алыңыз. Сосын жауапты ашыңыз: «Дұрыс! Демек, бүгінгі кейіпкерлеріміз — Қимақтың мұрагерлері, қыпшақтар.»`},
+
+{st:"Сабақтың басы · Қызығушылықты ояту", html:()=>`
+ <div class="eb">Жұмбақ</div>
+ <h2 class="sh">Бір халық — үш атау</h2>
+ <div class="g3">
+  <div class="cd b"><div class="k">Шығыста</div><div class="big">?</div><div class="lead hid" style="font-weight:700">қыпшақтар</div></div>
+  <div class="cd"><div class="k">Русьте</div><div class="lead" style="font-weight:700">половецтер</div></div>
+  <div class="cd"><div class="k">Еуропада</div><div class="lead" style="font-weight:700">команлар</div></div>
+ </div>
+ <div class="hint">VIII–IX ғасырлардағы авторлардың еңбектері бойынша (оқулық, 66-бет)</div>`,
+ note:`<b>Проблемалық сұрақ (1 мин).</b> «Русьте бұл халықты половецтер, Еуропада команлар деп атаған. Ал Шығыста қалай аталды деп ойлайсыңдар?» Жауаптан кейін ▶ басып ашыңыз. «Бір халықты Қытайдан Еуропаға дейін білген. Неге екен? Бүгін соны зерттейміз.»`},
+
+{st:"Сабақтың басы · Зерттеу сұрағы", cls:"dark", html:()=>`
+ <div class="eb">Деректе не делінген?</div>
+ <div class="quote">«Дешт … түркі тілінде дала мағынасын білдіреді»</div>
+ <div style="font-size:30px;color:#E8B65A">— Ибн Батута, XIV ғасыр саяхатшысы (оқулық, 70-бет)</div>
+ <div style="margin-top:auto" class="qb"><div style="font:700 24px Rubik;color:var(--rust)">Сабақтың зерттеу сұрағы</div><div class="q">Не себепті Еуразия даласы «Дешті Қыпшақ» деп аталды?</div></div>`,
+ note:`<b>Зерттеу сұрағы (1 мин).</b> «Ибн Батута «дешт» сөзі дала деген мағына береді деп жазған. Сонда «Дешті Қыпшақ» — қыпшақтың даласы. Бірақ неге дәл қыпшақтың? Сабақ соңында осы сұраққа дәлелмен жауап береміз.» 1–2 оқушының алғашқы болжамын тыңдаңыз.`},
+
+{st:"Сабақтың басы · Мақсат", html:()=>`
+ <div class="eb">Бүгінгі сабақта</div>
+ <h2 class="sh">Мақсатымыз және бағалау критерийлері</h2>
+ <div class="g2">
+  <div class="cd b"><h3>Оқу мақсаттары</h3>
+   <div class="t"><b>6.3.1.3</b> X–XIII ғ. басындағы мемлекеттердің даму ерекшеліктерін түсіндіріп, ұқсастықтары мен айырмашылықтарын анықтау</div>
+   <div class="t"><b>6.3.2.4</b> Қыпшақтардың Еуразия тарихындағы орнын анықтау</div></div>
+  <div class="cd"><h3>Бағалау критерийлері</h3>
+   <div class="t">1. Қыпшақ мемлекетінің құрылу кезеңдері мен ерекшеліктерін түсіндіреді</div>
+   <div class="t">2. Көрші мемлекеттермен ұқсастығы мен айырмашылығын анықтайды</div>
+   <div class="t">3. Қыпшақтардың Еуразия тарихындағы орнын дерекпен дәлелдейді</div></div>
+ </div>
+ <div class="row" style="gap:16px;flex-wrap:wrap;align-items:center"><b class="rub" style="font-size:26px">Бүгін 16 балл:</b><span class="pill">Ватман · 4</span><span class="pill">Дерекпен жұмыс · 4</span><span class="pill">Жеке тест · 8</span><span class="pill g">16 балл → ФБ баға (10)</span></div>`,
+ note:`<b>Мақсат қою (1 мин).</b> Критерийлерді бір оқушыға дауыстап оқытыңыз. «Сабақ соңында телефондағы жеке тест осы үш критерий бойынша бағаланады.»`},
+
+{st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі 1/5", html:()=>`
+ <div class="eb">Мұғалімнің түсіндірмесі</div>
+ <h2 class="sh">Қыпшақтар кімдер?</h2>
+ <div class="g3">
+  <div class="cd b"><div class="k">Шығыс деректерінде</div><h3 style="font-size:44px">қыпшақтар</h3></div>
+  <div class="cd"><div class="k">Орыс жылнамаларында</div><h3 style="font-size:44px">половецтер</h3></div>
+  <div class="cd"><div class="k">Еуропа деректерінде</div><h3 style="font-size:44px">команлар</h3></div>
+ </div>
+ <div class="row" style="align-items:center;gap:14px;flex-wrap:wrap">
+  <span class="pill">Батыс Түрік қағанаты</span><span class="arrow">→</span>
+  <span class="pill">Қимақ қағанатының батыс қанаты</span><span class="arrow">→</span>
+  <span class="pill g">XI ғ. басы: Қимақ құлап, жерлері қыпшақ хандарына өтті</span>
+ </div>
+ <div class="qb" style="margin-top:auto"><div class="q">Демек, бұл халықты Қытайдан Еуропаға дейін білген. Неге?</div></div>`,
+ note:`<b>Мұғалімнің түсіндірмесі, 1-бөлім (1,5 мин).</b> «Балалар, VIII–IX ғасырлардағы авторлар бір халықты үш түрлі атаған: Шығыста — қыпшақтар, Русьте — половецтер, Еуропада — команлар. Демек, бұл халықты Қытайдан Еуропаға дейін білген. Қыпшақтардың тарихы ұзақ: олар алғашында Батыс Түрік қағанатының құрамында болды, кейін Қимақ қағанатының құрамына еніп, оның батыс қанатын құрады. XI ғасырдың басында Қимақ қағанаты құлағаннан кейін оның жерлері қыпшақ хандарының қолына өтті. Осылай дербес Қыпшақ хандығы пайда болды.» <br><i>Оқушылар дәптерге жазады: қыпшақ = половец = коман.</i>`},
+
+{st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі 2/5", html:()=>`
+ <div class="eb">Мұғалімнің түсіндірмесі</div>
+ <h2 class="sh">Қыпшақ мемлекеттілігінің үш кезеңі</h2>
+ <div class="g3">
+  <div class="cd b"><div class="k">VII–VIII ғғ.</div><h3>Батыс Түрік қағанатының құрамында</h3></div>
+  <div class="cd b"><div class="k">VIII–XI ғғ.</div><h3>Қимақ қағанатының құрамында</h3></div>
+  <div class="cd fill"><div class="k">XI – XIII ғ. басы</div><h3>Дербес Қыпшақ хандығы</h3><div class="t">XI ғ. ортасы — Еділден өтті; XII ғ. басы — Алтайдан Дунайға дейін үстемдік етті</div></div>
+ </div>
+ <div class="qb"><div class="q" style="font-size:32px">Сондықтан бұл ұлан-ғайыр аумақ «Дешті Қыпшақ» — «қыпшақтың даласы» деп аталды.</div></div>`,
+ note:`<b>2-бөлім (1,5 мин).</b> «Қыпшақ мемлекеттілігі үш кезеңнен өтті. Бірінші кезеңде, VII–VIII ғасырларда, қыпшақтар Батыс Түрік қағанатына бағынды. Екінші кезеңде, VIII–XI ғасырларда, Қимақ қағанатының құрамында болды. Үшінші кезең — XI ғасырдан XIII ғасырдың басына дейінгі дербес Қыпшақ хандығы. XI ғасырдың ортасында қыпшақтар Еділден өтіп, батысқа қарай Дунайға дейін жетті. XII ғасырдың басында олар Алтайдан Дунайға дейінгі «Ұлы Даланы» билеп отырды. Сондықтан бұл ұлан-ғайыр аумақ «Дешті Қыпшақ», яғни «қыпшақтың даласы» деп аталды. Бұл — зерттеу сұрағымыздың негізгі жауабы.»`},
+
+{st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі 3/5", html:()=>`
+ <div class="eb">Мұғалімнің түсіндірмесі</div>
+ <h2 class="sh" style="font-size:50px">Аумағы, бірлестіктері және екі қанаты</h2>
+ <div class="row" style="flex:1;gap:24px">
+  <div style="flex:1.45;border-radius:16px;overflow:hidden">${mapSvg('label')}</div>
+  <div style="flex:1;display:flex;flex-direction:column;gap:14px">
+   <div class="cd" style="padding:16px 20px"><div class="k">Батыс қыпшақ</div><div class="t">Тоқсоба руы · Еділден Дунайға дейін</div></div>
+   <div class="cd b" style="padding:16px 20px"><div class="k">Шығыс қыпшақ</div><div class="t">Елбөрілі руы · Еділден Алтайға дейін</div></div>
+   <div class="cd r" style="padding:16px 20px"><div class="k">Екі қанат</div><div class="t">Оң (батыс) — ордасы <b>Сарайшық</b> (Жайық)<br>Сол (шығыс) — орталығы <b>Сығанақ</b> (Сырдария)</div></div>
+  </div>
+ </div>`,
+ note:`<b>3-бөлім (1,5 мин).</b> Картаны көрсетіп түсіндіріңіз: «XI ғасырда қыпшақтар екі бірлестікке бөлінді. Батыс қыпшақ бірлестігі Еділден Дунайға дейін қоныстанды, оны Тоқсоба әулеттік руы басқарды. Шығыс қыпшақ бірлестігі Еділден Алтайға дейінгі аумақта құрылды, оны Елбөрілі руынан шыққан хандар басқарды. Көне түркі дәстүрі бойынша хандық екі қанатқа бөлінді: оң, яғни батыс қанаттың ордасы — Жайық бойындағы Сарайшық, сол, яғни шығыс қанаттың орталығы — Сырдария бойындағы Сығанақ. Қоғамның басында хан, одан кейін бектер мен қарапайым малшылар тұрды. Құқығы жоқ топты құлдар құрады, олардың саны соғыс тұтқындары есебінен толықты.»`},
+
+{st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі 4/5", html:()=>`
+ <div class="eb">Мұғалімнің түсіндірмесі</div>
+ <h2 class="sh">Көршілері және Еуразиядағы орны</h2>
+ <div class="g4">
+  <div class="cd b"><div class="k">Русь</div><div class="t">Бірде соғыс, бірде одақ; Русьпен тығыз байланыс</div></div>
+  <div class="cd b"><div class="k">Византия, Венгрия</div><div class="t">Шығыс Еуропа халықтарымен байланыс орнатты</div></div>
+  <div class="cd r"><div class="k">Хорезм</div><div class="t">Күрделі қарым-қатынас; хорезмшахтар қыпшақ ақсүйектерін исламға енгізуге тырысты</div></div>
+  <div class="cd"><div class="k">Қарахан</div><div class="t">Махмұд Қашғари дерегі: билеушілерімен күрделі қарым-қатынас</div></div>
+ </div>
+ <div class="qb"><div style="font:700 24px Rubik;color:var(--rust)">Тілдегі із: орыс тіліне енген түркі сөздері</div><div style="font:600 36px Rubik;color:var(--blue)">колчан · булат · караул · есаул · атаман · богатырь</div></div>`,
+ note:`<b>4-бөлім (1,5 мин).</b> «Қыпшақтар тек далада ғана емес, бүкіл Еуразия тарихында із қалдырды. Олар Шығыс Еуропада Русь, Византия, Венгриямен байланыс орнатты: бірде соғысты, бірде одақтасты. Хорезммен қарым-қатынасы күрделі болды: хорезмшахтар қыпшақ ақсүйектерін ислам дініне енгізуге, қыпшақ әскерін өз мүддесіне пайдалануға тырысты. Махмұд Қашғари дерегі бойынша, қыпшақтар Қарахан билеушілерімен де күрделі қарым-қатынаста болды. Қыпшақтардың ізі тілде де қалды: орыс тіліндегі колчан, булат, караул, есаул, атаман, богатырь сөздері — түркі сөздері. Міне, сондықтан қыпшақтар Еуразия тарихында ерекше орын алады. Енді осыны өздерің зерттейсіңдер.»`},
+
+{st:"Сабақтың ортасы · Мұғалімнің түсіндірмесі 5/5", html:()=>`
+ <div class="eb">Мұғалімнің түсіндірмесі · әскери өнер</div>
+ <h2 class="sh" style="font-size:50px">Қыпшақ сарбазы: жабдығы мен соғыс тәсілі</h2>
+ <div class="row" style="flex:1;gap:24px;min-height:0">
+  <div style="flex:1;min-height:0">${warriorSvg()}</div>
+  <div style="flex:1.1;display:flex;flex-direction:column;gap:12px;min-height:0">
+   ${aiSlot(360)}
+   <div class="qb" style="padding:14px 20px"><div class="q" style="font-size:28px">ЖИ суретін тексер: сызбадағы жабдықтың қайсысы бар? Не күмәнді?</div></div>
+   ${AIIMG?'<button class="tb" style="background:var(--line);color:var(--ink);align-self:flex-start" onclick="clearAI()">Суретті ауыстыру</button>':''}
+  </div>
+ </div>`,
+ note:`<b>5-бөлім. Қыпшақ сарбазы (1 мин).</b> «Қыпшақтар Еуразияның ең мықты жауынгерлерінің бірі болған. Негізгі күші — атты әскер. Сарбаздың басында биік дулыға, кейде бетін темір бет-перде жапқан. Денесінде темір тақташалардан немесе шынжырдан тоқылған сауыт. Қаруы — садақ пен жебе салынған қорамсақ, қисық қылыш, найза, қалқан. Орыс тіліндегі «колчан» сөзі де осы қорамсақтың түркі атауынан шыққан. Қыпшақтар жау әскерін әдейі шегініп алдап, сосын кері бұрылып соққы беретін болған.» Сосын ЖИ суретін көрсетіп сұраңыз: «Бұл суретті жасанды интеллект салды. Сызбадағы жабдықтың қайсысы бар? Суретте не күмәнді — мұражай ма, далада ма, сауыт қай дәуірге ұқсайды?» <br><i>Сурет: сабаққа дейін Canva-дағы ЖИ суретін компьютерге жүктеп, сол жақтағы аймақты басып таңдаңыз.</i>`},
+
+{st:"Сабақтың ортасы · Топтық зерттеу (10 мин)", html:()=>`
+ <div class="row" style="align-items:center;justify-content:space-between"><h2 class="sh">Топтық зерттеу</h2><span class="pill g">10 мин · ватман + дерек + телефон</span></div>
+ <div class="g3">
+  ${GROUPS.map((g,i)=>`<div class="cd"><div class="k">${i+1} · ${g.n} · ${g.pg}</div><h3>${g.r}</h3><div class="t">${["Хандықтың аумағын, Сарайшық пен Сығанақты, 5 өзенді картаға түсіріңдер","Үш кезеңді уақыт таспасына түсіріңдер","Бірлестіктер, екі қанат және қоғам топтарының сызбасын жасаңдар","Хорезм, Русь, Қарахан мемлекетімен қарым-қатынасты кестеге түсіріңдер","Үш тарихшының дерегін салыстырып, түркі сөздерінің сөздігін жасаңдар"][i]}</div></div>`).join("")}
+  <div class="cd fill"><div class="k">Әр топта</div><h3>Дерек карточкасы</h3><div class="t">Деректі оқып, телефонда 4 сұраққа жауап беріңдер (4 балл). Ватманға: «Дешті Қыпшақ атауының себебі…» — 1 дәлел</div></div>
+ </div>`,
+ note:`<b>Топтық зерттеу (10 мин).</b> Таймерді 10 минутқа қосыңыз. «Әр топтың тапсырмасы телефондағы «Топ тапсырмасы» бетінде тұр. Оқулықтан ақпарат тауып, ватманға түсіресіңдер. Әр топта бір дерек карточкасы бар: хатшы немесе дерек оқушы оны дауыстап оқиды, әрқайсың телефондағы 4 сұраққа өзің жауап бересің. Бұл — 4 балл.» Топтарды аралап, бағыттаушы сұрақтар қойыңыз: «Неге Сарайшық батыста?», «Қай кезеңде қыпшақтар дербес болды?»`},
+
+{st:"Сабақтың ортасы · Қорғау (6 мин)", html:()=>`
+ <div class="eb">Топ қорғауы · әр топқа 1 минут</div>
+ <h2 class="sh">Тарихи ретпен шығамыз</h2>
+ <div class="row" style="align-items:center;gap:12px;flex-wrap:wrap">
+  <span class="pill">2 · Кезеңдер</span><span class="arrow">→</span><span class="pill">1 · Карта</span><span class="arrow">→</span><span class="pill">3 · Құрылым</span><span class="arrow">→</span><span class="pill">4 · Көршілер</span><span class="arrow">→</span><span class="pill">5 · Деректер</span>
+ </div>
+ <div class="g3">
+  <div class="cd"><h3>Жұлдыз 1</h3><div class="t">Маған ұнағаны…</div></div>
+  <div class="cd"><h3>Жұлдыз 2</h3><div class="t">Жаңа білгенім…</div></div>
+  <div class="cd r"><h3>Тілек</h3><div class="t">Келесіде қосуға болатыны…</div></div>
+ </div>
+ <div class="hint">Тыңдаушы топтар стикер жазып, ватманға жапсырады · Мұғалім ұпайды төмендегі жолақпен қосады</div>`,
+ note:`<b>Қорғау (6 мин).</b> Әр топқа 1 мин. Спикер: «Біздің дерек бойынша…» деп бастайды. «Алдымен кезеңдер, сосын аумақ, құрылым, көршілер және деректер — сонда ватмандар тақтада бір тарихқа айналады.» Әр топтың ватманын дескриптор бойынша бағалап, 0–4 ұпайды төмендегі жолаққа қосыңыз. Қорғауға шығу — сергіту сәті.`},
+
+{st:"Сабақтың ортасы · ЖИ ойыны (5 мин)", game:true, html:()=>gameHtml(),
+ note:`<b>ЖИ ойыны (5 мин).</b> «Біз жасанды интеллекттен Қыпшақ хандығы туралы мәлімет сұрадық. Ол бірнеше рет қателесті. Ақиқатты кітаптан тексерейік!» Кезектегі топ жауап береді; дұрыс болса ұпайды төмендегі жолақта қосыңыз (1-раунд: қатені тауып, дұрысын айтса +2). 3-раунд «Адал шешім» — «Адал азамат» бағдарламасы, «Әділдік және жауапкершілік» құндылығы. Қорытынды: «ЖИ — көмекші, бірақ ақпаратты дерекпен тексеру — біздің жауапкершілігіміз.»`},
+
+{st:"Сабақтың соңы · Жеке тест (5 мин)", html:()=>`
+ <div class="row" style="align-items:center;justify-content:space-between"><h2 class="sh">Жеке тест</h2><span class="phone">📱 Телефонда: «Жеке тест»</span></div>
+ <div class="g3">
+  <div class="cd"><div class="k">А деңгейі · 3 ұпай</div><h3>Бос орынды толтыр</h3><div class="t">Атаулары, аумағы, оң қанаттың ордасы</div></div>
+  <div class="cd b"><div class="k">В деңгейі · 3 ұпай</div><h3>Жабық тест</h3><div class="t">Байланысқан елдер, одақ, Шығыс қыпшақтың ордасы</div></div>
+  <div class="cd r"><div class="k">С деңгейі · 2 ұпай</div><h3>Зерттеу сұрағы</h3><div class="t">3–4 сөйлем, кемінде 1 дерек</div></div>
+ </div>
+ <div class="qb"><div class="q" style="font-size:32px">Сайт А мен В деңгейін өзі тексереді. С деңгейін көршіңмен бірге тексер.</div></div>`,
+ note:`<b>Жеке жұмыс (5 мин).</b> Таймерді 5 минутқа қосыңыз. Телефоны жоқ оқушыға қағаз нұсқасын беріңіз (ҚМЖ, 3-қосымша). Аяқтаған оқушы «Нәтижем» бетін көрсетеді — ұпайды бағалау парағына түсіресіз.`},
+
+{st:"Сабақтың соңы · Жауап кілті", html:()=>`
+ <div class="eb">Тексерейік</div>
+ <h2 class="sh">Жауап кілті</h2>
+ <div class="g3">
+  <div class="cd hid"><div class="k">А деңгейі</div><div class="t">1. половецтер, команлар<br>2. Дунайға<br>3. Сарайшық</div></div>
+  <div class="cd b hid"><div class="k">В деңгейі</div><div class="t">1. Византия, Венгрия, Русь<br>2. қыпшақтар<br>3. Сығанақ</div></div>
+  <div class="cd r hid"><div class="k">С деңгейі</div><div class="t">XII ғ. басында қыпшақтар Алтайдан Дунайға дейінгі «Ұлы Даланы» билеп, оған өз атын берді: «дешт» — дала, яғни «қыпшақтың даласы» (Ибн Батута).</div></div>
+ </div>`,
+ note:`▶ басқан сайын бір баған ашылады. С деңгейі: себебі — 1 ұпай, дерек — 1 ұпай.`},
+
+{st:"Сабақтың соңы · Құндылық минуты", cls:"gold", html:()=>`
+ <div class="eb">Құндылық минуты · Тәуелсіздік және отаншылдық</div>
+ <h2 class="sh">Атрақ хан мен жусан</h2>
+ <div class="lead">Жат елде даңқ пен байлыққа кенелген Атрақ хан бір уыс дала жусанын иіскеп, еліне қайтты.</div>
+ <div class="qb"><div class="q">«Жат жерде даңқты болғанша, туған жерде сүйегім қалғаны артық»</div></div>
+ <div class="lead" style="font-weight:700">Сен үшін Туған жердің белгісі не?</div>`,
+ note:`<b>Құндылық минуты (1 мин).</b> «XII ғасырдың басында қыпшақ ханы Атрақ өз адамдарымен Грузияға кетіп, сонда абырой мен байлыққа жетті. Далада қалған інісі Сырчан оны елге шақырып, жыршы жібереді. Жыршының әндері Атрақты тоқтата алмайды. Сонда жыршы даладан алып келген бір уыс жусанды иіскетеді. Атрақ көзіне жас алып: «Жат жерде даңқты болғанша, туған жерде сүйегім қалғаны артық» деп, еліне қайтады. Бұл аңыз орыс жылнамасында сақталған. Сен үшін Туған жердің белгісі не?» 2 оқушыны тыңдаңыз.`},
+
+{st:"Сабақтың соңы · Рефлексия", html:()=>`
+ <div class="row" style="align-items:center;justify-content:space-between"><h2 class="sh">Рефлексия және кері байланыс</h2><span class="phone">📱 Телефонда: «Рефлексия»</span></div>
+ <div class="g3">
+  <div class="cd fill"><div class="k">Сығанақ</div><h3>Бәрін түсіндім</h3><div class="t">Зерттеу сұрағына жауап беріп, басқаға түсіндіре аламын</div></div>
+  <div class="cd"><div class="k">Сарайшық</div><h3>Түсіндім, сұрағым бар</h3><div class="t">Сұрағымды жазамын</div></div>
+  <div class="cd r"><div class="k">Жолдамын</div><h3>Қайталауым керек</h3><div class="t">Қай бөлімді қайталау керегін жазамын</div></div>
+ </div>
+ <div class="qb"><div class="q">Не себепті Еуразия даласы «Дешті Қыпшақ» деп аталды?</div></div>`,
+ note:`<b>Рефлексия және кері байланыс (2 мин).</b> Оқушылар телефонда аялдаманы таңдап, бір сөйлем жазады және сабаққа баға береді (5 жұлдыз, ең қызықты бөлім, ұсыныс); «Нәтижем» бетінде әр оқушыға өз қатесіне қарай жеке кеңес шығады; телефоны жоқтар стикерді тақтадағы жолға жапсырады. Зерттеу сұрағына қайта оралыңыз: 1–2 оқушы жауап береді. Жалпы кері байланыс: «Бүгін сендер нағыз тарихшы сияқты деректі тексердіңдер. Жарайсыңдар!»`},
+
+{st:"Сабақтың соңы · Үй тапсырмасы", cls:"dark", html:()=>`
+ <div class="eb">Үй тапсырмасы</div>
+ <h2 class="sh">§14 оқу және біреуін таңдау</h2>
+ <div class="g2">
+  <div class="cd fill"><div class="k">1-нұсқа</div><h3>Эссе</h3><div class="t">«Не себепті Еуразия даласы «Дешті Қыпшақ» деп аталды?» — 6–8 сөйлем, кемінде 2 дерек</div></div>
+  <div class="cd fill"><div class="k">2-нұсқа</div><h3>Суретті сөздік</h3><div class="t">Орыс тіліне енген 8–10 түркі сөзі: сөз, мағынасы, сурет</div></div>
+ </div>
+ <div class="quote" style="margin-top:auto">Рақмет! Сау болыңдар!</div>`,
+ note:`<b>Үй тапсырмасы (1 мин).</b> Оқушылар күнделікке жазады. Сабақ ұпайларын (топ ватманы, ЖИ ойыны, жеке тест) қорытындылап, белсенді оқушыларды атап өтіңіз.`}
+];
+
+/* ======================= BOARD ======================= */
+let cur=0, notesOn=false, scoreOn=true;
+let scores=[0,0,0,0,0], turn=0;
+let G={mode:'intro', i:0, picked:null, rev:false};
+const $=id=>document.getElementById(id);
+
+function fit(){
+  const w=$('wrap'); if(!w) return;
+  const W=w.clientWidth-16, H=w.clientHeight-16;
+  const s=Math.max(0.2,Math.min(W/1600,H/900));
+  $('stage').style.transform=`translate(-50%,-50%) scale(${s})`;
+}
+function renderSlide(){
+  const s=SL[cur];
+  $('stage').innerHTML=`<div class="slide ${s.cls||''}">${s.html()}</div>`;
+  $('bStage').textContent=s.st;
+  $('bNum').textContent=`${cur+1}/${SL.length}`;
+  $('notes').innerHTML=s.note||'';
+  fit();
+}
+function hiddenLeft(){ return [...$('stage').querySelectorAll('.hid:not(.show)')]; }
+function nextS(){
+  if(SL[cur].game && gameNext()) return;
+  const h=hiddenLeft(); if(h.length){ h[0].classList.add('show'); return; }
+  if(cur<SL.length-1){ cur++; if(SL[cur].game) G={mode:'intro',i:0,picked:null,rev:false}; renderSlide(); }
+}
+function prevS(){
+  if(SL[cur].game && gamePrev()) return;
+  if(cur>0){ cur--; renderSlide(); }
+}
+function toggleNotes(){ notesOn=!notesOn; $('notes').hidden=!notesOn; $('noteBtn').classList.toggle('on',notesOn); setTimeout(fit,10); }
+function toggleScore(){ scoreOn=!scoreOn; $('score').hidden=!scoreOn; $('scoreBtn').classList.toggle('on',scoreOn); setTimeout(fit,10); }
+function renderScore(){
+  $('score').innerHTML=GROUPS.map((g,i)=>`<div class="team ${i===turn?'turn':''}"><span class="nm">${g.n}</span><button onclick="addP(${i},-1)" aria-label="азайту">−1</button><span class="sc">${scores[i]}</span><button class="p" onclick="addP(${i},1)">+1</button><button class="p" onclick="addP(${i},2)">+2</button></div>`).join('');
+}
+window.addP=(i,v)=>{ scores[i]=Math.max(0,scores[i]+v); renderScore(); };
+// timer
+let tId=null,tLeft=0;
+window.startT=(sec)=>{ clearInterval(tId); tLeft=sec; drawT(); tId=setInterval(()=>{ tLeft--; drawT(); if(tLeft<=0) clearInterval(tId); },1000); };
+function drawT(){ const m=Math.floor(Math.max(tLeft,0)/60), s=Math.max(tLeft,0)%60; $('clock').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; $('clock').classList.toggle('low',tLeft<=10); }
+
+/* ---------- game inside board ---------- */
+function gameHtml(){
+  const T=GROUPS[turn].n;
+  if(G.mode==='intro') return `<div class="eb">Жасанды интеллект</div><h2 class="sh">ЖИ ойыны: «Дешті Қыпшақ жолымен»</h2>
+   <div class="lead">Біз ЖИ-ден Қыпшақ хандығы туралы мәлімет сұрадық. Ол бірнеше рет қателесті. Ақиқатты кітаптан тексерейік!</div>
+   <div class="g3"><div class="cd"><div class="k">1-раунд · 5 тұжырым</div><h3>Ақиқат па, ЖИ қателесті ме?</h3><div class="t">Қатені тауып, дұрысын айтса — 2 ұпай</div></div>
+   <div class="cd b"><div class="k">2-раунд · 3 сұрақ</div><h3>Картадан тап</h3><div class="t">Дұрыс жауап — 1 ұпай</div></div>
+   <div class="cd r"><div class="k">3-раунд · 2 жағдаят</div><h3>Адал шешім</h3><div class="t">Дәлелді жауап — 2 ұпай</div></div></div>
+   <div class="hint" style="margin-top:auto">▶ — ойынды бастау · кезектегі топ төменде жиекпен белгіленеді</div>`;
+  if(G.mode==='r1'){ const it=R1[G.i];
+    return `<div class="row" style="justify-content:space-between;align-items:center"><span class="pill">1-раунд · ЖИ жазды № ${G.i+1}/${R1.length}</span><span class="pill g">Кезек: ${T}</span></div>
+    <div style="font:600 48px/1.25 Rubik;color:var(--blue)">«${it.s}»</div>
+    <div class="row"><button class="gbtn b-green" onclick="gAns(true)">✔ Ақиқат</button><button class="gbtn b-rust" onclick="gAns(false)">✘ ЖИ қателесті</button></div>
+    ${G.rev?`<div class="rev ${it.ok?'':'bad'}"><b>${G.picked===it.ok?'Топ дұрыс тапты!':'Топ қателесті.'}</b> ${it.e}</div>`:''}`; }
+  if(G.mode==='r2'){ const it=R2[G.i];
+    return `<div class="row" style="justify-content:space-between;align-items:center"><span class="pill">2-раунд · Картадан тап ${G.i+1}/${R2.length}</span><span class="pill g">Кезек: ${T}</span></div>
+    <div style="height:400px;border-radius:14px;overflow:hidden">${mapSvg('num',it.p)}</div>
+    <div style="font:600 34px Rubik;color:var(--blue)">${it.q}</div>
+    <div class="g4">${it.o.map((o,k)=>`<button class="opt ${G.rev?(k===it.a?'ok':(k===G.picked?'no':'')):''}" onclick="gOpt(${k})">${'АӘБВ'[k]}) ${o}</button>`).join('')}</div>`; }
+  if(G.mode==='r3'){ const it=R3[G.i];
+    return `<div class="row" style="justify-content:space-between;align-items:center"><span class="pill">3-раунд · Адал шешім ${G.i+1}/${R3.length}</span><span class="pill g">Барлық топ ойланады</span></div>
+    <div style="font:600 36px/1.3 Rubik;color:var(--blue)">${it.q}</div>
+    <div class="col" style="display:flex;flex-direction:column;gap:12px">${it.o.map((o,k)=>`<button class="opt ${G.rev?(k===it.a?'ok':(k===G.picked?'no':'')):''}" onclick="gOpt(${k})">${'АӘБ'[k]}) ${o}</button>`).join('')}</div>
+    ${G.rev?`<div class="rev">${it.e}</div>`:''}`; }
+  const order=GROUPS.map((g,i)=>({n:g.n,s:scores[i]})).sort((a,b)=>b.s-a.s);
+  return `<div class="eb">Ойын аяқталды</div><h2 class="sh">Нәтиже</h2>
+   <div style="font:600 40px/1.6 Rubik">${order.map((o,k)=>`${k+1}. ${o.n} — ${o.s} ұпай`).join('<br>')}</div>
+   <div class="qb" style="margin-top:auto"><div class="q">ЖИ — жақсы көмекші, бірақ ақиқатты дерекпен тексеру — біздің жауапкершілігіміз.</div></div>`;
+}
+function reGame(){ $('stage').innerHTML=`<div class="slide">${gameHtml()}</div>`; }
+window.gAns=v=>{ if(G.rev) return; G.picked=v; G.rev=true; reGame(); };
+window.gOpt=k=>{ if(G.rev) return; G.picked=k; G.rev=true; reGame(); };
+function rot(){ turn=(turn+1)%5; renderScore(); }
+function gameNext(){
+  const L={r1:R1.length,r2:R2.length,r3:R3.length};
+  if(G.mode==='intro'){ G={mode:'r1',i:0,picked:null,rev:false}; reGame(); return true; }
+  if(G.mode==='end') return false;
+  if(G.mode!=='r3') rot();
+  if(G.i<L[G.mode]-1){ G.i++; G.picked=null; G.rev=false; reGame(); return true; }
+  const nx={r1:'r2',r2:'r3',r3:'end'}[G.mode]; G={mode:nx,i:0,picked:null,rev:false}; reGame(); return true;
+}
+function gamePrev(){
+  if(G.mode==='intro') return false;
+  if(G.i>0){ G.i--; G.picked=null; G.rev=false; reGame(); return true; }
+  const pv={r1:'intro',r2:'r1',r3:'r2',end:'r3'}[G.mode];
+  const L={r1:R1.length,r2:R2.length,r3:R3.length,intro:1};
+  G={mode:pv,i:L[pv]-1,picked:null,rev:false}; reGame(); return true;
+}
+
+/* ======================= STUDENT ======================= */
+const GT=[ // топтық тапсырма + дерек карточкасы
+ {task:"Сызба картаға (ватманға) Қыпшақ хандығының XII ғасырдағы аумағын түсіріңдер.",
+  desc:["Аумақтың шекарасын (Алтай–Ертістен Дунайға дейін) белгіледік","Сарайшық пен Сығанақты көрсеттік","Дунай, Еділ, Жайық, Сырдария, Ертіс өзендерін белгіледік","Шартты белгілер жасадық және 1 дәлел жаздық"],
+  src:{t:"Ибн Батута. «Саяхатнама»",a:"Араб саяхатшысы, XIV ғасыр (1330-жылдар)",txt:"«Бұл дала Дешті Қыпшақ деп аталады. «Дешт» түрік тілінде «дала» деген сөз. Дала жап-жасыл, шөбі шүйгін, бірақ онда не тау, не ағаш жоқ. Отынға ағаш болмағандықтан, жұрт тезек жағады. Бұл далада адамдар тек арбамен жүреді.»"},
+  q:[{q:"Дерек авторы кім?",o:["Орыс жылнамашысы, XI ғасыр","Араб саяхатшысы Ибн Батута, XIV ғасыр","Қытай елшісі, VIII ғасыр"],a:1,e:"Ибн Батута XIV ғасырда Дешті Қыпшақты аралап, көргенін жазған."},
+     {q:"Ибн Батута бойынша «дешт» сөзі нені білдіреді?",o:["тау","қала","дала"],a:2,e:"«Дешт» — дала. Дешті Қыпшақ — қыпшақтың даласы."},
+     {q:"Неге далада отынға тезек жаққан?",o:["Далада ағаш жоқ болғандықтан","Тезекті сатуға болмағандықтан","Ағаш тым қымбат болғандықтан"],a:0,e:"Ибн Батута: далада не тау, не ағаш жоқ."},
+     {q:"Бұл дерек зерттеу сұрағына қалай көмектеседі?",o:["Қыпшақтардың теңізде жүзгенін көрсетеді","Атау «қыпшақтың даласы» дегенді білдіреді: бұл кең даланың иесі — қыпшақтар","Қыпшақ қалаларын сипаттайды"],a:1,e:"Дерек атаудың мағынасын және даланың кеңдігін дәлелдейді."}]},
+ {task:"Қыпшақ этносы мен мемлекеттілігінің уақыт таспасын жасаңдар.",
+  desc:["3 кезеңді ретімен орналастырдық","XI ғ. ортасында Еділден өтуін көрсеттік","XII ғ. басындағы «Ұлы Далада» үстемдігін көрсеттік","Әр кезеңге 1 сурет немесе белгі салып, 1 дәлел жаздық"],
+  src:{t:"«Өткен жылдар хикаясы» (орыс жылнамасы)",a:"Киев жылнамасы, 1055 жылғы жазба",txt:"«Сол жылы Болуш бастаған половецтер келді. Князь Всеволод олармен бітім жасасты. Половецтер өздері келген жаққа кері қайтты.»"},
+  q:[{q:"Деректің түрі қандай?",o:["Саяхатшының күнделігі","Жылнама — оқиғалар жыл бойынша жазылған шежіре","Тас жазу"],a:1,e:"Жылнама — оқиғаны жыл сайын тіркеп отыратын шежіре."},
+     {q:"Жылнамадағы «половецтер» — кімдер?",o:["Қыпшақтар","Моңғолдар","Оғыздар"],a:0,e:"Русьте қыпшақтарды половецтер деп атаған (66-бет)."},
+     {q:"Бұл жазба қай кезеңді растайды?",o:["VII ғасыр — Батыс Түрік қағанаты","XIII ғасыр — моңғол шапқыншылығы","XI ғасырдың ортасы — қыпшақтар батысқа жылжып, Русьпен көрші болды"],a:2,e:"1055 жыл — XI ғасырдың ортасы, қыпшақтар Еділден өткен кез."},
+     {q:"Русь пен половецтердің бұл кездесуі немен аяқталды?",o:["Ұлы шайқаспен","Бітіммен","Некемен"],a:1,e:"Всеволод олармен бітім жасасты."}]},
+ {task:"Хандықтың саяси және қоғамдық құрылымының сызбасын жасаңдар.",
+  desc:["Екі бірлестікті (Батыс — Тоқсоба, Шығыс — Елбөрілі) көрсеттік","Екі қанатты (оң — Сарайшық, сол — Сығанақ) көрсеттік","Қоғам топтарын ретімен көрсеттік: хан, бектер, малшылар, құлдар","Деректегі хан билігін мысал етіп, 1 дәлел жаздық"],
+  src:{t:"Атрақ пен Сырчан туралы әңгіме",a:"Орыс (Ипатий) жылнамасы, XII ғасыр оқиғасы",txt:"«Владимир Мономах половецтерді қатты қысқанда, хан Атрақ өз адамдарымен Грузияға кетті, ал інісі хан Сырчан Дон бойында қалды. Мономах қайтыс болған соң Сырчан ағасына жыршы жіберіп, елге шақырды. Атрақ әндерді тыңдағысы келмеді. Сонда жыршы оған дала жусанын иіскетті. Атрақ жылап: «Жат жерде даңқты болғанша, өз жерімде сүйегім қалғаны артық» деді де, еліне қайтты.»"},
+  q:[{q:"Атрақ пен Сырчан кімдер?",o:["Орыс князьдері","Ағайынды қыпшақ хандары","Грузин патшалары"],a:1,e:"Екеуі де қыпшақ хандары, ағалы-інілі."},
+     {q:"Атрақ неге Грузияға кетті?",o:["Русь князі Владимир Мономахтың шабуылдарынан","Сауда жасау үшін","Оқу үшін"],a:0,e:"Мономахтың жорықтарынан кейін кетті."},
+     {q:"Деректен хан билігі туралы не байқалады?",o:["Ханның ешқандай билігі болмаған","Хан тек қалада тұрған","Хан өз адамдарын бастап, басқа елге көшіре алатын билеуші болған"],a:2,e:"Хан руын бастап көшкен — оның билігі күшті болған."},
+     {q:"Бұл дерек — таза факт пе?",o:["Факт пен аңыз араласқан: хандар нақты, ал жусан туралы оқиға — аңыз","Иә, бәрі дәлелденген факт","Бәрі ойдан шығарылған ертегі"],a:0,e:"Тарихшы деректегі факт пен аңызды ажыратады."}]},
+ {task:"Қыпшақтардың көршілерімен қарым-қатынасын кестеге түсіріңдер: Ел · Қарым-қатынас түрі · Дәлел.",
+  desc:["Хорезм, Русь, Қарахан мемлекетін атадық","Әрқайсысына қарым-қатынас түрін анықтадық","Әр елге оқулықтан 1 дәлел келтірдік","Карпини деректегі көршілерді кестеге қосып, 1 дәлел жаздық"],
+  src:{t:"Плано Карпини. «Моңғолдар тарихы»",a:"Моңғолдарға барған еуропалық елші-монах, 1245–1247 жылдар",txt:"«Комания — өте үлкен ел, жері түгел жазық. Солтүстігінде Русьтен әрі мордвалар, бұлғарлар мен башқұрттар тұрады. Оңтүстігінде — алан, черкес, хазарлар, Грекия мен Константинополь. Батысында — Венгрия мен Русь. Бұл жерде бұрын команлар тұрған, оларды татарлар жаулап алды.»"},
+  q:[{q:"Плано Карпини кім?",o:["Араб географы, IX ғасыр","Қыпшақ ханы","Моңғолдарға барған еуропалық елші-монах, XIII ғасыр"],a:2,e:"Ол 1245–1247 жылдары моңғолдарға елші болып барған."},
+     {q:"Карпини «Комания» деп нені атады?",o:["Қыпшақтар (команлар) елін","Византияны","Хорезмді"],a:0,e:"Еуропада қыпшақтарды команлар деп атаған."},
+     {q:"Деректе батыста қай елдер аталады?",o:["Қытай мен Үндістан","Венгрия мен Русь","Египет пен Сирия"],a:1,e:"Батысында — Венгрия мен Русь."},
+     {q:"Деректен қандай қорытынды шығады?",o:["Қыпшақтардың көршісі болмады","Қыпшақтар тек таулы өлкеде тұрды","Қыпшақтар Еуропа мен Азия арасындағы кең даланы алып, көп елмен көрші болды"],a:2,e:"Көршілердің көптігі — Еуразиядағы маңызды орынның дәлелі."}]},
+ {task:"Деректерді салыстырып, «Орыс тіліндегі түркі сөздері» сөздігін жасаңдар.",
+  desc:["Ибн Хордадбек, Ибн Батута, Codex Cumanicus туралы басты ойды жаздық","«Дешт» сөзінің мағынасын түсіндірдік","колчан, булат, караул, есаул, атаман, богатырь сөздерінен сөздік жасадық","Сөздік пен Кодекс қыпшақтардың Еуразиядағы орнын қалай дәлелдейтінін айттық"],
+  src:{t:"Codex Cumanicus (Кодекс Куманикус)",a:"Қолжазба, шамамен 1303 жыл; қазір Венецияда сақтаулы",txt:"«Кодекс Куманикусты Қырымдағы итальян саудагерлері мен миссионерлер құрастырған. Онда латын, парсы және қыпшақ (куман) тілдеріндегі сөздер қатар берілген, сондай-ақ қыпшақ тіліндегі жұмбақтар мен әндер жазылған.»"},
+  q:[{q:"Кодекс қай тілдердің сөздігі?",o:["Грек, араб, қытай","Латын, парсы, қыпшақ","Орыс, неміс, түрік"],a:1,e:"Латын, парсы және қыпшақ (куман) тілдері."},
+     {q:"Оны кімдер құрастырды?",o:["Қырымдағы итальян саудагерлері мен миссионерлер","Қыпшақ хандары","Моңғол хандары"],a:0,e:"Итальян саудагерлері мен миссионерлер."},
+     {q:"Еуропалықтарға қыпшақ тілі не үшін керек болды?",o:["Тек ән айту үшін","Ешқандай қажеттілік болмаған","Далада сауда жасап, сөйлесу үшін — бұл тіл кең таралған еді"],a:2,e:"Қыпшақ тілі Ұлы Далада сауда тілі болды."},
+     {q:"Бұл дерек қыпшақтардың Еуразиядағы орны туралы нені дәлелдейді?",o:["Қыпшақ тілі халықаралық сауда тілі болды","Қыпшақтардың өз тілі болмады","Қыпшақтар тек Қытаймен сауда жасады"],a:0,e:"Еуропалықтар қыпшақ тілін арнайы үйренген."}]}
+];
+const TEST={
+ A:[{q:["Ортағасыр деректерінде Русьте қыпшақтарды","деп атаған."],o:["половецтер","команлар","қимақтар","печенегтер"],a:0},
+    {q:["Еуропада қыпшақтарды","деп атаған."],o:["половецтер","команлар","қимақтар","печенегтер"],a:1},
+    {q:["XI ғасырдың ортасында қыпшақтар Еділден өтіп,","дейін жетті."],o:["Дунайға","Ертіске","Сырдарияға","Шуға"],a:0},
+    {q:["Оң (батыс) қанаттың ордасы —","қаласы."],o:["Сығанақ","Сарайшық","Отырар","Тараз"],a:1}],
+ B1:{q:"Шығыс Еуропада қыпшақтармен байланыс орнатқан мемлекеттерді белгіле (бірнешеуі):",o:["Византия","Венгрия","Румыния","Русь","Хорватия","Польша"],a:[0,1,3]},
+ B:[{q:"XI ғ. бірінші жартысынан XIII ғ. басына дейін Еуразияның бүкіл далалық аймағында билікте болған тайпалар одағы:",o:["түргештер","қыпшақтар","керейттер","қарлұқтар","наймандар"],a:1},
+    {q:"Шығыс қыпшақ бірлестігінің ордасы:",o:["Янгикент","Баласағұн","Сығанақ","Отырар","Тараз"],a:2}]
+};
+
+let ST={name:'',group:-1,role:'',tab:'gt',gt:{},gtDesc:{},test:null,testDone:false,refl:null,fb:null,vat:-1};
+function load(){ try{ const s=localStorage.getItem('qypshaq6b'); if(s) ST=Object.assign(ST,JSON.parse(s)); }catch(e){} }
+function save(){ try{ localStorage.setItem('qypshaq6b',JSON.stringify(ST)); }catch(e){} }
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function stRender(){
+  const el=$('student');
+  if(!ST.name||ST.group<0){ el.innerHTML=loginHtml(); return; }
+  const g=GROUPS[ST.group];
+  const tabs=[['gt','1. Топ және дерек'],['kon','Конспект'],['test','2. Жеке тест'],['refl','3. Рефлексия'],['res','Нәтижем']];
+  el.innerHTML=`<div class="shead"><div class="who"><span>${esc(ST.name)} · ${ST.group+1}-топ «${g.n}» · ${esc(ST.role)}</span><button class="tb" style="min-height:32px" onclick="location.hash=''">⌂</button></div>
+   <h2>Қыпшақ хандығы</h2>
+   <div class="tabs">${tabs.map(([k,l])=>`<button class="${ST.tab===k?'on':''}" onclick="goTab('${k}')">${l}</button>`).join('')}</div></div>
+   <div class="sbody">${({gt:gtHtml,kon:konHtml,test:testHtml,refl:reflHtml,res:resHtml})[ST.tab]()}</div>`;
+}
+window.goTab=k=>{ ST.tab=k; save(); stRender(); window.scrollTo(0,0); };
+let pick=-1;
+function loginHtml(){
+  const p=pick>=0?ALL[pick]:null;
+  return `<div class="shead"><div class="who"><span>Оқушы</span><button class="tb" style="min-height:32px" onclick="location.hash=''">⌂</button></div><h2>Сабаққа кіру</h2><div style="height:10px"></div></div>
+  <div class="sbody">
+   <div class="box"><h3>Атыңды таңда</h3><select id="nmSel" onchange="pickName(this.value)"><option value="-1">— тізімнен таңда —</option>${ALL.map((a,k)=>`<option value="${k}" ${k===pick?'selected':''}>${a.nm}</option>`).join('')}</select>
+   ${p?`<p style="margin-top:12px">Сенің тобың: <b>${p.gi+1}-топ «${GROUPS[p.gi].n}» — ${GROUPS[p.gi].r}</b><br>Рөлің: <b>${p.rl}</b></p>`:''}</div>
+   <div class="err" id="lerr"></div>
+   <button class="act" onclick="doLogin()">Кіру</button></div>`;
+}
+window.pickName=v=>{ pick=+v; stRender(); };
+window.doLogin=()=>{ if(pick<0){ $('lerr').textContent='Атыңды тізімнен таңда.'; return; } const p=ALL[pick]; ST.name=p.nm; ST.group=p.gi; ST.role=p.rl; ST.tab='gt'; save(); stRender(); };
+
+function srcScore(){ const t=GT[ST.group]; return t.q.filter((q,i)=>ST.gt[i]===q.a).length; }
+function gtHtml(){
+  const g=GROUPS[ST.group], t=GT[ST.group];
+  const done=Object.keys(ST.gt).length;
+  return `<div class="box"><span class="tag">${ST.group+1}-топ · ${g.r} · оқулық ${g.pg}</span><h3 style="margin-top:8px">Топ тапсырмасы (ватманға)</h3><p>${t.task}</p><p class="fb">Ватманның төменгі жағына жазыңдар: «Дешті Қыпшақ атауының себебі…» — 1 дәлел. Ватман — 4 балл, оны мұғалім бағалайды.</p></div>
+  <div class="box"><h3>Дескриптор: не жасадық?</h3>${t.desc.map((d,i)=>`<label class="chk"><input type="checkbox" ${ST.gtDesc[i]?'checked':''} onchange="tDesc(${i},this.checked)"> <span>${d}</span></label>`).join('')}</div>
+  <div class="box" style="border-left:8px solid var(--rust)"><span class="tag" style="background:var(--rust)">Дерек карточкасы</span><h3 style="margin-top:8px">${t.src.t}</h3><p class="fb" style="margin-top:0">${t.src.a}</p><p style="font-size:18px;line-height:1.55">${t.src.txt}</p><p class="fb">Мәтін — деректің оқушыларға арналған жеңілдетілген аудармасы.</p></div>
+  <div class="box"><h3>Деректі талда · ${done}/4 · 4 балл</h3><p class="fb">Талдау жоспары: <b>Кім жазды? Қашан? Не туралы? Факт пе, пікір ме? Біздің сұраққа не береді?</b> Әр сұраққа бір рет жауап беріледі.</p>
+  ${t.q.map((q,i)=>{ const an=ST.gt[i]; const has=an!==undefined;
+    return `<div style="margin:14px 0"><b>${i+1}. ${q.q}</b><div class="choices">${q.o.map((o,k)=>`<button class="ch ${has?(k===q.a?'ok':(k===an?'no':'')):''}" onclick="gtAns(${i},${k})" ${has?'disabled':''}>${o}</button>`).join('')}</div>${has?`<div class="fb ${an===q.a?'ok':'no'}">${an===q.a?'Дұрыс! ':'Қате. '}${q.e}</div>`:''}</div>`; }).join('')}
+  ${done===4?`<div class="res"><div class="l">Дерекпен жұмыс</div><div class="s">${srcScore()}/4</div></div>`:''}</div>
+  <button class="act blue" onclick="goTab('test')">Келесі: жеке тест →</button>`;
+}
+window.tDesc=(i,v)=>{ ST.gtDesc[i]=v; save(); };
+window.gtAns=(i,k)=>{ if(ST.gt[i]!==undefined) return; ST.gt[i]=k; save(); stRender(); };
+
+function konHtml(){
+  const parts=[
+   ["Қыпшақтар кімдер?","Шығыста — қыпшақтар, Русьте — половецтер, Еуропада — команлар. Алдымен Батыс Түрік қағанатының, кейін Қимақ қағанатының құрамында болып, оның батыс қанатын құрады. XI ғасырдың басында Қимақ құлап, жерлері қыпшақ хандарына өтті."],
+   ["Үш кезең","VII–VIII ғғ. — Батыс Түрік қағанатының құрамында; VIII–XI ғғ. — Қимақ қағанатының құрамында; XI – XIII ғ. басы — дербес Қыпшақ хандығы. XI ғ. ортасында Еділден өтіп, Дунайға жетті; XII ғ. басында Алтайдан Дунайға дейін билеп, дала «Дешті Қыпшақ» атанды."],
+   ["Аумағы мен құрылымы","Батыс қыпшақ — Тоқсоба руы, Еділден Дунайға дейін. Шығыс қыпшақ — Елбөрілі руы, Еділден Алтайға дейін. Оң (батыс) қанаттың ордасы — Сарайшық (Жайық), сол (шығыс) қанаттың орталығы — Сығанақ (Сырдария). Қоғам: хан, бектер, қарапайым малшылар, құлдар."],
+   ["Көршілері мен Еуразиядағы орны","Русь, Византия, Венгриямен байланыс; Хорезммен күрделі қарым-қатынас; Қарахан билеушілерімен күрделі байланыс. Орыс тіліне енген түркі сөздері: колчан, булат, караул, есаул, атаман, богатырь."],
+   ["Қыпшақ сарбазы","Негізгі күш — атты әскер. Жабдығы: биік дулыға (кейде темір бет-перде), темір тақташалы немесе шынжыр сауыт, садақ пен қорамсақ, қисық қылыш, найза, қалқан. Әдейі шегініп, жауды алдап соққы беру тәсілін қолданған."]];
+  return `<div class="box" style="padding:0;overflow:hidden">${mapSvg('label')}</div>`+parts.map((p,i)=>`<div class="box"><span class="tag">${i+1}</span><h3 style="margin-top:6px">${p[0]}</h3><p>${p[1]}</p>${i===4?`<div style="max-width:420px;margin:8px auto 0">${warriorSvg()}</div>`:''}</div>`).join('')+
+  `<div class="box"><h3>Ибн Батута</h3><p>«Дешт … түркі тілінде дала мағынасын білдіреді» (70-бет)</p></div>`;
+}
+function testHtml(){
+  const T=ST.test||{A:[-1,-1,-1,-1],B1:[],B:[-1,-1],C:'',c1:false,c2:false};
+  const d=ST.testDone;
+  const sel=(i)=>`<select class="inl" onchange="tA(${i},this.value)" ${d?'disabled':''}><option value="-1">— таңда —</option>${TEST.A[i].o.map((o,k)=>`<option value="${k}" ${T.A[i]===k?'selected':''}>${o}</option>`).join('')}</select>`;
+  const mark=(ok)=>d?`<span class="fb ${ok?'ok':'no'}"> ${ok?'✓ дұрыс':'✗ қате'}</span>`:'';
+  const A1ok=T.A[0]===0&&T.A[1]===1, A2ok=T.A[2]===0, A3ok=T.A[3]===1;
+  const B1ok=JSON.stringify([...T.B1].sort())===JSON.stringify(TEST.B1.a);
+  const Bok=[T.B[0]===TEST.B[0].a,T.B[1]===TEST.B[1].a];
+  let html=`<div class="box"><span class="tag">А деңгейі · 3 ұпай</span><h3 style="margin-top:6px">Бос орынды толтыр</h3>
+   <p>1. ${TEST.A[0].q[0]} ${sel(0)} ${TEST.A[0].q[1]} ${TEST.A[1].q[0]} ${sel(1)} ${TEST.A[1].q[1]} ${mark(A1ok)}</p>
+   <p>2. ${TEST.A[2].q[0]} ${sel(2)} ${TEST.A[2].q[1]} ${mark(A2ok)}</p>
+   <p>3. ${TEST.A[3].q[0]} ${sel(3)} ${TEST.A[3].q[1]} ${mark(A3ok)}</p></div>
+  <div class="box"><span class="tag">В деңгейі · 3 ұпай</span><h3 style="margin-top:6px">Жабық тест</h3>
+   <p><b>1. ${TEST.B1.q}</b></p><div class="choices">${TEST.B1.o.map((o,k)=>{ const on=T.B1.includes(k); const cls=d?(TEST.B1.a.includes(k)?'ok':(on?'no':'')):(on?'sel':''); return `<button class="ch ${cls}" onclick="tB1(${k})" ${d?'disabled':''}>${on?'☑':'☐'} ${o}</button>`; }).join('')}</div>${mark(B1ok)}
+   ${TEST.B.map((b,j)=>`<p style="margin-top:14px"><b>${j+2}. ${b.q}</b></p><div class="choices">${b.o.map((o,k)=>{ const on=T.B[j]===k; const cls=d?(k===b.a?'ok':(on?'no':'')):(on?'sel':''); return `<button class="ch ${cls}" onclick="tB(${j},${k})" ${d?'disabled':''}>${'АӘБВГ'[k]}) ${o}</button>`; }).join('')}</div>${mark(Bok[j])}`).join('')}</div>
+  <div class="box"><span class="tag">С деңгейі · 2 ұпай</span><h3 style="margin-top:6px">Зерттеу сұрағы</h3>
+   <p>Не себепті Еуразия даласы «Дешті Қыпшақ» деп аталды? 3–4 сөйлеммен жаз, кемінде 1 деректі ата.</p>
+   <textarea oninput="tC(this.value)" ${d?'disabled':''} placeholder="Менің ойымша, ... себебі ... . Дерек бойынша ...">${esc(T.C)}</textarea>
+   <p class="fb">Өзіңді тексер (көршіңмен бірге):</p>
+   <label class="chk"><input type="checkbox" ${T.c1?'checked':''} ${d?'disabled':''} onchange="tCk('c1',this.checked)"> <span>Атаудың себебін жаздым (1 ұпай)</span></label>
+   <label class="chk"><input type="checkbox" ${T.c2?'checked':''} ${d?'disabled':''} onchange="tCk('c2',this.checked)"> <span>Дерек келтірдім: оқулық, Ибн Батута т.б. (1 ұпай)</span></label></div>`;
+  if(!d) html+=`<div class="err" id="terr"></div><button class="act" onclick="tSubmit()">Тексеру және тапсыру</button>`;
+  else html+=`<div class="res"><div class="l">Жеке тест</div><div class="s">${testScore()}/8</div><div class="l">А: ${aScore()}/3 · В: ${bScore()}/3 · С: ${(T.c1?1:0)+(T.c2?1:0)}/2</div></div><button class="act blue" onclick="goTab('refl')">Келесі: рефлексия →</button>`;
+  return html;
+}
+function T0(){ if(!ST.test) ST.test={A:[-1,-1,-1,-1],B1:[],B:[-1,-1],C:'',c1:false,c2:false}; return ST.test; }
+window.tA=(i,v)=>{ T0().A[i]=+v; save(); };
+window.tB1=k=>{ const t=T0(); t.B1=t.B1.includes(k)?t.B1.filter(x=>x!==k):[...t.B1,k]; save(); stRender(); };
+window.tB=(j,k)=>{ T0().B[j]=k; save(); stRender(); };
+window.tC=v=>{ T0().C=v; save(); };
+window.tCk=(k,v)=>{ T0()[k]=v; save(); };
+function aScore(){ const T=ST.test; if(!T) return 0; return (T.A[0]===0&&T.A[1]===1?1:0)+(T.A[2]===0?1:0)+(T.A[3]===1?1:0); }
+function bScore(){ const T=ST.test; if(!T) return 0; return (JSON.stringify([...T.B1].sort())===JSON.stringify(TEST.B1.a)?1:0)+(T.B[0]===TEST.B[0].a?1:0)+(T.B[1]===TEST.B[1].a?1:0); }
+function testScore(){ const T=ST.test; if(!T) return 0; return aScore()+bScore()+(T.c1?1:0)+(T.c2?1:0); }
+window.tSubmit=()=>{ const T=T0(); if(T.A.includes(-1)||T.B.includes(-1)||!T.B1.length){ $('terr').textContent='А және В деңгейінің барлық сұрағына жауап бер.'; return; } ST.testDone=true; save(); stRender(); window.scrollTo(0,0); };
+
+
+function reflHtml(){
+  const R=ST.refl||{stop:-1,s:'',home:''};
+  const F=ST.fb||{star:0,best:-1,idea:''};
+  const stops=[["Сығанақ","Бәрін түсіндім, басқаға түсіндіре аламын"],["Сарайшық","Түсіндім, бірақ сұрағым бар"],["Жолдамын","Қайталауым керек"]];
+  const bests=["Мұғалімнің түсіндірмесі","Топтық зерттеу","Дерекпен жұмыс","Қыпшақ сарбазы","ЖИ ойыны"];
+  return `<div class="box"><h3>Қай аялдамадасың?</h3><div class="choices">${stops.map((s,k)=>`<button class="ch ${R.stop===k?'sel':''}" onclick="rStop(${k})"><b>${s[0]}</b> — ${s[1]}</button>`).join('')}</div></div>
+  <div class="box"><h3>Бір сөйлеммен</h3><p>${R.stop===2?'Қай бөлімді қайталау керек?':R.stop===1?'Сұрағыңды жаз:':'Бүгін мен білдім, ...'}</p><textarea oninput="rS(this.value)">${esc(R.s)}</textarea></div>
+  <div class="box"><h3>Құндылық минуты</h3><p>Атрақ хан үшін жусан — Туған жердің белгісі болды. Сен үшін Туған жердің белгісі не?</p><textarea oninput="rH(this.value)">${esc(R.home)}</textarea></div>
+  <div class="box"><h3>Сабаққа кері байланыс</h3><p>Сабақ саған қаншалықты ұнады?</p>
+   <div style="display:flex;gap:6px">${[1,2,3,4,5].map(n=>`<button onclick="fStar(${n})" aria-label="${n} жұлдыз" style="font-size:30px;background:none;color:${n<=F.star?'var(--gold)':'#C9BFA8'};min-width:44px">★</button>`).join('')}</div>
+   <p>Ең қызықты бөлім:</p><div class="choices">${bests.map((b,k)=>`<button class="ch ${F.best===k?'sel':''}" onclick="fBest(${k})">${b}</button>`).join('')}</div>
+   <p>Мұғалімге ұсынысың:</p><textarea oninput="fIdea(this.value)" placeholder="Келесі сабақта ... болса екен">${esc(F.idea)}</textarea></div>
+  <div class="err" id="rerr"></div><button class="act" onclick="rDone()">Сақтау және нәтижені көру</button>`;
+}
+function R0(){ if(!ST.refl) ST.refl={stop:-1,s:'',home:''}; return ST.refl; }
+function F0(){ if(!ST.fb) ST.fb={star:0,best:-1,idea:''}; return ST.fb; }
+window.rStop=k=>{ R0().stop=k; save(); stRender(); };
+window.rS=v=>{ R0().s=v; save(); };
+window.rH=v=>{ R0().home=v; save(); };
+window.fStar=n=>{ F0().star=n; save(); stRender(); };
+window.fBest=k=>{ F0().best=k; save(); stRender(); };
+window.fIdea=v=>{ F0().idea=v; save(); };
+window.rDone=()=>{ if(R0().stop<0){ $('rerr').textContent='Аялдаманы таңда.'; return; } ST.tab='res'; save(); stRender(); window.scrollTo(0,0); };
+
+function fbMark(t){ return t>=15?10:t>=13?9:t>=11?8:t>=9?7:t>=7?6:t>=5?5:4; }
+function adviceList(){
+  const out=[]; const t=GT[ST.group];
+  t.q.forEach((q,i)=>{ if(ST.gt[i]!==undefined&&ST.gt[i]!==q.a) out.push(`Дерек, ${i+1}-сұрақ: ${q.e}`); });
+  const T=ST.test;
+  if(ST.testDone&&T){
+    if(!(T.A[0]===0&&T.A[1]===1)) out.push("Атауларды қайтала: Русьте — половецтер, Еуропада — команлар (66-бет).");
+    if(T.A[2]!==0) out.push("XI ғасырдың ортасында қыпшақтар Еділден өтіп, Дунайға дейін жетті.");
+    if(T.A[3]!==1) out.push("Оң (батыс) қанаттың ордасы — Сарайшық, сол (шығыс) қанаттың орталығы — Сығанақ.");
+    if(JSON.stringify([...T.B1].sort())!==JSON.stringify(TEST.B1.a)) out.push("Шығыс Еуропада қыпшақтар Византия, Венгрия және Русьпен байланыс орнатты (67-бет).");
+    if(T.B[0]!==TEST.B[0].a) out.push("XI–XIII ғ. басында Еуразия даласындағы билеуші одақ — қыпшақтар.");
+    if(T.B[1]!==TEST.B[1].a) out.push("Шығыс қыпшақ бірлестігінің ордасы — Сығанақ.");
+    if(!T.c1||!T.c2) out.push("Зерттеу сұрағына жауапта себеп те, дерек те болсын: «Дешт» — дала (Ибн Батута), қыпшақтар Алтайдан Дунайға дейін билеген.");
+  }
+  return out;
+}
+function resHtml(){
+  const g=GROUPS[ST.group];
+  const gd=Object.keys(ST.gt).length, ss=srcScore();
+  const ts=ST.testDone?testScore():0;
+  const vat=ST.vat;
+  const total=ss+ts+(vat>=0?vat:0);
+  const stop=ST.refl&&ST.refl.stop>=0?["Сығанақ","Сарайшық","Жолдамын"][ST.refl.stop]:'—';
+  const adv=adviceList();
+  const ready=gd===4&&ST.testDone&&vat>=0;
+  return `<div class="res"><div class="n">${esc(ST.name)}</div><div class="l">${ST.group+1}-топ «${g.n}» · ${esc(ST.role)}</div>
+   <div class="l" style="margin-top:8px">Сабақ балы</div><div class="s">${total}/16</div>
+   <div class="l">Дерек: ${gd===4?ss+'/4':'аяқталмаған'} · Жеке тест: ${ST.testDone?ts+'/8':'аяқталмаған'} · Ватман: ${vat>=0?vat+'/4':'мұғалім қояды'}</div>
+   ${ready?`<div class="l" style="margin-top:6px">Қалыптастырушы баға</div><div class="s" style="font-size:44px">${fbMark(total)}/10</div>`:''}
+   <div class="l">Аялдама: ${stop}</div></div>
+  <div class="box"><h3>Ватман (мұғалім толтырады)</h3><div style="display:flex;gap:8px">${[0,1,2,3,4].map(n=>`<button class="ch ${vat===n?'sel':''}" style="flex:1;text-align:center" onclick="setVat(${n})">${n}</button>`).join('')}</div></div>
+  <div class="box"><h3>Саған жеке кеңес</h3>${adv.length?`<ul style="margin:6px 0 0 18px;padding:0">${adv.map(a=>`<li style="margin:4px 0">${a}</li>`).join('')}</ul>`:(ST.testDone&&gd===4?'<p>Барлық сұраққа дұрыс жауап бердің. Тамаша! Үйде эссе жазып, деректі тереңірек талдап көр.</p>':'<p>Тапсырмаларды аяқтасаң, мұнда кеңес шығады.</p>')}</div>
+  <div class="box"><h3>Бағалау шкаласы</h3><p>15–16 балл — 10 · 13–14 — 9 · 11–12 — 8 · 9–10 — 7 · 7–8 — 6 · 5–6 — 5 · 0–4 — 4</p></div>
+  <p class="fb" style="text-align:center">Осы бетті мұғалімге көрсет.</p>
+  <button class="act ghost" id="rst" onclick="resetMe()">Басқа оқушы кіреді (тазалау)</button>`;
+}
+window.setVat=n=>{ ST.vat=n; save(); stRender(); };
+let rstArm=false;
+window.resetMe=()=>{ if(!rstArm){ rstArm=true; $('rst').textContent='Растау: тағы бір рет бас'; setTimeout(()=>{rstArm=false;},4000); return; }
+  rstArm=false; ST={name:'',group:-1,role:'',tab:'gt',gt:{},gtDesc:{},test:null,testDone:false,refl:null,fb:null,vat:-1}; pick=-1; save(); stRender(); };
+
+/* ======================= ROUTER ======================= */
+function route(){
+  const h=location.hash.replace('#','');
+  $('home').hidden = !!h && (h==='board'||h==='student');
+  $('board').hidden = h!=='board';
+  $('student').hidden = h!=='student';
+  if(h==='board'){ renderScore(); renderSlide(); }
+  if(h==='student'){ load(); stRender(); }
+}
+window.addEventListener('hashchange',route);
+window.addEventListener('resize',fit);
+const ro=new ResizeObserver(fit); ro.observe($('wrap'));
+document.addEventListener('keydown',e=>{
+  if($('board').hidden) return;
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){ e.preventDefault(); nextS(); }
+  if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); prevS(); }
+  if(e.key==='n'||e.key==='N'||e.key==='т'||e.key==='Т') toggleNotes();
+});
+window.nextS=nextS; window.prevS=prevS; window.toggleNotes=toggleNotes; window.toggleScore=toggleScore;
+route();
+}
+</script>
+</body>
+</html>
